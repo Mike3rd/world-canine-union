@@ -1,0 +1,77 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Inter:wght@300..700&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&display=swap');
+
+@import "tailwindcss";
+
+@theme {
+  /* ===== SOPHISTICATED WORLD CANINE UNION THEME ===== */
+  /* Fonts */
+  --font-heading: 'Space Grotesk', sans-serif;
+  --font-body: 'IBM Plex Sans', sans-serif;
+  --font-body2: 'Inter', sans-serif;
+
+/* Your Professional Color Palette */
+--color-primary: #36454F;      /* Charcoal - Primary brand color */
+--color-primary-dark: #263238; /* Darker charcoal for hover */
+--color-secondary: #78909C;    /* Steel blue - Secondary */
+--color-accent: #992400;       /* Burnt orange - Strategic accent */
+--color-neutral: #37474F;      /* Neutral dark */
+--color-header-bg: #36454F;     /* Charcoal for header background */
+--color-header-text: #FFFFFF;   /* White for header text */
+--color-text: #263238;         /* Body text - Deep charcoal */
+--color-text-muted: #546E7A;   /* Muted text */
+--color-background: #F0F4F8;   /* Light blue-gray background */
+--color-footer-bg: #36454F;     /* Charcoal for footer background - matches header */
+--color-footer-text: #FFFFFF;   /* White for footer text */
+--color-surface: #FFFFFF;      /* White surfaces */
+--color-buttons: #992400;      /* Burnt orange for buttons */
+--color-border: #CFD8DC;       /* Light border */
+--color-success: #2E7D32;      /* Deep green */
+--color-warning: #F57C00;      /* Amber */
+--color-error: #C62828;        /* Deep red */
+}
+
+/* Your Sophisticated Dark Theme */
+[data-theme="night"] {
+  --color-primary: #5F9EA0;      /* Cadet blue - Primary for headers, callouts */
+  --color-primary-dark: #4A7B7D; /* Darker cadet blue */
+  --color-secondary: #7C90A0;    /* Light steel blue - Secondary */
+  --color-accent: #FFD93D;       /* Vibrant yellow - Accent for buttons, important text */
+  --color-background: #1A2E3F;   /* Deep navy blue background */
+  --color-header-bg: #1A2E3F;     /* Navy for header background */
+--color-header-text: #FFFFFF;   /* White for header text */
+--color-footer-bg: #1A2E3F;     /* Navy for footer background - matches header */
+--color-footer-text: #FFFFFF;   /* White for footer text */
+  --color-surface: #243B53;      /* Slightly lighter navy surfaces */
+  --color-text: #FFFFFF;         /* White body text */
+  --color-text-muted: #B0BEC5;   /* Light gray muted text */
+  --color-buttons: #FFD93D;      /* Yellow for buttons */
+  --color-border: #2D4A63;       /* Medium blue border */
+  --color-success: #4CAF50;      /* Brighter green */
+  --color-warning: #FFB74D;      /* Lighter amber */
+  --color-error: #EF5350;        /* Softer red */
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+}
+
+button, .btn {
+  font-family: var(--font-heading);
+  font-weight: 500;
+}
+
+* {
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.theme-transition * {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
