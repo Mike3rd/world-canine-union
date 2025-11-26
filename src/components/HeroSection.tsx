@@ -8,7 +8,7 @@ export default function HeroSection() {
           World Canine Union
         </h1>
         <p className="text-xl md:text-2xl text-text-muted font-body2 max-w-3xl mx-auto mb-3 leading-relaxed">
-          The Global Registry Celebrating Every One-of-a-Kind Dog
+          2The Global Registry Celebrating Every One-of-a-Kind Dog
         </p>
         <p className="text-xl md:text-2xl text-text-muted font-body2 max-w-3xl mx-auto mb-8 leading-relaxed">
           The official global registry for celebrating one-of-a-kind dogs. Join
