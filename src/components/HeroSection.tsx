@@ -5,7 +5,7 @@ export default function HeroSection() {
     <section className="relative bg-surface py-20 border-b border-border">
       <div className="container mx-auto px-4 text-center">
         <h1 className="text-5xl md:text-6xl font-heading font-bold text-primary mb-6">
-          More Soul than Pedigree
+          More soul than Pedigree
         </h1>
         <p className="text-xl md:text-2xl text-text-muted font-body2 max-w-3xl mx-auto mb-8 leading-relaxed">
           The official global registry for celebrating one-of-a-kind dogs. Join
