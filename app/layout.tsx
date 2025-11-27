@@ -29,7 +29,7 @@ export default function RootLayout({
                     World Canine Union
                   </h1>
                   <p className="text-sm text-header-text/80 font-body2">
-                    Global registry for all other dogs
+                    Global Registry for all Other Dogs
                   </p>
                 </div>
               </Link>
@@ -39,7 +39,7 @@ export default function RootLayout({
           <footer className="border-t border-border bg-footer-bg py-6 mt-12">
             <div className="container mx-auto px-4 text-center text-footer-text text-sm">
               <p>
-                World Canine Union - A global mission-driven initiative
+                World Canine Union — A global mission-driven initiative
                 supporting canine welfare.
               </p>
             </div>
