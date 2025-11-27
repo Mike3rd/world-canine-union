@@ -3,9 +3,9 @@ import Link from "next/link";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "World Canine Union - Global Registry for Mixed Breeds",
+  title: "World Canine Union - Global Registry for all Other Dogs",
   description:
-    "The official global registry celebrating one-of-a-kind dogs. Join our international community.",
+    "The official global registry celebrating one-of-a-kind dogs. Join our community today!",
 };
 
 export default function RootLayout({
