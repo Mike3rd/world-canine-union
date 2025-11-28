@@ -29,7 +29,7 @@ export default function RootLayout({
                     World Canine Union
                   </h1>
                   <p className="text-sm text-header-text/80 font-body2">
-                    Global Registry for the other dogs
+                    Global Registry for all other dogs
                   </p>
                 </div>
               </Link>
