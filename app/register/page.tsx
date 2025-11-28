@@ -13,6 +13,10 @@ export default function RegistrationPage() {
     primaryBreed: "",
     secondaryBreed: "",
     tertiaryBreed: "",
+    dogDescription: "",
+    specialAttributes: "",
+    favoriteActivities: "",
+    uniqueTraits: "",
     dogStory: "",
     shelterName: "",
     shelterCity: "",
@@ -23,6 +27,12 @@ export default function RegistrationPage() {
   });
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>("");
+
+  console.log('Environment check:', {
+    hasSupabaseUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
+    hasSupabaseKey: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    supabaseClient: !!supabase
+  });
 
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -50,60 +60,74 @@ export default function RegistrationPage() {
     e.preventDefault();
 
     try {
-      // Check if Supabase client is available
-      if (!supabase || typeof supabase.from !== 'function') {
-        alert('Registration system is temporarily unavailable. Please try again later.');
-        return;
-      }
-
-      // 1. Upload image to Supabase Storage
-      let photoUrl = '';
-      if (selectedImage) {
-        const fileExt = selectedImage.name.split('.').pop();
-        const fileName = `${Math.random()}.${fileExt}`;
-
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from('wcudocs')
-          .upload(`dog-photos/${fileName}`, selectedImage);
-
-        if (uploadError) throw uploadError;
-
-        // Get public URL
-        const { data: publicUrlData } = supabase.storage
-          .from('wcudocs')
-          .getPublicUrl(`dog-photos/${fileName}`);
-
-        photoUrl = publicUrlData.publicUrl;
-      }
-
-      // 2. Save registration data to database
-      const { data, error } = await supabase
+      // 1. First create the registration to get the sequential number
+      console.log('Creating registration...');
+      const { data: registrationData, error: registrationError } = await supabase
         .from('registrations')
         .insert([
           {
-            dog_name: formData.dogName,
-            owner_name: formData.ownerName,
-            owner_email: formData.ownerEmail,
-            birth_date: formData.birthDate || null,
-            location: '',
-            breed_description: `${formData.primaryBreed} ${formData.secondaryBreed ? `+ ${formData.secondaryBreed}` : ''} ${formData.tertiaryBreed ? `+ ${formData.tertiaryBreed}` : ''}`.trim(),
-            rescue_story: formData.dogStory,
-            photo_url: photoUrl,
-            shelter_name: formData.shelterName || null,
-            shelter_city: formData.shelterCity || null,
-            shelter_state: formData.shelterState || null,
-            shelter_website: formData.shelterWebsite || null,
+            dog_name: formData.dogName || "Test Dog",
+            owner_name: formData.ownerName || "Test Owner",
+            owner_email: formData.ownerEmail || "test@test.com",
             status: 'pending'
           }
         ])
         .select();
 
-      if (error) throw error;
+      if (registrationError) throw registrationError;
 
-      console.log('Registration saved:', data);
-      alert('Registration submitted successfully! We will process your certificate soon.');
+      const registration = registrationData[0];
+      const registrationNumber = registration.registration_number;
+      console.log('Registration created:', registrationNumber);
 
-      // TODO: Clear form or redirect
+      // 2. Upload image with registration number in filename
+      let photoUrl = '';
+      if (selectedImage) {
+        console.log('Uploading image linked to:', registrationNumber);
+        const fileExt = selectedImage.name.split('.').pop();
+        // Critical: Include registration number in filename
+        const fileName = `${registrationNumber}-photo.${fileExt}`;
+
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('wcu-dogs')
+          .upload(`dog-photos/${fileName}`, selectedImage);
+
+        if (uploadError) throw uploadError;
+
+        const { data: publicUrlData } = supabase.storage
+          .from('wcu-dogs')
+          .getPublicUrl(`dog-photos/${fileName}`);
+
+        photoUrl = publicUrlData.publicUrl;
+        console.log('Image uploaded with link:', photoUrl);
+
+        // 3. Update registration with the photo URL
+        const { error: updateError } = await supabase
+          .from('registrations')
+          .update({ photo_url: photoUrl })
+          .eq('id', registration.id);
+
+        if (updateError) throw updateError;
+      }
+
+      // SUCCESS!
+      alert(`🎉 Registration Successful! Your official WCU number: ${registrationNumber}`);
+
+      // Clear form - in your handleSubmit
+      setFormData({
+        dogName: "", gender: "", birthDate: "", gotchaDay: "",
+        primaryBreed: "", secondaryBreed: "", tertiaryBreed: "",
+        dogStory: "",
+        // ALL 4 NEW FIELDS:
+        dogDescription: "",
+        specialAttributes: "",
+        favoriteActivities: "",
+        uniqueTraits: "",
+        shelterName: "", shelterCity: "", shelterState: "", shelterWebsite: "",
+        ownerName: "", ownerEmail: "",
+      });
+      setSelectedImage(null);
+      setImagePreview("");
 
     } catch (error) {
       console.error('Registration failed:', error);
@@ -300,6 +324,71 @@ export default function RegistrationPage() {
                 className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text"
                 placeholder="Tell us about your dog's personality, how you met, or what makes them special..."
               />
+            </div>
+            {/* Physical Description & Markings */}
+            <div>
+              <label className="block text-sm font-body2 font-medium text-text mb-2">
+                Physical Description & Markings
+              </label>
+              <textarea
+                name="dogDescription"
+                rows={3}
+                value={formData.dogDescription}
+                onChange={handleInputChange}
+                className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text"
+                placeholder="Describe your dog's appearance, coloring, markings, size, distinctive features..."
+              />
+              <p className="text-xs text-text-muted mt-1">
+                Help us create a complete visual record of your unique companion
+              </p>
+            </div>
+
+            {/* Special Attributes */}
+            <div>
+              <label className="block text-sm font-body2 font-medium text-text mb-2">
+                Special Qualities & Personality
+              </label>
+              <textarea
+                name="specialAttributes"
+                rows={2}
+                value={formData.specialAttributes}
+                onChange={handleInputChange}
+                className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text"
+                placeholder="Their unique personality, special skills, what makes them extraordinary..."
+              />
+            </div>
+
+            {/* Favorite Activities */}
+            <div>
+              <label className="block text-sm font-body2 font-medium text-text mb-2">
+                Favorite Activities & Games
+              </label>
+              <input
+                type="text"
+                name="favoriteActivities"
+                value={formData.favoriteActivities}
+                onChange={handleInputChange}
+                className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text"
+                placeholder="Fetch, swimming, hiking, cuddling, specific games they love..."
+              />
+            </div>
+
+            {/* Unique Traits & Quirks */}
+            <div>
+              <label className="block text-sm font-body2 font-medium text-text mb-2">
+                Unique Traits & Funny Habits
+              </label>
+              <textarea
+                name="uniqueTraits"
+                rows={2}
+                value={formData.uniqueTraits}
+                onChange={handleInputChange}
+                className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text"
+                placeholder="Funny noises they make, strange sleeping positions, quirky behaviors, little rituals..."
+              />
+              <p className="text-xs text-text-muted mt-1">
+                These special details make your dog's story truly one-of-a-kind
+              </p>
             </div>
 
             {/* Shelter Information */}
