@@ -22,17 +22,13 @@ export default function RegistrationPage() {
     shelterCity: "",
     shelterState: "",
     shelterWebsite: "",
+    rescueLocation: "",
     ownerName: "",
     ownerEmail: "",
   });
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>("");
 
-  console.log('Environment check:', {
-    hasSupabaseUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
-    hasSupabaseKey: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-    supabaseClient: !!supabase
-  });
 
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -59,9 +55,10 @@ export default function RegistrationPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+
+
     try {
       // 1. First create the registration to get the sequential number
-      console.log('Creating registration...');
       const { data: registrationData, error: registrationError } = await supabase
         .from('registrations')
         .insert([
@@ -88,16 +85,22 @@ export default function RegistrationPage() {
         ])
         .select();
 
-      if (registrationError) throw registrationError;
+      if (registrationError) {
+        console.error('Database insert error:', {
+          message: registrationError.message,
+          details: registrationError.details,
+          hint: registrationError.hint,
+          code: registrationError.code
+        });
+        throw registrationError;
+      }
 
       const registration = registrationData[0];
       const registrationNumber = registration.registration_number;
-      console.log('Registration created:', registrationNumber);
 
       // 2. Upload image with registration number in filename
       let photoUrl = '';
       if (selectedImage) {
-        console.log('Uploading image linked to:', registrationNumber);
         const fileExt = selectedImage.name.split('.').pop();
         // Critical: Include registration number in filename
         const fileName = `${registrationNumber}-photo.${fileExt}`;
@@ -113,7 +116,6 @@ export default function RegistrationPage() {
           .getPublicUrl(`dog-photos/${fileName}`);
 
         photoUrl = publicUrlData.publicUrl;
-        console.log('Image uploaded with link:', photoUrl);
 
         // 3. Update registration with the photo URL
         const { error: updateError } = await supabase
@@ -138,7 +140,7 @@ export default function RegistrationPage() {
         favoriteActivities: "",
         uniqueTraits: "",
         shelterName: "", shelterCity: "", shelterState: "", shelterWebsite: "",
-        ownerName: "", ownerEmail: "",
+        ownerName: "", ownerEmail: "", rescueLocation: "",
       });
       setSelectedImage(null);
       setImagePreview("");
@@ -471,8 +473,30 @@ export default function RegistrationPage() {
                     placeholder="https://www.example.org"
                   />
                 </div>
+
+                <div>
+                  <label className="block text-sm font-body2 font-medium text-text mb-2">
+                    Where was your dog found/rescued?
+                  </label>
+                  <input
+                    type="text"
+                    name="rescueLocation"
+                    value={formData.rescueLocation}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text"
+                    placeholder="e.g., Camden, NJ or Los Angeles County Animal Control"
+                  />
+                  <p className="text-xs text-text-muted mt-1">
+                    City, state, or specific location where your dog was rescued
+                  </p>
+                </div>
+
+
+
+
               </div>
             </div>
+
 
             {/* Owner Information */}
             <div className="pt-4 border-t border-border">
