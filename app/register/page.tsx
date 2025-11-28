@@ -68,7 +68,7 @@ export default function RegistrationPage() {
             owner_email: formData.ownerEmail,
             birth_date: formData.birthDate || null,
             gotcha_date: formData.gotchaDay || null,
-            location: '',
+            location: formData.rescueLocation || null,
             breed_description: `${formData.primaryBreed} ${formData.secondaryBreed ? `+ ${formData.secondaryBreed}` : ''} ${formData.tertiaryBreed ? `+ ${formData.tertiaryBreed}` : ''}`.trim(),
             rescue_story: formData.dogStory,
             // ADD THE 4 NEW FIELDS:
