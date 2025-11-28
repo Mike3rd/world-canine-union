@@ -13,6 +13,10 @@ export default function RegistrationPage() {
     secondaryBreed: "",
     tertiaryBreed: "",
     dogStory: "",
+    shelterName: "",
+    shelterCity: "", 
+    shelterState: "",
+    shelterWebsite: "",
     ownerName: "",
     ownerEmail: "",
   });
@@ -237,6 +241,75 @@ export default function RegistrationPage() {
                 placeholder="Tell us about your dog's personality, how you met, or what makes them special..."
               />
             </div>
+
+            {/* Shelter Information */}
+<div className="pt-4 border-t border-border">
+  <h3 className="text-xl font-heading font-semibold text-primary mb-6">
+    Rescue/Shelter Information
+  </h3>
+  <p className="text-text-muted mb-4 text-sm">
+    Help us recognize the amazing organizations that save dogs! This information will be used to build our national shelter directory.
+  </p>
+  
+  <div className="space-y-4">
+    <div>
+      <label className="block text-sm font-body2 font-medium text-text mb-2">
+        Shelter/Rescue Name
+      </label>
+      <input
+        type="text"
+        name="shelterName"
+        value={formData.shelterName}
+        onChange={handleInputChange}
+        className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text"
+        placeholder="e.g., Happy Tails Rescue"
+      />
+    </div>
+    
+    <div className="grid md:grid-cols-2 gap-4">
+      <div>
+        <label className="block text-sm font-body2 font-medium text-text mb-2">
+          City
+        </label>
+        <input
+          type="text"
+          name="shelterCity"
+          value={formData.shelterCity}
+          onChange={handleInputChange}
+          className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text"
+          placeholder="City"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-body2 font-medium text-text mb-2">
+          State
+        </label>
+        <input
+          type="text"
+          name="shelterState"
+          value={formData.shelterState}
+          onChange={handleInputChange}
+          className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text"
+          placeholder="State"
+        />
+      </div>
+    </div>
+    
+    <div>
+      <label className="block text-sm font-body2 font-medium text-text mb-2">
+        Shelter Website (optional)
+      </label>
+      <input
+        type="url"
+        name="shelterWebsite"
+        value={formData.shelterWebsite}
+        onChange={handleInputChange}
+        className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text"
+        placeholder="https://www.example.org"
+      />
+    </div>
+  </div>
+</div>
 
             {/* Owner Information */}
             <div className="pt-4 border-t border-border">
