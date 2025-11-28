@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 // app/shelters/page.tsx
 export default function SheltersPage() {
   return (
