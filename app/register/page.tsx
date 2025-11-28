@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { supabase } from '@/lib/supabase';
 
 export default function RegistrationPage() {
   const [formData, setFormData] = useState({
@@ -45,11 +46,64 @@ export default function RegistrationPage() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Form submitted:", { ...formData, image: selectedImage });
-    // TODO: Connect to Supabase and Stripe
-  };
+ const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  
+  try {
+    // 1. Upload image to Supabase Storage
+    let photoUrl = '';
+    if (selectedImage) {
+      const fileExt = selectedImage.name.split('.').pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('wcudocs')
+        .upload(`dog-photos/${fileName}`, selectedImage);
+      
+      if (uploadError) throw uploadError;
+      
+      // Get public URL
+      const { data: publicUrlData } = supabase.storage
+        .from('wcudocs')
+        .getPublicUrl(`dog-photos/${fileName}`);
+      
+      photoUrl = publicUrlData.publicUrl;
+    }
+
+    // 2. Save registration data to database
+    const { data, error } = await supabase
+      .from('registrations')
+      .insert([
+        {
+          dog_name: formData.dogName,
+          owner_name: formData.ownerName,
+          owner_email: formData.ownerEmail,
+          birth_date: formData.birthDate || null,
+          location: '',
+          breed_description: `${formData.primaryBreed} ${formData.secondaryBreed ? `+ ${formData.secondaryBreed}` : ''} ${formData.tertiaryBreed ? `+ ${formData.tertiaryBreed}` : ''}`.trim(),
+          rescue_story: formData.dogStory,
+          photo_url: photoUrl,
+          shelter_name: formData.shelterName || null,
+          shelter_city: formData.shelterCity || null,
+          shelter_state: formData.shelterState || null,
+          shelter_website: formData.shelterWebsite || null,
+          status: 'pending'
+        }
+      ])
+      .select();
+
+    if (error) throw error;
+
+    console.log('Registration saved:', data);
+    alert('Registration submitted successfully! We will process your certificate soon.');
+    
+    // TODO: Clear form or redirect
+
+  } catch (error) {
+    console.error('Registration failed:', error);
+    alert('Registration failed. Please try again.');
+  }
+};
 
   return (
     <div className="min-h-screen bg-background py-12">
