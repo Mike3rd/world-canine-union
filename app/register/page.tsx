@@ -66,9 +66,23 @@ export default function RegistrationPage() {
         .from('registrations')
         .insert([
           {
-            dog_name: formData.dogName || "Test Dog",
-            owner_name: formData.ownerName || "Test Owner",
-            owner_email: formData.ownerEmail || "test@test.com",
+            dog_name: formData.dogName,
+            owner_name: formData.ownerName,
+            owner_email: formData.ownerEmail,
+            birth_date: formData.birthDate || null,
+            gotcha_date: formData.gotchaDay || null,
+            location: '',
+            breed_description: `${formData.primaryBreed} ${formData.secondaryBreed ? `+ ${formData.secondaryBreed}` : ''} ${formData.tertiaryBreed ? `+ ${formData.tertiaryBreed}` : ''}`.trim(),
+            rescue_story: formData.dogStory,
+            // ADD THE 4 NEW FIELDS:
+            dog_description: formData.dogDescription || null,
+            special_attributes: formData.specialAttributes || null,
+            favorite_activities: formData.favoriteActivities || null,
+            unique_traits: formData.uniqueTraits || null,
+            shelter_name: formData.shelterName || null,
+            shelter_city: formData.shelterCity || null,
+            shelter_state: formData.shelterState || null,
+            shelter_website: formData.shelterWebsite || null,
             status: 'pending'
           }
         ])
