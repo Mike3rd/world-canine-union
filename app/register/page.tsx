@@ -15,7 +15,7 @@ export default function RegistrationPage() {
     tertiaryBreed: "",
     dogStory: "",
     shelterName: "",
-    shelterCity: "", 
+    shelterCity: "",
     shelterState: "",
     shelterWebsite: "",
     ownerName: "",
@@ -46,64 +46,70 @@ export default function RegistrationPage() {
     }
   };
 
- const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  
-  try {
-    // 1. Upload image to Supabase Storage
-    let photoUrl = '';
-    if (selectedImage) {
-      const fileExt = selectedImage.name.split('.').pop();
-      const fileName = `${Math.random()}.${fileExt}`;
-      
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from('wcudocs')
-        .upload(`dog-photos/${fileName}`, selectedImage);
-      
-      if (uploadError) throw uploadError;
-      
-      // Get public URL
-      const { data: publicUrlData } = supabase.storage
-        .from('wcudocs')
-        .getPublicUrl(`dog-photos/${fileName}`);
-      
-      photoUrl = publicUrlData.publicUrl;
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      // Check if Supabase client is available
+      if (!supabase || typeof supabase.from !== 'function') {
+        alert('Registration system is temporarily unavailable. Please try again later.');
+        return;
+      }
+
+      // 1. Upload image to Supabase Storage
+      let photoUrl = '';
+      if (selectedImage) {
+        const fileExt = selectedImage.name.split('.').pop();
+        const fileName = `${Math.random()}.${fileExt}`;
+
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('wcudocs')
+          .upload(`dog-photos/${fileName}`, selectedImage);
+
+        if (uploadError) throw uploadError;
+
+        // Get public URL
+        const { data: publicUrlData } = supabase.storage
+          .from('wcudocs')
+          .getPublicUrl(`dog-photos/${fileName}`);
+
+        photoUrl = publicUrlData.publicUrl;
+      }
+
+      // 2. Save registration data to database
+      const { data, error } = await supabase
+        .from('registrations')
+        .insert([
+          {
+            dog_name: formData.dogName,
+            owner_name: formData.ownerName,
+            owner_email: formData.ownerEmail,
+            birth_date: formData.birthDate || null,
+            location: '',
+            breed_description: `${formData.primaryBreed} ${formData.secondaryBreed ? `+ ${formData.secondaryBreed}` : ''} ${formData.tertiaryBreed ? `+ ${formData.tertiaryBreed}` : ''}`.trim(),
+            rescue_story: formData.dogStory,
+            photo_url: photoUrl,
+            shelter_name: formData.shelterName || null,
+            shelter_city: formData.shelterCity || null,
+            shelter_state: formData.shelterState || null,
+            shelter_website: formData.shelterWebsite || null,
+            status: 'pending'
+          }
+        ])
+        .select();
+
+      if (error) throw error;
+
+      console.log('Registration saved:', data);
+      alert('Registration submitted successfully! We will process your certificate soon.');
+
+      // TODO: Clear form or redirect
+
+    } catch (error) {
+      console.error('Registration failed:', error);
+      alert('Registration failed. Please try again.');
     }
-
-    // 2. Save registration data to database
-    const { data, error } = await supabase
-      .from('registrations')
-      .insert([
-        {
-          dog_name: formData.dogName,
-          owner_name: formData.ownerName,
-          owner_email: formData.ownerEmail,
-          birth_date: formData.birthDate || null,
-          location: '',
-          breed_description: `${formData.primaryBreed} ${formData.secondaryBreed ? `+ ${formData.secondaryBreed}` : ''} ${formData.tertiaryBreed ? `+ ${formData.tertiaryBreed}` : ''}`.trim(),
-          rescue_story: formData.dogStory,
-          photo_url: photoUrl,
-          shelter_name: formData.shelterName || null,
-          shelter_city: formData.shelterCity || null,
-          shelter_state: formData.shelterState || null,
-          shelter_website: formData.shelterWebsite || null,
-          status: 'pending'
-        }
-      ])
-      .select();
-
-    if (error) throw error;
-
-    console.log('Registration saved:', data);
-    alert('Registration submitted successfully! We will process your certificate soon.');
-    
-    // TODO: Clear form or redirect
-
-  } catch (error) {
-    console.error('Registration failed:', error);
-    alert('Registration failed. Please try again.');
-  }
-};
+  };
 
   return (
     <div className="min-h-screen bg-background py-12">
@@ -297,73 +303,73 @@ export default function RegistrationPage() {
             </div>
 
             {/* Shelter Information */}
-<div className="pt-4 border-t border-border">
-  <h3 className="text-xl font-heading font-semibold text-primary mb-6">
-    Rescue/Shelter Information
-  </h3>
-  <p className="text-text-muted mb-4 text-sm">
-    Help us recognize the amazing organizations that save dogs! This information will be used to build our national shelter directory.
-  </p>
-  
-  <div className="space-y-4">
-    <div>
-      <label className="block text-sm font-body2 font-medium text-text mb-2">
-        Shelter/Rescue Name
-      </label>
-      <input
-        type="text"
-        name="shelterName"
-        value={formData.shelterName}
-        onChange={handleInputChange}
-        className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text"
-        placeholder="e.g., Happy Tails Rescue"
-      />
-    </div>
-    
-    <div className="grid md:grid-cols-2 gap-4">
-      <div>
-        <label className="block text-sm font-body2 font-medium text-text mb-2">
-          City
-        </label>
-        <input
-          type="text"
-          name="shelterCity"
-          value={formData.shelterCity}
-          onChange={handleInputChange}
-          className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text"
-          placeholder="City"
-        />
-      </div>
-      <div>
-        <label className="block text-sm font-body2 font-medium text-text mb-2">
-          State
-        </label>
-        <input
-          type="text"
-          name="shelterState"
-          value={formData.shelterState}
-          onChange={handleInputChange}
-          className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text"
-          placeholder="State"
-        />
-      </div>
-    </div>
-    
-    <div>
-      <label className="block text-sm font-body2 font-medium text-text mb-2">
-        Shelter Website (optional)
-      </label>
-      <input
-        type="url"
-        name="shelterWebsite"
-        value={formData.shelterWebsite}
-        onChange={handleInputChange}
-        className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text"
-        placeholder="https://www.example.org"
-      />
-    </div>
-  </div>
-</div>
+            <div className="pt-4 border-t border-border">
+              <h3 className="text-xl font-heading font-semibold text-primary mb-6">
+                Rescue/Shelter Information
+              </h3>
+              <p className="text-text-muted mb-4 text-sm">
+                Help us recognize the amazing organizations that save dogs! This information will be used to build our national shelter directory.
+              </p>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-body2 font-medium text-text mb-2">
+                    Shelter/Rescue Name
+                  </label>
+                  <input
+                    type="text"
+                    name="shelterName"
+                    value={formData.shelterName}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text"
+                    placeholder="e.g., Happy Tails Rescue"
+                  />
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-body2 font-medium text-text mb-2">
+                      City
+                    </label>
+                    <input
+                      type="text"
+                      name="shelterCity"
+                      value={formData.shelterCity}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text"
+                      placeholder="City"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-body2 font-medium text-text mb-2">
+                      State
+                    </label>
+                    <input
+                      type="text"
+                      name="shelterState"
+                      value={formData.shelterState}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text"
+                      placeholder="State"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-body2 font-medium text-text mb-2">
+                    Shelter Website (optional)
+                  </label>
+                  <input
+                    type="url"
+                    name="shelterWebsite"
+                    value={formData.shelterWebsite}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text"
+                    placeholder="https://www.example.org"
+                  />
+                </div>
+              </div>
+            </div>
 
             {/* Owner Information */}
             <div className="pt-4 border-t border-border">

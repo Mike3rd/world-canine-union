@@ -1,25 +1,41 @@
 // src/lib/supabase.ts
 import { createClient } from "@supabase/supabase-js";
 
-// Safe environment variable access
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-// Check if we're in a browser environment where env vars are available
-const isBrowser = typeof window !== "undefined";
+// Create a mock client for development when env vars are missing
+const createSupabaseClient = () => {
+  if (supabaseUrl && supabaseAnonKey) {
+    return createClient(supabaseUrl, supabaseAnonKey);
+  }
 
-if (!supabaseUrl && isBrowser) {
-  console.error("Supabase URL is missing. Check your environment variables.");
-}
-
-if (!supabaseAnonKey && isBrowser) {
-  console.error(
-    "Supabase Anon Key is missing. Check your environment variables."
+  console.warn(
+    "Supabase environment variables are missing. Using mock client."
   );
-}
 
-// Only create the client if we have the required values
-export const supabase =
-  supabaseUrl && supabaseAnonKey
-    ? createClient(supabaseUrl, supabaseAnonKey)
-    : ({} as any); // Fallback for build time
+  // Return a mock client that won't crash your app
+  return {
+    from: () => ({
+      insert: () => ({
+        select: () =>
+          Promise.resolve({
+            data: null,
+            error: new Error("Supabase not configured"),
+          }),
+      }),
+    }),
+    storage: {
+      from: () => ({
+        upload: () =>
+          Promise.resolve({
+            data: null,
+            error: new Error("Supabase not configured"),
+          }),
+        getPublicUrl: () => ({ data: { publicUrl: "" } }),
+      }),
+    },
+  } as any;
+};
+
+export const supabase = createSupabaseClient();
