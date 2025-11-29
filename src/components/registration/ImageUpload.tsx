@@ -2,71 +2,52 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import ImageCropModal from "./ImageCropModal";
 
 interface ImageUploadProps {
     selectedImage: File | null;
     onImageChange: (file: File | null) => void;
 }
 
-const optimizeImageForWeb = async (file: File): Promise<File> => {
-    return new Promise((resolve) => {
-        const img = new window.Image(); // Add 'window.' to fix the constructor
-        img.onload = () => {
-            const canvas = document.createElement('canvas');
-            const maxDimension = 800;
-
-            let { width, height } = img;
-
-            if (width > height) {
-                if (width > maxDimension) {
-                    height = (height * maxDimension) / width;
-                    width = maxDimension;
-                }
-            } else {
-                if (height > maxDimension) {
-                    width = (width * maxDimension) / height;
-                    height = maxDimension;
-                }
-            }
-
-            canvas.width = width;
-            canvas.height = height;
-
-            const ctx = canvas.getContext('2d');
-            ctx?.drawImage(img, 0, 0, width, height);
-
-            canvas.toBlob((blob) => {
-                if (blob) {
-                    const optimizedFile = new File([blob], file.name.replace(/\.[^/.]+$/, ".webp"), {
-                        type: 'image/webp',
-                        lastModified: Date.now(),
-                    });
-                    resolve(optimizedFile);
-                } else {
-                    resolve(file);
-                }
-            }, 'image/webp', 0.8);
-        };
-        img.src = URL.createObjectURL(file);
-    });
-};
-
 export default function ImageUpload({ selectedImage, onImageChange }: ImageUploadProps) {
     const [imagePreview, setImagePreview] = useState<string>("");
+    const [showCropModal, setShowCropModal] = useState(false);
+    const [originalImage, setOriginalImage] = useState<string>("");
 
     const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            const optimizedFile = await optimizeImageForWeb(file);
-            onImageChange(optimizedFile);
-            const previewUrl = URL.createObjectURL(optimizedFile);
-            setImagePreview(previewUrl);
+            const imageUrl = URL.createObjectURL(file);
+            setOriginalImage(imageUrl);
+            setShowCropModal(true);
+        }
+    };
+
+    const handleCropComplete = (croppedImage: File) => {
+        onImageChange(croppedImage);
+        const previewUrl = URL.createObjectURL(croppedImage);
+        setImagePreview(previewUrl);
+        setShowCropModal(false);
+        // Clean up original image URL
+        if (originalImage) {
+            URL.revokeObjectURL(originalImage);
+        }
+    };
+
+    const handleCloseCrop = () => {
+        setShowCropModal(false);
+        // Clean up original image URL
+        if (originalImage) {
+            URL.revokeObjectURL(originalImage);
         }
     };
 
     const handleRemoveImage = () => {
         onImageChange(null);
         setImagePreview("");
+        if (imagePreview) {
+            URL.revokeObjectURL(imagePreview);
+        }
     };
 
     return (
@@ -81,9 +62,9 @@ export default function ImageUpload({ selectedImage, onImageChange }: ImageUploa
                             src={imagePreview}
                             alt="Dog preview"
                             width={192}
-                            height={192}
-                            className="w-48 h-48 object-contain rounded-2xl border-2 border-border"
-                            unoptimized // Add this for blob URLs
+                            height={256} // 3:4 aspect ratio
+                            className="w-48 h-64 object-cover rounded-2xl border-2 border-border"
+                            unoptimized
                         />
                         <button
                             type="button"
@@ -94,7 +75,7 @@ export default function ImageUpload({ selectedImage, onImageChange }: ImageUploa
                         </button>
                     </div>
                 ) : (
-                    <div className="w-48 h-48 border-2 border-dashed border-border rounded-2xl flex items-center justify-center bg-background">
+                    <div className="w-48 h-64 border-2 border-dashed border-border rounded-2xl flex items-center justify-center bg-background">
                         <span className="text-text-muted text-sm text-center px-4">
                             Upload your dog&apos;s photo
                         </span>
@@ -111,9 +92,18 @@ export default function ImageUpload({ selectedImage, onImageChange }: ImageUploa
                     />
                 </label>
                 <p className="text-xs text-text-muted text-center">
-                    Recommended: Clear, well-lit photo showing your dog&apos;s face
+                    Recommended: Clear, well-lit photo showing your dog&apos;s face.
+                    You&apos;ll be able to crop it to fit the ID card format.
                 </p>
             </div>
+
+            {showCropModal && originalImage && (
+                <ImageCropModal
+                    image={originalImage}
+                    onCropComplete={handleCropComplete}
+                    onClose={handleCloseCrop}
+                />
+            )}
         </div>
     );
 }
