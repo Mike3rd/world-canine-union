@@ -38,8 +38,8 @@ export default function ValuePropsSection() {
               Exclusive Benefits
             </h3>
             <p className="text-text-muted font-body leading-relaxed">
-              Access to online shows, member events, and partner discounts for
-              registered dogs.
+              Access to online dog shows, member events, and partner discounts for
+              WCU registered dogs.
             </p>
           </div>
         </div>

@@ -30,8 +30,29 @@ export async function submitRegistration(
 ) {
   try {
     // 1. Create the registration
+    // Check for existing registration with same email and dog name
+    const { data: existingRegistration, error: checkError } = await supabase
+      .from("registrations")
+      .select("id")
+      .eq("owner_email", formData.ownerEmail)
+      .eq("dog_name", formData.dogName)
+      .maybeSingle();
+
+    if (checkError) {
+      console.error("Error checking for existing registration:", checkError);
+      throw checkError;
+    }
+
+    if (existingRegistration) {
+      return {
+        success: false,
+        error:
+          "A registration already exists for this email address and dog name. Each dog can only be registered once per owner.",
+      };
+    }
     const { data: registrationData, error: registrationError } = await supabase
       .from("registrations")
+
       .insert([
         {
           dog_name: formData.dogName,
