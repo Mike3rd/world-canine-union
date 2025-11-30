@@ -41,9 +41,26 @@ const getCroppedImg = async (
         throw new Error('No 2d context');
     }
 
-    canvas.width = pixelCrop.width;
-    canvas.height = pixelCrop.height;
+    // RESIZE to max 500px for smaller files
+    const maxDimension = 550; // REDUCED FROM 600
+    let { width, height } = pixelCrop;
 
+    if (width > height) {
+        if (width > maxDimension) {
+            height = (height * maxDimension) / width;
+            width = maxDimension;
+        }
+    } else {
+        if (height > maxDimension) {
+            width = (width * maxDimension) / height;
+            height = maxDimension;
+        }
+    }
+
+    canvas.width = width;
+    canvas.height = height;
+
+    ctx.imageSmoothingQuality = 'high';
     ctx.drawImage(
         image,
         pixelCrop.x,
@@ -52,8 +69,8 @@ const getCroppedImg = async (
         pixelCrop.height,
         0,
         0,
-        pixelCrop.width,
-        pixelCrop.height
+        width,
+        height
     );
 
     return new Promise((resolve) => {
@@ -64,7 +81,7 @@ const getCroppedImg = async (
                 });
                 resolve(file);
             }
-        }, 'image/webp');
+        }, 'image/webp', 0.6); // REDUCED FROM 0.6 to 0.5
     });
 };
 
@@ -72,6 +89,7 @@ export default function ImageCropModal({ image, onCropComplete, onClose }: Image
     const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
     const [zoom, setZoom] = useState(1);
     const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
+    const [isSaving, setIsSaving] = useState(false);
 
     const onCropChange = (crop: Point) => {
         setCrop(crop);
@@ -136,16 +154,25 @@ export default function ImageCropModal({ image, onCropComplete, onClose }: Image
                     <button
                         type="button"
                         onClick={onClose}
-                        className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                        disabled={isSaving}
+                        className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50 cursor-pointer" // ADD cursor-pointer
                     >
                         Cancel
                     </button>
                     <button
                         type="button"
                         onClick={handleSaveCrop}
-                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                        disabled={isSaving || !croppedAreaPixels}
+                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:bg-blue-800 disabled:bg-blue-300 disabled:cursor-not-allowed transition-all duration-200 flex items-center gap-2 shadow-md hover:shadow-lg cursor-pointer" // ADD cursor-pointer HERE
                     >
-                        Save Cropped Photo
+                        {isSaving ? (
+                            <>
+                                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                Saving...
+                            </>
+                        ) : (
+                            'Save Cropped Photo'
+                        )}
                     </button>
                 </div>
             </div>

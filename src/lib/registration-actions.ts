@@ -1,6 +1,7 @@
 "use server";
 
 import { supabase } from "@/lib/supabase";
+import { generateCertificate } from "@/lib/pdf-generator";
 
 interface FormData {
   dogName: string;
@@ -97,7 +98,33 @@ export async function submitRegistration(
 
     const registration = registrationData[0];
     const registrationNumber = registration.registration_number;
+    /*
+    // ADD PDF GENERATION HERE - right after getting registration number
+    
+    try {
+      const pdfBytes = await generateCertificate(registration);
 
+      // Convert to base64 for storage
+      const pdfBase64 = Buffer.from(pdfBytes).toString("base64");
+
+      // Store PDF in database
+      const { error: pdfUpdateError } = await supabase
+        .from("registrations")
+        .update({
+          pdf_certificate: pdfBase64,
+          certificate_generated_at: new Date().toISOString(),
+        })
+        .eq("id", registration.id);
+
+      if (pdfUpdateError) {
+        console.error("Failed to save PDF:", pdfUpdateError);
+        // Don't throw - registration succeeded, just PDF save failed
+      }
+    } catch (pdfError) {
+      console.error("PDF generation failed:", pdfError);
+      // Don't throw - registration succeeded, just PDF failed
+    }
+*/
     // Upload image if provided
     if (selectedImage) {
       const fileExt = selectedImage.name.split(".").pop();

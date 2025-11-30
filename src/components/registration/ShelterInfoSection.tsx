@@ -7,6 +7,7 @@ interface ShelterInfoSectionProps {
         rescueLocation: string;
     };
     onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
+    // REMOVE fieldErrors - not used anymore
 }
 
 export default function ShelterInfoSection({ formData, onInputChange }: ShelterInfoSectionProps) {
@@ -20,6 +21,9 @@ export default function ShelterInfoSection({ formData, onInputChange }: ShelterI
             </p>
 
             <div className="space-y-4">
+
+
+
                 <div>
                     <label className="block text-sm font-body2 font-medium text-text mb-2">
                         Shelter/Rescue Name
@@ -68,31 +72,21 @@ export default function ShelterInfoSection({ formData, onInputChange }: ShelterI
                         Shelter Website (optional)
                     </label>
                     <input
-                        type="url"
+                        type="text"
                         name="shelterWebsite"
                         value={formData.shelterWebsite}
                         onChange={onInputChange}
                         className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text"
-                        placeholder="https://www.example.org"
+                        placeholder="example.com or https://example.org"
                     />
+                    {formData.shelterWebsite && !formData.shelterWebsite.includes('.') && (
+                        <p className="text-yellow-500 text-xs mt-1">
+                            Tip: Include a domain like .com, .org, etc.
+                        </p>
+                    )}
                 </div>
 
-                <div>
-                    <label className="block text-sm font-body2 font-medium text-text mb-2">
-                        Where was your dog found/rescued?
-                    </label>
-                    <input
-                        type="text"
-                        name="rescueLocation"
-                        value={formData.rescueLocation}
-                        onChange={onInputChange}
-                        className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text"
-                        placeholder="e.g., Camden, NJ or Los Angeles County Animal Control"
-                    />
-                    <p className="text-xs text-text-muted mt-1">
-                        City, state, or specific location where your dog was rescued
-                    </p>
-                </div>
+
             </div>
         </div>
     );

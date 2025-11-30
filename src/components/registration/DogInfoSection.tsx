@@ -143,15 +143,22 @@ export default function DogInfoSection({ formData, onInputChange, fieldErrors }:
             <div>
                 <label className="block text-sm font-body2 font-medium text-text mb-2">
                     Your Dog&apos;s Story
+                    <span className="text-xs text-text-muted ml-2">
+                        {formData.dogStory.length}/500
+                    </span>
                 </label>
                 <textarea
                     name="dogStory"
                     rows={4}
                     value={formData.dogStory}
                     onChange={onInputChange}
-                    className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text"
+                    className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text ${fieldErrors.dogStory ? 'border-red-500' : 'border-border'
+                        }`}
                     placeholder="Tell us about your dog's personality, how you met, or what makes them special..."
                 />
+                {fieldErrors.dogStory && (
+                    <p className="text-red-500 text-xs mt-1">{fieldErrors.dogStory}</p>
+                )}
             </div>
 
             {/* Physical Description & Markings */}

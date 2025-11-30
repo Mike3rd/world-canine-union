@@ -25,6 +25,11 @@ export default function ImageUpload({ selectedImage, onImageChange, onCropReques
     const handleRemoveImage = () => {
         onImageChange(null);
         setImagePreview("");
+        // Clear file input
+        const fileInputs = document.querySelectorAll('input[type="file"]');
+        fileInputs.forEach(input => {
+            (input as HTMLInputElement).value = '';
+        });
         if (imagePreview) {
             URL.revokeObjectURL(imagePreview);
         }

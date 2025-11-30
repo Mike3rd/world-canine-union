@@ -60,6 +60,12 @@ export default function RegistrationForm() {
 
     const handleCloseCrop = () => {
         setShowCropModal(false);
+        // Clear the file input so user can select same file again
+        const fileInputs = document.querySelectorAll('input[type="file"]');
+        fileInputs.forEach(input => {
+            (input as HTMLInputElement).value = '';
+        });
+        // ADD URL cleanup to prevent memory leaks
         if (cropImage) {
             URL.revokeObjectURL(cropImage);
         }
@@ -76,14 +82,44 @@ export default function RegistrationForm() {
         e.preventDefault();
         setFieldErrors({});
 
-        // Field validation
+
+        // DEBUG: Check file size
+        if (selectedImage) {
+            console.log('📁 File being submitted:', {
+                name: selectedImage.name,
+                size: selectedImage.size,
+                sizeMB: (selectedImage.size / 1024 / 1024).toFixed(2) + ' MB',
+                type: selectedImage.type
+            });
+        }
+
+        // AUTO-FIX WEBSITE URL
+        const submissionData = { ...formData };
+        if (submissionData.shelterWebsite && !submissionData.shelterWebsite.startsWith('http')) {
+            submissionData.shelterWebsite = `https://${submissionData.shelterWebsite}`;
+        }
+
+        // Combined validation
         const errors: Record<string, string> = {};
+
+        // Required field validation
         if (!formData.dogName) errors.dogName = "Dog name is required";
         if (!formData.gender) errors.gender = "Gender is required";
         if (!formData.gotchaDay) errors.gotchaDay = "Gotcha day is required";
         if (!formData.primaryBreed) errors.primaryBreed = "Primary breed is required";
         if (!formData.ownerName) errors.ownerName = "Owner name is required";
         if (!formData.ownerEmail) errors.ownerEmail = "Email is required";
+        // Email format validation
+        if (formData.ownerEmail && !isValidEmail(formData.ownerEmail)) {
+            errors.ownerEmail = "Please enter a valid email address";
+        }
+
+        // Character limit validation
+        if (formData.dogStory.length > 500) errors.dogStory = "Dog's story must be 500 characters or less";
+        if (formData.dogDescription.length > 300) errors.dogDescription = "Physical description must be 300 characters or less";
+        if (formData.specialAttributes.length > 200) errors.specialAttributes = "Special qualities must be 200 characters or less";
+        if (formData.favoriteActivities.length > 100) errors.favoriteActivities = "Favorite activities must be 100 characters or less";
+        if (formData.uniqueTraits.length > 200) errors.uniqueTraits = "Unique traits must be 200 characters or less";
 
         if (Object.keys(errors).length > 0) {
             setFieldErrors(errors);
@@ -98,7 +134,7 @@ export default function RegistrationForm() {
 
         setIsSubmitting(true);
         try {
-            const result = await submitRegistration(formData, selectedImage);
+            const result = await submitRegistration(submissionData, selectedImage);
 
             if (result.success) {
                 alert(result.message);
@@ -119,6 +155,12 @@ export default function RegistrationForm() {
         } finally {
             setIsSubmitting(false);
         }
+    };
+
+    // Add email validation helper function
+    const isValidEmail = (email: string): boolean => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
     };
 
     return (
@@ -143,6 +185,7 @@ export default function RegistrationForm() {
                 <ShelterInfoSection
                     formData={formData}
                     onInputChange={handleInputChange}
+
                 />
 
                 <OwnerInfoSection
