@@ -29,8 +29,7 @@ export async function submitRegistration(
   selectedImage: File | null
 ) {
   try {
-    // 1. Create the registration
-    // Check for existing registration with same email and dog name
+    // Check for existing registration
     const { data: existingRegistration, error: checkError } = await supabase
       .from("registrations")
       .select("id")
@@ -39,20 +38,29 @@ export async function submitRegistration(
       .maybeSingle();
 
     if (checkError) {
-      console.error("Error checking for existing registration:", checkError);
-      throw checkError;
+      // Handle multiple rows as duplicate
+      if (checkError.message.includes("multiple")) {
+        return {
+          success: false,
+          error: "A registration already exists for this email and dog name.",
+        };
+      }
+      return {
+        success: false,
+        error: "System error checking registration. Please try again.",
+      };
     }
 
     if (existingRegistration) {
       return {
         success: false,
-        error:
-          "A registration already exists for this email address and dog name. Each dog can only be registered once per owner.",
+        error: "A registration already exists for this email and dog name.",
       };
     }
+
+    // Create registration
     const { data: registrationData, error: registrationError } = await supabase
       .from("registrations")
-
       .insert([
         {
           dog_name: formData.dogName,
@@ -81,48 +89,52 @@ export async function submitRegistration(
       .select();
 
     if (registrationError) {
-      console.error("Database insert error:", registrationError);
-      throw registrationError;
+      return {
+        success: false,
+        error: "Registration failed. Please try again.",
+      };
     }
 
     const registration = registrationData[0];
     const registrationNumber = registration.registration_number;
 
-    // 2. Upload image if exists
-    let photoUrl = "";
+    // Upload image if provided
     if (selectedImage) {
       const fileExt = selectedImage.name.split(".").pop();
       const fileName = `${registrationNumber}-photo.${fileExt}`;
 
-      const { data: uploadData, error: uploadError } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from("wcu-dogs")
         .upload(`dog-photos/${fileName}`, selectedImage);
 
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        return {
+          success: false,
+          error: "Failed to upload photo. Registration created without image.",
+        };
+      }
 
       const { data: publicUrlData } = supabase.storage
         .from("wcu-dogs")
         .getPublicUrl(`dog-photos/${fileName}`);
 
-      photoUrl = publicUrlData.publicUrl;
-
-      // 3. Update registration with photo URL
       const { error: updateError } = await supabase
         .from("registrations")
-        .update({ photo_url: photoUrl })
+        .update({ photo_url: publicUrlData.publicUrl })
         .eq("id", registration.id);
 
-      if (updateError) throw updateError;
+      if (updateError) {
+        // Non-critical error - registration succeeded but photo link failed
+        console.error("Failed to update photo URL:", updateError);
+      }
     }
 
-    // Return success data instead of using alert
     return {
       success: true,
       registrationNumber,
       message: `🎉 Registration Successful! Your official WCU number: ${registrationNumber}`,
     };
   } catch (error) {
-    console.error("Registration failed:", error);
     return {
       success: false,
       error: "Registration failed. Please try again.",

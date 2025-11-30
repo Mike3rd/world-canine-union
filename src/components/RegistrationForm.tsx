@@ -7,6 +7,7 @@ import ShelterInfoSection from "./registration/ShelterInfoSection";
 import OwnerInfoSection from "./registration/OwnerInfoSection";
 import SubmitButton from "./registration/SubmitButton";
 import { submitRegistration } from "../lib/registration-actions";
+import ImageCropModal from "./registration/ImageCropModal";
 
 interface FormData {
     dogName: string;
@@ -40,6 +41,29 @@ export default function RegistrationForm() {
     });
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [showCropModal, setShowCropModal] = useState(false);
+    const [cropImage, setCropImage] = useState<string>("");
+    const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+    const handleCropRequest = (imageUrl: string) => {
+        setCropImage(imageUrl);
+        setShowCropModal(true);
+    };
+
+    const handleCropComplete = (croppedImage: File) => {
+        setSelectedImage(croppedImage);
+        setShowCropModal(false);
+        if (cropImage) {
+            URL.revokeObjectURL(cropImage);
+        }
+    };
+
+    const handleCloseCrop = () => {
+        setShowCropModal(false);
+        if (cropImage) {
+            URL.revokeObjectURL(cropImage);
+        }
+    };
 
     const handleInputChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -50,13 +74,34 @@ export default function RegistrationForm() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setFieldErrors({});
+
+        // Field validation
+        const errors: Record<string, string> = {};
+        if (!formData.dogName) errors.dogName = "Dog name is required";
+        if (!formData.gender) errors.gender = "Gender is required";
+        if (!formData.gotchaDay) errors.gotchaDay = "Gotcha day is required";
+        if (!formData.primaryBreed) errors.primaryBreed = "Primary breed is required";
+        if (!formData.ownerName) errors.ownerName = "Owner name is required";
+        if (!formData.ownerEmail) errors.ownerEmail = "Email is required";
+
+        if (Object.keys(errors).length > 0) {
+            setFieldErrors(errors);
+            alert("Please fix the highlighted fields");
+            return;
+        }
+
+        if (!selectedImage) {
+            alert('Please upload a photo of your dog.');
+            return;
+        }
+
         setIsSubmitting(true);
         try {
             const result = await submitRegistration(formData, selectedImage);
 
             if (result.success) {
                 alert(result.message);
-                // Reset form on success
                 setFormData({
                     dogName: "", gender: "", birthDate: "", gotchaDay: "",
                     primaryBreed: "", secondaryBreed: "", tertiaryBreed: "",
@@ -65,13 +110,11 @@ export default function RegistrationForm() {
                     rescueLocation: "", ownerName: "", ownerEmail: "",
                 });
                 setSelectedImage(null);
-                // Also clear the image preview by refreshing the page or using a ref
-                window.location.reload(); // Simple fix - refreshes the form completely
+                window.location.reload();
             } else {
                 alert(result.error);
             }
         } catch (error) {
-            console.error('Registration failed:', error);
             alert('Registration failed. Please try again.');
         } finally {
             setIsSubmitting(false);
@@ -84,15 +127,17 @@ export default function RegistrationForm() {
                 Dog Information
             </h2>
 
-            <form onSubmit={handleSubmit} className="space-y-8">
+            <form onSubmit={handleSubmit} className="space-y-8" noValidate>
                 <ImageUpload
                     selectedImage={selectedImage}
                     onImageChange={setSelectedImage}
+                    onCropRequest={handleCropRequest}
                 />
 
                 <DogInfoSection
                     formData={formData}
                     onInputChange={handleInputChange}
+                    fieldErrors={fieldErrors}
                 />
 
                 <ShelterInfoSection
@@ -103,10 +148,19 @@ export default function RegistrationForm() {
                 <OwnerInfoSection
                     formData={formData}
                     onInputChange={handleInputChange}
+                    fieldErrors={fieldErrors}
                 />
 
                 <SubmitButton isSubmitting={isSubmitting} />
             </form>
+
+            {showCropModal && (
+                <ImageCropModal
+                    image={cropImage}
+                    onCropComplete={handleCropComplete}
+                    onClose={handleCloseCrop}
+                />
+            )}
         </div>
     );
 }

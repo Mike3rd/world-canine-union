@@ -134,12 +134,14 @@ export default function ImageCropModal({ image, onCropComplete, onClose }: Image
 
                 <div className="mt-6 flex gap-3 justify-end">
                     <button
+                        type="button"
                         onClick={onClose}
                         className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
                     >
                         Cancel
                     </button>
                     <button
+                        type="button"
                         onClick={handleSaveCrop}
                         className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                     >

@@ -14,9 +14,10 @@ interface DogInfoSectionProps {
         dogStory: string;
     };
     onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
+    fieldErrors: Record<string, string>;
 }
 
-export default function DogInfoSection({ formData, onInputChange }: DogInfoSectionProps) {
+export default function DogInfoSection({ formData, onInputChange, fieldErrors }: DogInfoSectionProps) {
     return (
         <>
             {/* Dog Basic Info */}
@@ -28,12 +29,15 @@ export default function DogInfoSection({ formData, onInputChange }: DogInfoSecti
                     <input
                         type="text"
                         name="dogName"
-                        required
                         value={formData.dogName}
                         onChange={onInputChange}
-                        className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text"
+                        className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text ${fieldErrors.dogName ? 'border-red-500' : 'border-border'
+                            }`}
                         placeholder="Enter your dog's name"
                     />
+                    {fieldErrors.dogName && (
+                        <p className="text-red-500 text-xs mt-1">{fieldErrors.dogName}</p>
+                    )}
                 </div>
                 <div>
                     <label className="block text-sm font-body2 font-medium text-text mb-2">
@@ -41,15 +45,18 @@ export default function DogInfoSection({ formData, onInputChange }: DogInfoSecti
                     </label>
                     <select
                         name="gender"
-                        required
                         value={formData.gender}
                         onChange={onInputChange}
-                        className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text"
+                        className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text ${fieldErrors.gender ? 'border-red-500' : 'border-border'
+                            }`}
                     >
                         <option value="">Select gender</option>
                         <option value="male">Male</option>
                         <option value="female">Female</option>
                     </select>
+                    {fieldErrors.gender && (
+                        <p className="text-red-500 text-xs mt-1">{fieldErrors.gender}</p>
+                    )}
                 </div>
             </div>
 
@@ -78,8 +85,12 @@ export default function DogInfoSection({ formData, onInputChange }: DogInfoSecti
                         required
                         value={formData.gotchaDay}
                         onChange={onInputChange}
-                        className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text"
+                        className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text ${fieldErrors.gotchaDay ? 'border-red-500' : 'border-border'
+                            }`}
                     />
+                    {fieldErrors.gotchaDay && (
+                        <p className="text-red-500 text-xs mt-1">{fieldErrors.gotchaDay}</p>
+                    )}
                     <p className="text-xs text-text-muted mt-1">
                         When your dog joined your family
                     </p>
@@ -98,7 +109,8 @@ export default function DogInfoSection({ formData, onInputChange }: DogInfoSecti
                         required
                         value={formData.primaryBreed}
                         onChange={onInputChange}
-                        className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text"
+                        className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text ${fieldErrors.primaryBreed ? 'border-red-500' : 'border-border'
+                            }`}
                         placeholder="Primary breed (e.g., Labrador)"
                     />
                     <input
@@ -118,6 +130,9 @@ export default function DogInfoSection({ formData, onInputChange }: DogInfoSecti
                         placeholder="Tertiary breed (optional)"
                     />
                 </div>
+                {fieldErrors.primaryBreed && (
+                    <p className="text-red-500 text-xs mt-1">{fieldErrors.primaryBreed}</p>
+                )}
                 <p className="text-xs text-text-muted mt-2">
                     Your best guess is perfect! This helps us celebrate your
                     dog&apos;s unique heritage.

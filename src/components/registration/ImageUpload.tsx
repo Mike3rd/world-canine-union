@@ -1,44 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react"; // ADD useEffect import
 import Image from "next/image";
-import ImageCropModal from "./ImageCropModal";
 
 interface ImageUploadProps {
     selectedImage: File | null;
     onImageChange: (file: File | null) => void;
+    onCropRequest: (imageUrl: string) => void;
 }
 
-export default function ImageUpload({ selectedImage, onImageChange }: ImageUploadProps) {
+export default function ImageUpload({ selectedImage, onImageChange, onCropRequest }: ImageUploadProps) {
     const [imagePreview, setImagePreview] = useState<string>("");
-    const [showCropModal, setShowCropModal] = useState(false);
-    const [originalImage, setOriginalImage] = useState<string>("");
 
     const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
         const file = e.target.files?.[0];
         if (file) {
             const imageUrl = URL.createObjectURL(file);
-            setOriginalImage(imageUrl);
-            setShowCropModal(true);
-        }
-    };
-
-    const handleCropComplete = (croppedImage: File) => {
-        onImageChange(croppedImage);
-        const previewUrl = URL.createObjectURL(croppedImage);
-        setImagePreview(previewUrl);
-        setShowCropModal(false);
-        // Clean up original image URL
-        if (originalImage) {
-            URL.revokeObjectURL(originalImage);
-        }
-    };
-
-    const handleCloseCrop = () => {
-        setShowCropModal(false);
-        // Clean up original image URL
-        if (originalImage) {
-            URL.revokeObjectURL(originalImage);
+            onCropRequest(imageUrl);
         }
     };
 
@@ -49,6 +29,21 @@ export default function ImageUpload({ selectedImage, onImageChange }: ImageUploa
             URL.revokeObjectURL(imagePreview);
         }
     };
+
+    // FIX THIS - change useState to useEffect
+    useEffect(() => {
+        if (selectedImage) {
+            const previewUrl = URL.createObjectURL(selectedImage);
+            setImagePreview(previewUrl);
+
+            // Cleanup function
+            return () => {
+                URL.revokeObjectURL(previewUrl);
+            };
+        } else {
+            setImagePreview("");
+        }
+    }, [selectedImage]);
 
     return (
         <div>
@@ -62,7 +57,7 @@ export default function ImageUpload({ selectedImage, onImageChange }: ImageUploa
                             src={imagePreview}
                             alt="Dog preview"
                             width={192}
-                            height={256} // 3:4 aspect ratio
+                            height={256}
                             className="w-48 h-64 object-cover rounded-2xl border-2 border-border"
                             unoptimized
                         />
@@ -88,7 +83,7 @@ export default function ImageUpload({ selectedImage, onImageChange }: ImageUploa
                         accept="image/*"
                         onChange={handleImageChange}
                         className="hidden"
-                        required
+                        formNoValidate
                     />
                 </label>
                 <p className="text-xs text-text-muted text-center">
@@ -96,14 +91,6 @@ export default function ImageUpload({ selectedImage, onImageChange }: ImageUploa
                     You&apos;ll be able to crop it to fit the ID card format.
                 </p>
             </div>
-
-            {showCropModal && originalImage && (
-                <ImageCropModal
-                    image={originalImage}
-                    onCropComplete={handleCropComplete}
-                    onClose={handleCloseCrop}
-                />
-            )}
         </div>
     );
 }
