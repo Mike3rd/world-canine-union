@@ -98,9 +98,9 @@ export async function submitRegistration(
 
     const registration = registrationData[0];
     const registrationNumber = registration.registration_number;
-    /*
+
     // ADD PDF GENERATION HERE - right after getting registration number
-    
+
     try {
       const pdfBytes = await generateCertificate(registration);
 
@@ -124,7 +124,7 @@ export async function submitRegistration(
       console.error("PDF generation failed:", pdfError);
       // Don't throw - registration succeeded, just PDF failed
     }
-*/
+
     // Upload image if provided
     if (selectedImage) {
       const fileExt = selectedImage.name.split(".").pop();
