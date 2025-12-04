@@ -278,7 +278,7 @@ async function generateCertificatePDF(dogData: any) {
     ];
 
     // Custom spacing: [Breed, Color, Markings]
-    const fieldSpacings = [0, 75, 120];
+    const fieldSpacings = [0, 67, 120];
 
     group2Fields.forEach((field, index) => {
       const fieldY = group2Y - fieldSpacings[index];

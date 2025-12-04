@@ -7,6 +7,7 @@ interface DogInfoSectionProps {
         primaryBreed: string;
         secondaryBreed: string;
         tertiaryBreed: string;
+        dogColor: string;
         dogDescription: string;
         specialAttributes: string;
         favoriteActivities: string;
@@ -139,6 +140,42 @@ export default function DogInfoSection({ formData, onInputChange, fieldErrors }:
                 </p>
             </div>
 
+            {/* Color */}
+            <div>
+                <label className="block text-sm font-body2 font-medium text-text mb-2">
+                    Dog's Color(s)
+                </label>
+                <input
+                    type="text"
+                    name="dogColor"
+                    value={formData.dogColor}
+                    onChange={onInputChange}
+                    className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text"
+                    placeholder="Describe your dog's colors (e.g., black and tan, brindle, white with brown spots)"
+                />
+                <p className="text-xs text-text-muted mt-1">
+                    Primary colors and patterns
+                </p>
+            </div>
+
+            {/* Physical Description & Markings */}
+            <div>
+                <label className="block text-sm font-body2 font-medium text-text mb-2">
+                    Physical Description & Markings
+                </label>
+                <textarea
+                    name="dogDescription"
+                    rows={3}
+                    value={formData.dogDescription}
+                    onChange={onInputChange}
+                    className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text"
+                    placeholder="Distinctive markings, scars, eye color, tail type, ear shape, size, weight..."
+                />
+                <p className="text-xs text-text-muted mt-1">
+                    Help us create a complete visual record of your unique companion
+                </p>
+            </div>
+
             {/* Dog's Story */}
             <div>
                 <label className="block text-sm font-body2 font-medium text-text mb-2">
@@ -161,23 +198,7 @@ export default function DogInfoSection({ formData, onInputChange, fieldErrors }:
                 )}
             </div>
 
-            {/* Physical Description & Markings */}
-            <div>
-                <label className="block text-sm font-body2 font-medium text-text mb-2">
-                    Physical Description & Markings
-                </label>
-                <textarea
-                    name="dogDescription"
-                    rows={3}
-                    value={formData.dogDescription}
-                    onChange={onInputChange}
-                    className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text"
-                    placeholder="Describe your dog's appearance, coloring, markings, size, distinctive features..."
-                />
-                <p className="text-xs text-text-muted mt-1">
-                    Help us create a complete visual record of your unique companion
-                </p>
-            </div>
+
 
             {/* Special Attributes */}
             <div>

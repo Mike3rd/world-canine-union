@@ -1,7 +1,6 @@
 "use server";
 
 import { supabase } from "@/lib/supabase";
-import { generateCertificate } from "@/lib/pdf-generator";
 
 interface FormData {
   dogName: string;
@@ -11,6 +10,7 @@ interface FormData {
   primaryBreed: string;
   secondaryBreed: string;
   tertiaryBreed: string;
+  dogColor: string;
   dogDescription: string;
   specialAttributes: string;
   favoriteActivities: string;
@@ -75,6 +75,7 @@ export async function submitRegistration(
           } ${
             formData.tertiaryBreed ? `+ ${formData.tertiaryBreed}` : ""
           }`.trim(),
+          dog_color: formData.dogColor || null,
           rescue_story: formData.dogStory,
           dog_description: formData.dogDescription || null,
           special_attributes: formData.specialAttributes || null,
@@ -102,9 +103,26 @@ export async function submitRegistration(
     // ADD PDF GENERATION HERE - right after getting registration number
 
     try {
-      const pdfBytes = await generateCertificate(registration);
+      // Use our new API endpoint for PDF generation
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
+      const response = await fetch(`${baseUrl}/api/generate-certificate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          registration_number: registrationNumber,
+        }),
+      });
 
-      // Convert to base64 for storage
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(
+          `PDF generation failed: ${response.status} ${errorText}`
+        );
+      }
+
+      const pdfBlob = await response.blob();
+      const pdfBuffer = await pdfBlob.arrayBuffer();
+      const pdfBytes = new Uint8Array(pdfBuffer);
       const pdfBase64 = Buffer.from(pdfBytes).toString("base64");
 
       // Store PDF in database

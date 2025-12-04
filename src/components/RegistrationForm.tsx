@@ -17,6 +17,7 @@ interface FormData {
     primaryBreed: string;
     secondaryBreed: string;
     tertiaryBreed: string;
+    dogColor: string;
     dogDescription: string;
     specialAttributes: string;
     favoriteActivities: string;
@@ -34,7 +35,7 @@ interface FormData {
 export default function RegistrationForm() {
     const [formData, setFormData] = useState<FormData>({
         dogName: "", gender: "", birthDate: "", gotchaDay: "",
-        primaryBreed: "", secondaryBreed: "", tertiaryBreed: "",
+        primaryBreed: "", secondaryBreed: "", tertiaryBreed: "", dogColor: "",
         dogDescription: "", specialAttributes: "", favoriteActivities: "", uniqueTraits: "",
         dogStory: "", shelterName: "", shelterCity: "", shelterState: "", shelterWebsite: "",
         rescueLocation: "", ownerName: "", ownerEmail: "",
@@ -102,6 +103,11 @@ export default function RegistrationForm() {
         // Combined validation
         const errors: Record<string, string> = {};
 
+        // Combine breeds exactly like Supabase does
+        const combinedBreeds = `${formData.primaryBreed} ${formData.secondaryBreed ? `+ ${formData.secondaryBreed}` : ""
+            } ${formData.tertiaryBreed ? `+ ${formData.tertiaryBreed}` : ""
+            }`.trim();
+
         // Required field validation
         if (!formData.dogName) errors.dogName = "Dog name is required";
         if (!formData.gender) errors.gender = "Gender is required";
@@ -115,8 +121,12 @@ export default function RegistrationForm() {
         }
 
         // Character limit validation
+        // Check combined length (100 characters max for 2 PDF lines)
+        if (combinedBreeds.length > 100) {
+            errors.primaryBreed = `Total breed description is ${combinedBreeds.length} characters. Maximum is 100 characters for the PDF certificate.`;
+        }
         if (formData.dogStory.length > 500) errors.dogStory = "Dog's story must be 500 characters or less";
-        if (formData.dogDescription.length > 300) errors.dogDescription = "Physical description must be 300 characters or less";
+        if (formData.dogDescription.length > 150) errors.dogDescription = "Physical description must be 150 characters or less";
         if (formData.specialAttributes.length > 200) errors.specialAttributes = "Special qualities must be 200 characters or less";
         if (formData.favoriteActivities.length > 100) errors.favoriteActivities = "Favorite activities must be 100 characters or less";
         if (formData.uniqueTraits.length > 200) errors.uniqueTraits = "Unique traits must be 200 characters or less";
@@ -141,7 +151,7 @@ export default function RegistrationForm() {
                 setFormData({
                     dogName: "", gender: "", birthDate: "", gotchaDay: "",
                     primaryBreed: "", secondaryBreed: "", tertiaryBreed: "",
-                    dogDescription: "", specialAttributes: "", favoriteActivities: "", uniqueTraits: "",
+                    dogDescription: "", specialAttributes: "", favoriteActivities: "", uniqueTraits: "", dogColor: "",
                     dogStory: "", shelterName: "", shelterCity: "", shelterState: "", shelterWebsite: "",
                     rescueLocation: "", ownerName: "", ownerEmail: "",
                 });
