@@ -1,9 +1,7 @@
-// app/api/generate-certificate/route.ts - HEADER ADJUSTED
+// app/api/generate-certificate/route.ts - CLEANED
 import { NextResponse } from "next/server";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
-import fontkit from "@pdf-lib/fontkit";
-import fs from "fs";
-import path from "path";
+import { createClient } from "@supabase/supabase-js";
 
 function drawCenteredMultiLineText(
   page: any,
@@ -16,11 +14,10 @@ function drawCenteredMultiLineText(
   maxWidth: number,
   lineHeight: number
 ) {
-  // ADD THIS LINE:
-  const centerOffset = 15; // Adjust this: 10, 12, 15
-  const adjustedCenterX = centerX + centerOffset; // Use this instead of centerX
+  const centerOffset = 15;
+  const adjustedCenterX = centerX + centerOffset;
 
-  const avgCharWidth = fontSize * 0.55; // Keep this
+  const avgCharWidth = fontSize * 0.55;
 
   const words = text.split(" ");
   const lines: string[] = [];
@@ -42,7 +39,6 @@ function drawCenteredMultiLineText(
 
   lines.forEach((line, index) => {
     const lineWidth = line.length * avgCharWidth;
-    // CHANGE THIS LINE: use adjustedCenterX instead of centerX
     const lineX = adjustedCenterX - lineWidth / 2;
 
     page.drawText(line, {
@@ -57,38 +53,89 @@ function drawCenteredMultiLineText(
   return lines.length;
 }
 
-export async function GET() {
+export async function POST(request: Request) {
   try {
-    const pdfDoc = await PDFDocument.create();
-    pdfDoc.registerFontkit(fontkit);
+    const data = await request.json();
+    const registrationNumber = data.registration_number;
 
-    const fontsPath = path.join(process.cwd(), "public", "fonts");
-
-    // Load fonts
-    let greatVibes;
-
-    try {
-      greatVibes = await pdfDoc.embedFont(
-        fs.readFileSync(
-          path.join(fontsPath, "great-vibes", "GreatVibes-Regular.ttf")
-        )
+    if (!registrationNumber) {
+      return NextResponse.json(
+        { error: "Missing registration_number" },
+        { status: 400 }
       );
-    } catch {
-      greatVibes = await pdfDoc.embedFont(StandardFonts.Helvetica);
     }
 
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+    if (!supabaseUrl || !supabaseKey) {
+      return NextResponse.json(
+        { error: "Supabase credentials missing" },
+        { status: 500 }
+      );
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    const { data: dogData, error } = await supabase
+      .from("registrations")
+      .select("*")
+      .eq("registration_number", registrationNumber)
+      .single();
+
+    if (error) {
+      console.error("Supabase error:", error);
+      return NextResponse.json(
+        { error: "Dog not found in database" },
+        { status: 404 }
+      );
+    }
+
+    if (!dogData) {
+      return NextResponse.json(
+        { error: "No data found for this registration number" },
+        { status: 404 }
+      );
+    }
+
+    const pdfBytes = await generateCertificatePDF(dogData);
+    const pdfBuffer = Buffer.from(pdfBytes);
+    return new NextResponse(pdfBuffer, {
+      headers: {
+        "Content-Type": "application/pdf",
+        "Content-Disposition": `inline; filename="WCU-${dogData.registration_number}.pdf"`,
+      },
+    });
+  } catch (error: any) {
+    console.error("POST Error:", error);
+    return NextResponse.json(
+      { error: "Failed to process request", details: error.message },
+      { status: 500 }
+    );
+  }
+}
+
+async function generateCertificatePDF(dogData: any) {
+  try {
+    const pdfDoc = await PDFDocument.create();
+
+    // Load fonts (only standard PDF fonts - no custom fonts)
     const helveticaRegular = await pdfDoc.embedFont(StandardFonts.Helvetica);
     const courierRegular = await pdfDoc.embedFont(StandardFonts.Courier);
     const courierBold = await pdfDoc.embedFont(StandardFonts.CourierBold);
-
     const timesRoman = await pdfDoc.embedFont(StandardFonts.TimesRoman);
+    const timesRomanItalic = await pdfDoc.embedFont(
+      StandardFonts.TimesRomanItalic
+    );
     const timesRomanBold = await pdfDoc.embedFont(StandardFonts.TimesRomanBold);
+    const zapfDingbats = await pdfDoc.embedFont(StandardFonts.ZapfDingbats);
 
     const wcuColors = {
-      primary: rgb(0.212, 0.271, 0.31), // #36454F - Charcoal
-      secondary: rgb(0.471, 0.565, 0.612), // #78909C - Steel blue
-      accent: rgb(0.6, 0.141, 0), // #992400 - Burnt orange
+      primary: rgb(0.212, 0.271, 0.31),
+      secondary: rgb(0.471, 0.565, 0.612),
+      accent: rgb(0.6, 0.141, 0),
       gray: rgb(0.9, 0.9, 0.9),
+      black: rgb(0, 0, 0),
     };
 
     // Add a page
@@ -106,68 +153,80 @@ export async function GET() {
       height: height - 80,
       borderColor: wcuColors.secondary,
       borderWidth: 1,
-      borderDashArray: [5, 5],
+    });
+
+    page.drawRectangle({
+      x: 45,
+      y: 45,
+      width: width - 90,
+      height: height - 90,
+      borderColor: wcuColors.secondary,
+      borderWidth: 2,
     });
 
     // === HEADER WITH LOGO ===
-    const logoX = 100; // Logo on left
-    const titleX = logoX + 80; // Title closer to logo (was width/2 + 40)
+    const logoX = 100;
+    const titleX = logoX + 105;
 
-    // LOGO PLACEHOLDER (left of title)
-    page.drawRectangle({
-      x: logoX,
-      y: height - 130,
-      width: 60,
-      height: 60,
-      borderColor: rgb(0.8, 0.8, 0.8),
-      borderWidth: 1,
-      borderDashArray: [2, 2],
+    page.drawText("❤", {
+      x: logoX - 30,
+      y: height - 101,
+      size: 52,
+      font: zapfDingbats,
+      color: wcuColors.accent,
     });
 
-    page.drawText("LOGO", {
-      x: logoX + 15,
+    page.drawText("World Canine Union", {
+      x: logoX + 18,
       y: height - 90,
-      size: 10,
-      font: helveticaRegular,
-      color: rgb(0.6, 0.6, 0.6),
-    });
-
-    // TITLE (closer to logo)
-    const titleText = "World Canine Union";
-    page.drawText(titleText, {
-      x: titleX,
-      y: height - 100,
-      size: 36,
+      size: 33,
       font: timesRoman,
       color: wcuColors.primary,
     });
 
-    // SUBTITLE (under title, aligned)
+    page.drawText("Global Registry for All Other Dogs", {
+      x: logoX + 25,
+      y: height - 105,
+      size: 12,
+      font: helveticaRegular,
+      color: wcuColors.primary,
+    });
+
+    // SUBTITLE
     const subtitleText = "CERTIFICATE OF REGISTRATION";
     page.drawText(subtitleText, {
-      x: titleX + 7,
-      y: height - 125,
-      size: 19,
+      x: titleX - 80,
+      y: height - 150,
+      size: 24,
       font: timesRoman,
       color: wcuColors.secondary,
     });
 
-    // === GROUP 1: Compact Fields (same line) ===
+    // === GROUP 1: Compact Fields ===
     const startX = 100;
-    let currentY = height - 170;
+    let currentY = height - 190;
 
+    // USE REAL DATA from dogData
     const group1Fields = [
-      { label: "Certificate Number:", value: "WCU-00030" },
-      { label: "Date Issued:", value: "12/1/2025" },
-      { label: "Name of Dog:", value: "Sam" },
-      { label: "Sex of Dog:", value: "Male" },
-      { label: "Name of Owner:", value: "Mike Turko" },
-      { label: "Gotcha Day:", value: "11/29/2025" },
+      {
+        label: "Certificate Number:",
+        value: dogData.registration_number || "WCU-00000",
+      },
+      { label: "Date Issued:", value: new Date().toLocaleDateString() },
+      { label: "Name of Dog:", value: dogData.dog_name || "Unknown" },
+      { label: "Sex of Dog:", value: dogData.gender || "Unknown" },
+      { label: "Name of Owner:", value: dogData.owner_name || "Unknown" },
+      {
+        label: "Gotcha Day:",
+        value: dogData.gotcha_date
+          ? new Date(dogData.gotcha_date).toLocaleDateString()
+          : "Unknown",
+      },
     ];
 
-    // GROUP 1: Label and value on same line, tight spacing
+    // GROUP 1: Label and value on same line
     group1Fields.forEach((field, index) => {
-      const fieldY = currentY - index * 26; // Tighter spacing (28 vs 35)
+      const fieldY = currentY - index * 26;
 
       // Label
       page.drawText(field.label, {
@@ -178,13 +237,13 @@ export async function GET() {
         color: wcuColors.secondary,
       });
 
-      // Value (right after label)
+      // Value
       page.drawText(field.value, {
-        x: startX + 160, // Fixed position for alignment
+        x: startX + 125,
         y: fieldY,
         size: 14,
         font: courierRegular,
-        color: rgb(0, 0, 0),
+        color: wcuColors.black,
       });
     });
 
@@ -194,35 +253,35 @@ export async function GET() {
       start: { x: startX, y: spacerY },
       end: { x: startX + 400, y: spacerY },
       thickness: 0.5,
-      color: rgb(0.9, 0.9, 0.9),
+      color: wcuColors.gray,
     });
 
-    // === GROUP 2: Multi-line Fields (3 lines each) ===
-    let group2Y = spacerY - 30;
+    // === GROUP 2: Multi-line Fields ===
+    let group2Y = spacerY - 33;
 
     const group2Fields = [
       {
         label: "Breed(s) of Dog:",
-        value:
-          "White chest patch, brown spots on back, black nose, white tip on tail, distinctive eyebrows, small scar on left ear, unique heart-shaped pattern on right shoulder",
+        value: dogData.breed_description || "Mixed breed",
         lineLimit: 3,
       },
       {
         label: "Color of Dog:",
-        value:
-          "White chest patch, brown spots on back, black nose, white tip on tail, distinctive eyebrows, small scar on left ear, unique heart-shaped pattern on right shoulder",
-        lineLimit: 3,
+        value: dogData.dog_color || "Various colors",
+        lineLimit: 1,
       },
       {
         label: "Markings of Dog:",
-        value:
-          "White chest patch, brown spots on back, black nose, white tip on tail, distinctive eyebrows, small scar on left ear, unique heart-shaped pattern on right shoulder",
+        value: dogData.dog_description || "No markings specified",
         lineLimit: 3,
       },
     ];
 
+    // Custom spacing: [Breed, Color, Markings]
+    const fieldSpacings = [0, 75, 120];
+
     group2Fields.forEach((field, index) => {
-      const fieldY = group2Y - index * 75; // More space for multi-line
+      const fieldY = group2Y - fieldSpacings[index];
 
       // Label
       page.drawText(field.label, {
@@ -233,55 +292,108 @@ export async function GET() {
         color: wcuColors.secondary,
       });
 
-      // Value with line limit
-      const maxHeight = field.lineLimit * 18;
+      // Value
       page.drawText(field.value, {
         x: startX,
-        y: fieldY - 16, // Start below label
+        y: fieldY - 16,
         size: 12,
         font: courierRegular,
-        color: rgb(0, 0, 0),
+        color: wcuColors.black,
         maxWidth: 400,
         lineHeight: 14,
       });
     });
 
-    // === CERTIFICATE TEXT (DYNAMIC CENTERING) ===
+    // === CERTIFICATE TEXT (CLEAN LEFT-ALIGNED) ===
     const lastGroup2Y = group2Y - group2Fields.length * 65;
-    const certTextY = lastGroup2Y - 40;
+    const certTextY = lastGroup2Y - 0;
 
-    // Use dynamic text
-    const dogName = "SamSam SamSam"; // Would come from database
+    const dogName = dogData.dog_name || "This dog";
     const certText = `This document certifies that ${dogName} is officially registered with the World Canine Union`;
 
-    // Draw with centering
-    drawCenteredMultiLineText(
-      page,
-      certText,
-      centerX, // Center of page
-      certTextY, // Starting Y position
-      12, // Font size
-      helveticaRegular, // Font
-      wcuColors.primary, // Color
-      400, // Max width
-      16 // Line height
-    );
+    // Match your other field styling
+    const fontSize = 12;
+    const lineHeight = 16;
+    const textX = 100;
+    const maxWidth = 500;
+
+    // Simple line splitting
+    const words = certText.split(" ");
+    const lines: string[] = [];
+    let currentLine = words[0];
+
+    for (let i = 1; i < words.length; i++) {
+      const testLine = currentLine + " " + words[i];
+      const testWidth = testLine.length * fontSize * 0.6;
+
+      if (testWidth <= maxWidth) {
+        currentLine = testLine;
+      } else {
+        lines.push(currentLine);
+        currentLine = words[i];
+      }
+    }
+    lines.push(currentLine);
+
+    // Draw left-aligned
+    lines.forEach((line, index) => {
+      page.drawText(line, {
+        x: textX,
+        y: certTextY - index * lineHeight,
+        size: fontSize,
+        font: helveticaRegular,
+        color: wcuColors.secondary,
+      });
+    });
 
     // === HORIZONTAL ROW: SEAL & SIGNATURES ===
-    const rowY = certTextY - 80;
-    const rowStartX = 110;
-    const spacing = 150; // Space between signatures
-    const spacingsig1 = 100; // Space between seal and sig1
+    const rowY = certTextY - 95;
+    const rowStartX = 90;
+    const spacing = 155;
+    const spacingsig1 = 135;
 
-    // 1. SEAL (Left)
-    page.drawRectangle({
-      x: rowStartX,
-      y: rowY - 40,
-      width: 80,
-      height: 80,
-      borderColor: rgb(0.8, 0.8, 0.8),
-      borderWidth: 1,
+    // 1. SEAL
+    page.drawEllipse({
+      x: rowStartX + 60,
+      y: rowY,
+      xScale: 50,
+      yScale: 50,
+      borderColor: wcuColors.gray,
+      borderWidth: 1.5,
+    });
+
+    page.drawEllipse({
+      x: rowStartX + 60,
+      y: rowY,
+      xScale: 45,
+      yScale: 45,
+      borderColor: wcuColors.gray,
+      borderWidth: 0.5,
       borderDashArray: [2, 2],
+    });
+
+    page.drawText("✪", {
+      x: rowStartX + 51,
+      y: rowY + 15,
+      size: 25,
+      font: zapfDingbats,
+      color: wcuColors.gray,
+    });
+
+    page.drawText("WCU", {
+      x: rowStartX + 24,
+      y: rowY - 12,
+      size: 30,
+      font: timesRoman,
+      color: wcuColors.gray,
+    });
+
+    page.drawText("• REGISTERED •", {
+      x: rowStartX + 26,
+      y: rowY - 23,
+      size: 9,
+      font: helveticaRegular,
+      color: wcuColors.gray,
     });
 
     // 2. FIRST SIGNATURE (Center)
@@ -289,8 +401,8 @@ export async function GET() {
     page.drawText("Michael Turko", {
       x: signature1X,
       y: rowY,
-      size: 24,
-      font: greatVibes,
+      size: 16,
+      font: courierRegular,
       color: rgb(0.1, 0.1, 0.1),
     });
 
@@ -303,7 +415,7 @@ export async function GET() {
 
     page.drawText("Director, World Canine Union", {
       x: signature1X,
-      y: rowY - 18,
+      y: rowY - 16,
       size: 9,
       font: helveticaRegular,
       color: rgb(0.4, 0.4, 0.4),
@@ -314,8 +426,8 @@ export async function GET() {
     page.drawText("Elayne Dell", {
       x: signature2X,
       y: rowY,
-      size: 24,
-      font: greatVibes,
+      size: 16,
+      font: courierRegular,
       color: rgb(0.1, 0.1, 0.1),
     });
 
@@ -328,7 +440,7 @@ export async function GET() {
 
     page.drawText("Co-Director, World Canine Union", {
       x: signature2X,
-      y: rowY - 18,
+      y: rowY - 16,
       size: 9,
       font: helveticaRegular,
       color: rgb(0.4, 0.4, 0.4),
@@ -336,19 +448,23 @@ export async function GET() {
 
     // Save and return
     const pdfBytes = await pdfDoc.save();
-    const pdfBuffer = Buffer.from(pdfBytes);
+    return pdfBytes;
+  } catch (error) {
+    console.error("PDF Generation Error:", error);
+    throw error;
+  }
+}
 
-    return new NextResponse(pdfBuffer, {
-      headers: {
-        "Content-Type": "application/pdf",
-        "Content-Disposition": 'inline; filename="wcu-certificate.pdf"',
-      },
+function formatDate(dateString: string): string {
+  if (!dateString) return "Not specified";
+  try {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      month: "numeric",
+      day: "numeric",
+      year: "numeric",
     });
-  } catch (error: any) {
-    console.error("Certificate Error:", error);
-    return NextResponse.json(
-      { error: "Certificate generation failed" },
-      { status: 500 }
-    );
+  } catch {
+    return dateString;
   }
 }
