@@ -102,9 +102,14 @@ export async function submitRegistration(
 
     // ADD PDF GENERATION HERE - right after getting registration number
 
+    // ===== PDF GENERATION WITH DEBUGGING =====
+    console.log("📄 Starting PDF generation for:", registrationNumber);
+
     try {
-      // Use our new API endpoint for PDF generation
-      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
+      const baseUrl =
+        process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+      console.log("📞 Calling API:", `${baseUrl}/api/generate-certificate`);
+
       const response = await fetch(`${baseUrl}/api/generate-certificate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -113,35 +118,73 @@ export async function submitRegistration(
         }),
       });
 
+      console.log(
+        "📊 API Response Status:",
+        response.status,
+        response.statusText
+      );
+
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(
-          `PDF generation failed: ${response.status} ${errorText}`
-        );
+        console.error("❌ PDF API Error:", errorText);
+        // STILL CONTINUE - don't throw, just log
+      } else {
+        const pdfBlob = await response.blob();
+        console.log("✅ PDF Blob Size:", pdfBlob.size, "bytes");
+
+        // Convert to base64
+        const pdfBuffer = await pdfBlob.arrayBuffer();
+        const pdfBytes = new Uint8Array(pdfBuffer);
+        const pdfBase64 = Buffer.from(pdfBytes).toString("base64");
+        console.log("📊 Base64 Length:", pdfBase64.length, "chars");
+
+        // Try to store in Supabase Storage
+        let pdfUrl = "";
+        try {
+          const fileName = `certificates/${registrationNumber}.pdf`;
+          console.log("💾 Attempting storage upload...");
+
+          const { error: uploadError } = await supabase.storage
+            .from("wcu-dogs")
+            .upload(fileName, pdfBlob, {
+              contentType: "application/pdf",
+              upsert: true,
+            });
+
+          if (uploadError) {
+            console.warn("⚠️ Storage upload failed:", uploadError.message);
+          } else {
+            const { data: urlData } = supabase.storage
+              .from("wcu-dogs")
+              .getPublicUrl(fileName);
+            pdfUrl = urlData.publicUrl;
+            console.log("✅ PDF stored at:", pdfUrl);
+          }
+        } catch (storageError) {
+          console.warn("⚠️ Storage error:", storageError);
+        }
+
+        // Save to database
+        console.log("💾 Saving to database...");
+        const { error: pdfUpdateError } = await supabase
+          .from("registrations")
+          .update({
+            pdf_url: pdfUrl || null,
+            pdf_certificate: pdfBase64,
+            certificate_generated_at: new Date().toISOString(),
+          })
+          .eq("id", registration.id);
+
+        if (pdfUpdateError) {
+          console.error("❌ Database update failed:", pdfUpdateError);
+        } else {
+          console.log("✅ PDF saved to database successfully!");
+        }
       }
-
-      const pdfBlob = await response.blob();
-      const pdfBuffer = await pdfBlob.arrayBuffer();
-      const pdfBytes = new Uint8Array(pdfBuffer);
-      const pdfBase64 = Buffer.from(pdfBytes).toString("base64");
-
-      // Store PDF in database
-      const { error: pdfUpdateError } = await supabase
-        .from("registrations")
-        .update({
-          pdf_certificate: pdfBase64,
-          certificate_generated_at: new Date().toISOString(),
-        })
-        .eq("id", registration.id);
-
-      if (pdfUpdateError) {
-        console.error("Failed to save PDF:", pdfUpdateError);
-        // Don't throw - registration succeeded, just PDF save failed
-      }
-    } catch (pdfError) {
-      console.error("PDF generation failed:", pdfError);
-      // Don't throw - registration succeeded, just PDF failed
+    } catch (error) {
+      console.error("💥 PDF generation crashed:", error);
     }
+    // ===== END PDF GENERATION =====
 
     // Upload image if provided
     if (selectedImage) {

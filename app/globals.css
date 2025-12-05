@@ -2,12 +2,37 @@
 
 @import "tailwindcss";
 
+/* ===== LOCAL FONT FACE DECLARATION ===== */
+@font-face {
+  font-family: 'Cormorant Garamond';
+  src: url('/fonts/cormorant-garamond/CormorantGaramond-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900; /* Supports variable weights 100-900 */
+  font-style: normal;
+  font-display: swap; /* Better loading experience */
+}
+
+/* ===== ZAPF DINGBATS FONT ===== */
+@font-face {
+  font-family: 'Zapf Dingbats';
+  src: url('/fonts/zapf-dingbats-regular/ZapfDingbats.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block; /* Important for icon fonts */
+}
+
+
+
+
 @theme {
   /* ===== SOPHISTICATED WORLD CANINE UNION THEME ===== */
   /* Fonts */
+  --font-logo: 'Cormorant Garamond', serif;
   --font-heading: 'Space Grotesk', sans-serif;
   --font-body: 'IBM Plex Sans', sans-serif;
   --font-body2: 'Inter', sans-serif;
+
+    /*Zapf Dingbats utility */
+  --font-zapf: 'Zapf Dingbats', 'Apple Symbols', 'Segoe UI Symbol', sans-serif;
 
 /* Your Professional Color Palette */
 --color-primary: #36454F;      /* Charcoal - Primary brand color */
@@ -61,6 +86,12 @@ body {
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
   font-weight: 600;
+}
+
+@layer utilities {
+  .font-logo {
+    font-family: var(--font-logo) !important;
+  }
 }
 
 button, .btn {

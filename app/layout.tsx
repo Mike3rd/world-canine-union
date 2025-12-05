@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import "./globals.css";
 
+import HeartIcon from '@/components/HeartIcon';
+
 export const metadata: Metadata = {
   title: "World Canine Union - Global Registry for all Other Dogs",
   description:
@@ -25,7 +27,8 @@ export default function RootLayout({
                 className="inline-block hover:opacity-80 transition-opacity"
               >
                 <div>
-                  <h1 className="text-2xl font-heading font-bold text-header-text">
+                  <h1 className="text-4xl font-logo font-bold text-header-text inline-flex items-center">
+                    <HeartIcon className="text-accent mr-0" size={35} />
                     World Canine Union
                   </h1>
                   <p className="text-sm text-header-text/80 font-body2">
