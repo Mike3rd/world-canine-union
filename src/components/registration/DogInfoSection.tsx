@@ -26,6 +26,9 @@ export default function DogInfoSection({ formData, onInputChange, fieldErrors }:
                 <div>
                     <label className="block text-sm font-body2 font-medium text-text mb-2">
                         Dog&apos;s Name *
+                        <span className="text-xs text-text-muted ml-2">
+                            {formData.dogName.length}/30
+                        </span>
                     </label>
                     <input
                         type="text"
@@ -143,16 +146,23 @@ export default function DogInfoSection({ formData, onInputChange, fieldErrors }:
             {/* Color */}
             <div>
                 <label className="block text-sm font-body2 font-medium text-text mb-2">
-                    Dog's Color(s)
+                    Dog's Color(s) *
+                    <span className="text-xs text-text-muted ml-2">
+                        {formData.dogColor.length}/50
+                    </span>
                 </label>
                 <input
                     type="text"
                     name="dogColor"
                     value={formData.dogColor}
                     onChange={onInputChange}
-                    className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text"
+                    className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text ${fieldErrors.dogColor ? 'border-red-500' : 'border-border'
+                        }`}
                     placeholder="Describe your dog's colors (e.g., black and tan, brindle, white with brown spots)"
                 />
+                {fieldErrors.dogColor && (
+                    <p className="text-red-500 text-xs mt-1">{fieldErrors.dogColor}</p>
+                )}
                 <p className="text-xs text-text-muted mt-1">
                     Primary colors and patterns
                 </p>
@@ -162,15 +172,23 @@ export default function DogInfoSection({ formData, onInputChange, fieldErrors }:
             <div>
                 <label className="block text-sm font-body2 font-medium text-text mb-2">
                     Physical Description & Markings
+                    <span className="text-xs text-text-muted ml-2">
+                        {formData.dogDescription.length}/150
+                    </span>
                 </label>
                 <textarea
                     name="dogDescription"
                     rows={3}
                     value={formData.dogDescription}
                     onChange={onInputChange}
-                    className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text"
+                    className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text ${fieldErrors.dogDescription ? 'border-red-500' : 'border-border'
+                        }`} // ← ADD ERROR BORDER
                     placeholder="Distinctive markings, scars, eye color, tail type, ear shape, size, weight..."
                 />
+                {/* ADD ERROR MESSAGE DISPLAY */}
+                {fieldErrors.dogDescription && (
+                    <p className="text-red-500 text-xs mt-1">{fieldErrors.dogDescription}</p>
+                )}
                 <p className="text-xs text-text-muted mt-1">
                     Help us create a complete visual record of your unique companion
                 </p>
@@ -204,45 +222,66 @@ export default function DogInfoSection({ formData, onInputChange, fieldErrors }:
             <div>
                 <label className="block text-sm font-body2 font-medium text-text mb-2">
                     Special Qualities & Personality
+                    <span className="text-xs text-text-muted ml-2">
+                        {formData.specialAttributes.length}/500
+                    </span>
                 </label>
                 <textarea
                     name="specialAttributes"
                     rows={2}
                     value={formData.specialAttributes}
                     onChange={onInputChange}
-                    className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text"
+                    className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text ${fieldErrors.specialAttributes ? 'border-red-500' : 'border-border'
+                        }`}
                     placeholder="Their unique personality, special skills, what makes them extraordinary..."
                 />
+                {fieldErrors.specialAttributes && (
+                    <p className="text-red-500 text-xs mt-1">{fieldErrors.specialAttributes}</p>
+                )}
             </div>
 
             {/* Favorite Activities */}
             <div>
                 <label className="block text-sm font-body2 font-medium text-text mb-2">
                     Favorite Activities & Games
+                    <span className="text-xs text-text-muted ml-2">
+                        {formData.favoriteActivities.length}/300
+                    </span>
                 </label>
                 <input
                     type="text"
                     name="favoriteActivities"
                     value={formData.favoriteActivities}
                     onChange={onInputChange}
-                    className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text"
+                    className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text ${fieldErrors.favoriteActivities ? 'border-red-500' : 'border-border'
+                        }`}
                     placeholder="Fetch, swimming, hiking, cuddling, specific games they love..."
                 />
+                {fieldErrors.favoriteActivities && (
+                    <p className="text-red-500 text-xs mt-1">{fieldErrors.favoriteActivities}</p>
+                )}
             </div>
 
             {/* Unique Traits & Quirks */}
             <div>
                 <label className="block text-sm font-body2 font-medium text-text mb-2">
                     Unique Traits & Funny Habits
+                    <span className="text-xs text-text-muted ml-2">
+                        {formData.uniqueTraits.length}/500
+                    </span>
                 </label>
                 <textarea
                     name="uniqueTraits"
                     rows={2}
                     value={formData.uniqueTraits}
                     onChange={onInputChange}
-                    className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text"
+                    className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text ${fieldErrors.uniqueTraits ? 'border-red-500' : 'border-border'
+                        }`}
                     placeholder="Funny noises they make, strange sleeping positions, quirky behaviors, little rituals..."
                 />
+                {fieldErrors.uniqueTraits && (
+                    <p className="text-red-500 text-xs mt-1">{fieldErrors.uniqueTraits}</p>
+                )}
                 <p className="text-xs text-text-muted mt-1">
                     These special details make your dog's story truly one-of-a-kind
                 </p>

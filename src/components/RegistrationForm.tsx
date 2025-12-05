@@ -108,11 +108,13 @@ export default function RegistrationForm() {
             } ${formData.tertiaryBreed ? `+ ${formData.tertiaryBreed}` : ""
             }`.trim();
 
+
         // Required field validation
         if (!formData.dogName) errors.dogName = "Dog name is required";
         if (!formData.gender) errors.gender = "Gender is required";
         if (!formData.gotchaDay) errors.gotchaDay = "Gotcha day is required";
         if (!formData.primaryBreed) errors.primaryBreed = "Primary breed is required";
+        if (!formData.dogColor) errors.dogColor = "Dog color is required";
         if (!formData.ownerName) errors.ownerName = "Owner name is required";
         if (!formData.ownerEmail) errors.ownerEmail = "Email is required";
         // Email format validation
@@ -125,11 +127,21 @@ export default function RegistrationForm() {
         if (combinedBreeds.length > 100) {
             errors.primaryBreed = `Total breed description is ${combinedBreeds.length} characters. Maximum is 100 characters for the PDF certificate.`;
         }
+
+        // ===== COLOR CHARACTER LIMIT =====
+        if (formData.dogColor.length > 50) {
+            errors.dogColor = `Color description is ${formData.dogColor.length} characters. Maximum is 50 characters for the PDF certificate.`;
+        }
+        // ===== DOG NAME CHARACTER LIMIT =====
+        if (formData.dogName && formData.dogName.length > 30) {
+            errors.dogName = `Dog name is ${formData.dogName.length} characters. Maximum is 30 characters for the PDF certificate.`;
+        }
+
         if (formData.dogStory.length > 500) errors.dogStory = "Dog's story must be 500 characters or less";
         if (formData.dogDescription.length > 150) errors.dogDescription = "Physical description must be 150 characters or less";
-        if (formData.specialAttributes.length > 200) errors.specialAttributes = "Special qualities must be 200 characters or less";
-        if (formData.favoriteActivities.length > 100) errors.favoriteActivities = "Favorite activities must be 100 characters or less";
-        if (formData.uniqueTraits.length > 200) errors.uniqueTraits = "Unique traits must be 200 characters or less";
+        if (formData.specialAttributes.length > 500) errors.specialAttributes = "Special qualities must be 500 characters or less";
+        if (formData.favoriteActivities.length > 300) errors.favoriteActivities = "Favorite activities must be 300 characters or less";
+        if (formData.uniqueTraits.length > 500) errors.uniqueTraits = "Unique traits must be 500 characters or less";
 
         if (Object.keys(errors).length > 0) {
             setFieldErrors(errors);
