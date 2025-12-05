@@ -1,12 +1,12 @@
 export default function ValuePropsSection() {
   return (
-    <section className="py-16 bg-surface">
+    <section className="py-16 bg-background">
       <div className="container mx-auto px-4">
         <h2 className="text-4xl font-heading font-bold text-primary text-center mb-12">
           Why Join the World Canine Union?
         </h2>
         <div className="grid md:grid-cols-3 gap-8">
-          <div className="bg-background p-8 rounded-2xl border border-border hover:shadow-lg transition-all">
+          <div className="bg-surface p-8 rounded-2xl border border-border hover:shadow-lg transition-all">
             <div className="w-12 h-12 bg-primary text-surface rounded-lg flex items-center justify-center mb-4">
               <span className="text-lg">🌐</span>
             </div>
@@ -18,7 +18,7 @@ export default function ValuePropsSection() {
               heritage and story.
             </p>
           </div>
-          <div className="bg-background p-8 rounded-2xl border border-border hover:shadow-lg transition-all">
+          <div className="bg-surface p-8 rounded-2xl border border-border hover:shadow-lg transition-all">
             <div className="w-12 h-12 bg-secondary text-surface rounded-lg flex items-center justify-center mb-4">
               <span className="text-lg">🤝</span>
             </div>
@@ -30,7 +30,7 @@ export default function ValuePropsSection() {
               worldwide.
             </p>
           </div>
-          <div className="bg-background p-8 rounded-2xl border border-border hover:shadow-lg transition-all">
+          <div className="bg-surface p-8 rounded-2xl border border-border hover:shadow-lg transition-all">
             <div className="w-12 h-12 bg-accent text-surface rounded-lg flex items-center justify-center mb-4">
               <span className="text-lg">⭐</span>
             </div>

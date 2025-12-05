@@ -10,8 +10,7 @@ export default function RegistrationPage() {
             Register Your Dog
           </h1>
           <p className="text-xl text-text-muted font-body2">
-            Join the World Canine Union and get official WCU certification for your
-            one-of-a-kind companion
+            The official global registry celebrating one-of-a-kind dogs. Join our community today!
           </p>
         </div>
 

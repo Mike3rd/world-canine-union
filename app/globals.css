@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Inter:wght@300..700&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&display=swap');
+
 
 @import "tailwindcss";
 
@@ -11,13 +11,34 @@
   font-display: swap; /* Better loading experience */
 }
 
-/* ===== ZAPF DINGBATS FONT ===== */
+/* Inter - Local Version */
 @font-face {
-  font-family: 'Zapf Dingbats';
-  src: url('/fonts/zapf-dingbats-regular/ZapfDingbats.ttf') format('truetype');
-  font-weight: normal;
+  font-family: 'Inter';
+  src: url('/fonts/Inter/Inter-VariableFont_opsz,wght.ttf') format('truetype');
+  font-weight: 100 900;
   font-style: normal;
-  font-display: block; /* Important for icon fonts */
+  font-stretch: 75% 125%;
+  font-display: swap;
+}
+
+/* 3. Space Grotesk - Heading Font */
+@font-face {
+  font-family: 'Space Grotesk';
+  src: url('/fonts/Space-Grotesk/SpaceGrotesk-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+
+@font-face {
+  font-family: 'IBM Plex Sans';
+  src: url('/fonts/IBM-Plex-Sans/IBMPlexSans-Italic-VariableFont_wdth,wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: italic;
+  font-stretch: 75% 125%;
+  font-display: swap;
 }
 
 

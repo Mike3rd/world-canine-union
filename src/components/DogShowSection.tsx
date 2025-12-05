@@ -1,10 +1,10 @@
 export default function DogShowSection() {
   return (
-    <section className="py-16 bg-background">
+    <section className="py-16 bg-surface">
       {/* Online Dog Show - Modern Card */}
-      <section className="py-16 bg-background">
+      <section className="py-16 bg-surface">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto bg-surface rounded-2xl p-8 shadow-lg border border-border">
+          <div className="max-w-4xl mx-auto bg-background rounded-2xl p-8 shadow-lg border border-border">
             <div className="text-center mb-6">
               <div className="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl text-surface">🏆</span>
@@ -24,7 +24,7 @@ export default function DogShowSection() {
                 <p className="font-body2 text-text">Exclusive to WCU members</p>
               </div>
               <div className="p-4">
-                <div className="w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center mx-auto mb-3">
+                <div className="w-12 h-12 bg-secondary/20 rounded-lg flex items-center justify-center mx-auto mb-3">
                   <span className="text-secondary">💵</span>
                 </div>
                 <p className="font-body2 text-text">Cash prize competitions</p>

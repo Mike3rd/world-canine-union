@@ -26,12 +26,12 @@ export default function RootLayout({
                 href="/"
                 className="inline-block hover:opacity-80 transition-opacity"
               >
-                <div>
+                <div className="inline-flex flex-col items-start leading-tight">
                   <h1 className="text-4xl font-logo font-bold text-header-text inline-flex items-center">
-                    <HeartIcon className="text-accent mr-0" size={35} />
+                    <HeartIcon className="text-error mr-1 " size={40} />
                     World Canine Union
                   </h1>
-                  <p className="text-sm text-header-text/80 font-body2">
+                  <p className="text-sm text-header-text/80 font-body2 ml-12 -mt-1">
                     Global Registry for all other dogs
                   </p>
                 </div>
