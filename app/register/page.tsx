@@ -1,4 +1,6 @@
 import RegistrationForm from '@/components/RegistrationForm';
+import TestStripeButton from "@/components/TestStripeButton"; // Add import
+
 
 export default function RegistrationPage() {
   return (
@@ -13,6 +15,13 @@ export default function RegistrationPage() {
             The official global registry celebrating one-of-a-kind dogs. Join our community today!
           </p>
         </div>
+
+        <TestStripeButton />
+
+
+
+
+
 
         <RegistrationForm />
       </div>

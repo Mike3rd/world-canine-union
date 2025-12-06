@@ -28,7 +28,7 @@ export default function RootLayout({
               >
                 <div className="inline-flex flex-col items-start leading-tight">
                   <h1 className="text-4xl font-logo font-bold text-header-text inline-flex items-center">
-                    <HeartIcon className="text-error mr-1 " size={40} />
+                    <HeartIcon className="text-error mr-1 heart-stroke" size={40} />
                     World Canine Union
                   </h1>
                   <p className="text-sm text-header-text/80 font-body2 ml-12 -mt-1">

@@ -1,6 +1,7 @@
 "use server";
 
 import { supabase } from "@/lib/supabase";
+import { createStripeCheckoutSession } from "@/lib/stripe";
 
 interface FormData {
   dogName: string;
@@ -101,7 +102,7 @@ export async function submitRegistration(
     const registrationNumber = registration.registration_number;
 
     // ADD PDF GENERATION HERE - right after getting registration number
-
+    /*
     // ===== PDF GENERATION WITH DEBUGGING =====
     console.log("📄 Starting PDF generation for:", registrationNumber);
 
@@ -185,6 +186,7 @@ export async function submitRegistration(
       console.error("💥 PDF generation crashed:", error);
     }
     // ===== END PDF GENERATION =====
+  */
 
     // Upload image if provided
     if (selectedImage) {
@@ -217,9 +219,42 @@ export async function submitRegistration(
       }
     }
 
+    // SATURDAY ⭐ CREATE STRIPE CHECKOUT SESSION
+    try {
+      const checkoutSession = await createStripeCheckoutSession({
+        registrationId: registration.id,
+        customerEmail: formData.ownerEmail,
+        dogName: formData.dogName,
+      });
+
+      // ⭐ SAVE SESSION ID TO DATABASE
+      await supabase
+        .from("registrations")
+        .update({
+          stripe_checkout_session_id: checkoutSession.id,
+          payment_status: "pending",
+        })
+        .eq("id", registration.id);
+
+      console.log("✅ Stripe checkout created:", checkoutSession.id);
+
+      // ⭐ RETURN CHECKOUT URL WITH MESSAGE
+      return {
+        success: true,
+        message: `🎉 Registration submitted! Your WCU number: ${registrationNumber}. Redirecting to payment...`,
+        checkoutUrl: checkoutSession.url,
+        registrationNumber: registrationNumber,
+      };
+    } catch (stripeError) {
+      console.error("❌ Stripe checkout failed:", stripeError);
+      // Continue without Stripe for now (fallback)
+    }
+    // ⭐ END SATURDAY
+
     return {
       success: true,
-      registrationNumber,
+      checkoutUrl: null, // No payment link
+      registrationNumber: registrationNumber,
       message: `🎉 Registration Successful! Your official WCU number: ${registrationNumber}`,
     };
   } catch (error) {

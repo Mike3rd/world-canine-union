@@ -159,16 +159,36 @@ export default function RegistrationForm() {
             const result = await submitRegistration(submissionData, selectedImage);
 
             if (result.success) {
+                // Show success message with WCU number
                 alert(result.message);
-                setFormData({
-                    dogName: "", gender: "", birthDate: "", gotchaDay: "",
-                    primaryBreed: "", secondaryBreed: "", tertiaryBreed: "",
-                    dogDescription: "", specialAttributes: "", favoriteActivities: "", uniqueTraits: "", dogColor: "",
-                    dogStory: "", shelterName: "", shelterCity: "", shelterState: "", shelterWebsite: "",
-                    rescueLocation: "", ownerName: "", ownerEmail: "",
-                });
-                setSelectedImage(null);
-                window.location.reload();
+
+                // Check if we have a Stripe checkout URL
+                if (result.checkoutUrl) {
+                    // Clear form (optional - but good UX)
+                    setFormData({
+                        dogName: "", gender: "", birthDate: "", gotchaDay: "",
+                        primaryBreed: "", secondaryBreed: "", tertiaryBreed: "",
+                        dogDescription: "", specialAttributes: "", favoriteActivities: "", uniqueTraits: "", dogColor: "",
+                        dogStory: "", shelterName: "", shelterCity: "", shelterState: "", shelterWebsite: "",
+                        rescueLocation: "", ownerName: "", ownerEmail: "",
+                    });
+                    setSelectedImage(null);
+
+                    // Redirect to Stripe checkout (immediately after alert)
+                    window.location.href = result.checkoutUrl;
+                } else {
+                    // No payment required (fallback or free registration)
+                    // Clear form and reload as before
+                    setFormData({
+                        dogName: "", gender: "", birthDate: "", gotchaDay: "",
+                        primaryBreed: "", secondaryBreed: "", tertiaryBreed: "",
+                        dogDescription: "", specialAttributes: "", favoriteActivities: "", uniqueTraits: "", dogColor: "",
+                        dogStory: "", shelterName: "", shelterCity: "", shelterState: "", shelterWebsite: "",
+                        rescueLocation: "", ownerName: "", ownerEmail: "",
+                    });
+                    setSelectedImage(null);
+                    window.location.reload();
+                }
             } else {
                 alert(result.error);
             }
