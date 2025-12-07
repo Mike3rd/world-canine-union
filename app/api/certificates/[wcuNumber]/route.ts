@@ -3,8 +3,7 @@ import { supabase } from "@/lib/supabase";
 
 export async function GET(
   request: NextRequest,
-  context: { params: Promise<{ wcuNumber: string }> },
-  { params }: { params: { wcuNumber: string } }
+  context: { params: Promise<{ wcuNumber: string }> }
 ) {
   try {
     const { wcuNumber } = await context.params; // ← ADD THIS AWAIT
