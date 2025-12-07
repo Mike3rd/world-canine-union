@@ -21,10 +21,12 @@ export async function createStripeCheckoutSession({
   registrationId,
   customerEmail,
   dogName,
+  baseUrl,
 }: {
   registrationId: string;
   customerEmail: string;
   dogName: string;
+  baseUrl: string;
 }) {
   try {
     const session = await stripe.checkout.sessions.create({
@@ -36,8 +38,8 @@ export async function createStripeCheckoutSession({
         },
       ],
       mode: "payment",
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/register/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/`,
+      success_url: `${baseUrl}/register/success?session_id={CHECKOUT_SESSION_ID}`, // ← USE baseUrl
+      cancel_url: `${baseUrl}/`, // ← USE baseUrl
       client_reference_id: registrationId,
       metadata: {
         registration_id: registrationId,

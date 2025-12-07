@@ -3,6 +3,24 @@
 import { supabase } from "@/lib/supabase";
 import { createStripeCheckoutSession } from "@/lib/stripe";
 
+// Get base URL safely
+const getBaseUrl = () => {
+  // Try environment variable first
+  if (process.env.NEXT_PUBLIC_APP_URL) {
+    return process.env.NEXT_PUBLIC_APP_URL;
+  }
+
+  // Fallback for Vercel deployment
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+
+  // Fallback for local development
+  return "http://localhost:3000";
+};
+
+const BASE_URL = getBaseUrl();
+
 interface FormData {
   dogName: string;
   gender: string;
@@ -225,6 +243,7 @@ export async function submitRegistration(
         registrationId: registration.id,
         customerEmail: formData.ownerEmail,
         dogName: formData.dogName,
+        baseUrl: BASE_URL,
       });
 
       // ⭐ SAVE SESSION ID TO DATABASE
