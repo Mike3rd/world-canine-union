@@ -358,7 +358,7 @@ async function generateCertificatePDF(dogData: any) {
       y: rowY,
       xScale: 50,
       yScale: 50,
-      borderColor: wcuColors.gray,
+      borderColor: wcuColors.primary,
       borderWidth: 1.5,
     });
 
@@ -367,7 +367,7 @@ async function generateCertificatePDF(dogData: any) {
       y: rowY,
       xScale: 45,
       yScale: 45,
-      borderColor: wcuColors.gray,
+      borderColor: wcuColors.primary,
       borderWidth: 0.5,
       borderDashArray: [2, 2],
     });
@@ -377,7 +377,7 @@ async function generateCertificatePDF(dogData: any) {
       y: rowY + 15,
       size: 25,
       font: zapfDingbats,
-      color: wcuColors.gray,
+      color: wcuColors.accent,
     });
 
     page.drawText("WCU", {
@@ -385,7 +385,7 @@ async function generateCertificatePDF(dogData: any) {
       y: rowY - 12,
       size: 30,
       font: timesRoman,
-      color: wcuColors.gray,
+      color: wcuColors.primary,
     });
 
     page.drawText("• REGISTERED •", {
@@ -393,7 +393,7 @@ async function generateCertificatePDF(dogData: any) {
       y: rowY - 23,
       size: 9,
       font: helveticaRegular,
-      color: wcuColors.gray,
+      color: wcuColors.primary,
     });
 
     // 2. FIRST SIGNATURE (Center)

@@ -147,7 +147,8 @@ async function generateCertificate(registration: any) {
   try {
     console.log("📄 Generating PDF for:", registration.registration_number);
 
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const baseUrl =
+      process.env.NEXT_PUBLIC_APP_URL || "https://www.worldcanineunion.org/";
     const response = await fetch(`${baseUrl}/api/generate-certificate`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -211,7 +212,7 @@ async function sendRegistrationEmail(registration: any, pdfUrl: string) {
       dogName: registration.dog_name,
       ownerName: registration.owner_name,
       wcuNumber: registration.registration_number,
-      pdfUrl: pdfUrl, // ← USE THE PASSED URL
+      pdfUrl: `${process.env.NEXT_PUBLIC_APP_URL}/api/certificates/${registration.registration_number}`, // ← Use proxy URL
     });
 
     if (emailResult.success) {

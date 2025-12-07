@@ -108,7 +108,7 @@ export async function submitRegistration(
 
     try {
       const baseUrl =
-        process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+        process.env.NEXT_PUBLIC_BASE_URL || "https://www.worldcanineunion.org/";
       console.log("📞 Calling API:", `${baseUrl}/api/generate-certificate`);
 
       const response = await fetch(`${baseUrl}/api/generate-certificate`, {
