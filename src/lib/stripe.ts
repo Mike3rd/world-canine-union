@@ -13,8 +13,8 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 
 // ⚠️ IMPORTANT: You need to get this from Stripe dashboard
 // Go to: Products > WCU Dog Registration > Look for "Price ID" or "API ID"
-// It looks like: price_1PqXyzABC123...
-export const WCU_REGISTRATION_PRICE_ID = "price_1Sb5xSRtExzmzHmhrWQRWrfQ"; // ← REPLACE THIS
+
+export const WCU_REGISTRATION_PRICE_ID = process.env.STRIPE_PRICE_ID!;
 
 // Function to create checkout session
 export async function createStripeCheckoutSession({
