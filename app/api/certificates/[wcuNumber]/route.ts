@@ -3,10 +3,11 @@ import { supabase } from "@/lib/supabase";
 
 export async function GET(
   request: NextRequest,
+  context: { params: Promise<{ wcuNumber: string }> },
   { params }: { params: { wcuNumber: string } }
 ) {
   try {
-    const { wcuNumber } = params;
+    const { wcuNumber } = await context.params; // ← ADD THIS AWAIT
 
     console.log("📄 Certificate download requested for:", wcuNumber);
 
