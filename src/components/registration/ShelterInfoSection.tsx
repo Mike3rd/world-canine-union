@@ -14,7 +14,7 @@ export default function ShelterInfoSection({ formData, onInputChange }: ShelterI
     return (
         <div className="pt-4 border-t border-border">
             <h3 className="text-xl font-heading font-semibold text-primary mb-6">
-                Rescue/Shelter Information
+                Rescue/Shelter Information  (optional)
             </h3>
             <p className="text-text-muted mb-4 text-sm">
                 Help us recognize the amazing organizations that save dogs! This information will be used to build our national shelter directory.

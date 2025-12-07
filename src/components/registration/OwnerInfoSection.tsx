@@ -16,7 +16,7 @@ export default function OwnerInfoSection({ formData, onInputChange, fieldErrors 
       <div className="grid md:grid-cols-2 gap-6">
         <div>
           <label className="block text-sm font-body2 font-medium text-text mb-2">
-            Your Name *
+            Your Name <span className="text-accent font-bold">*</span>
           </label>
           <input
             type="text"
@@ -34,7 +34,7 @@ export default function OwnerInfoSection({ formData, onInputChange, fieldErrors 
         </div>
         <div>
           <label className="block text-sm font-body2 font-medium text-text mb-2">
-            Email Address *
+            Email Address <span className="text-accent font-bold">*</span>
           </label>
           <input
             type="email"

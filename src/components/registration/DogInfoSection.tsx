@@ -25,7 +25,7 @@ export default function DogInfoSection({ formData, onInputChange, fieldErrors }:
             <div className="grid md:grid-cols-2 gap-6">
                 <div>
                     <label className="block text-sm font-body2 font-medium text-text mb-2">
-                        Dog&apos;s Name *
+                        Dog&apos;s Name <span className="text-accent font-bold">*</span>
                         <span className="text-xs text-text-muted ml-2">
                             {formData.dogName.length}/30
                         </span>
@@ -45,7 +45,7 @@ export default function DogInfoSection({ formData, onInputChange, fieldErrors }:
                 </div>
                 <div>
                     <label className="block text-sm font-body2 font-medium text-text mb-2">
-                        Gender *
+                        Gender <span className="text-accent font-bold">*</span>
                     </label>
                     <select
                         name="gender"
@@ -81,7 +81,7 @@ export default function DogInfoSection({ formData, onInputChange, fieldErrors }:
                 </div>
                 <div>
                     <label className="block text-sm font-body2 font-medium text-text mb-2">
-                        Gotcha Day *
+                        Gotcha Day <span className="text-accent font-bold">*</span>
                     </label>
                     <input
                         type="date"
@@ -104,7 +104,7 @@ export default function DogInfoSection({ formData, onInputChange, fieldErrors }:
             {/* Breed Mix */}
             <div>
                 <label className="block text-sm font-body2 font-medium text-text mb-2">
-                    Suspected Breed Mix *
+                    Suspected Breed Mix <span className="text-accent font-bold">*</span>
                 </label>
                 <div className="space-y-3">
                     <input
@@ -146,7 +146,7 @@ export default function DogInfoSection({ formData, onInputChange, fieldErrors }:
             {/* Color */}
             <div>
                 <label className="block text-sm font-body2 font-medium text-text mb-2">
-                    Dog's Color(s) *
+                    Dog's Color(s) <span className="text-accent font-bold">*</span>
                     <span className="text-xs text-text-muted ml-2">
                         {formData.dogColor.length}/50
                     </span>
@@ -183,7 +183,7 @@ export default function DogInfoSection({ formData, onInputChange, fieldErrors }:
                     onChange={onInputChange}
                     className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text ${fieldErrors.dogDescription ? 'border-red-500' : 'border-border'
                         }`} // ← ADD ERROR BORDER
-                    placeholder="Distinctive markings, scars, eye color, tail type, ear shape, size, weight..."
+                    placeholder="(optional) Distinctive markings, scars, eye color, tail type, ear shape, size, weight..."
                 />
                 {/* ADD ERROR MESSAGE DISPLAY */}
                 {fieldErrors.dogDescription && (
@@ -209,7 +209,7 @@ export default function DogInfoSection({ formData, onInputChange, fieldErrors }:
                     onChange={onInputChange}
                     className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text ${fieldErrors.dogStory ? 'border-red-500' : 'border-border'
                         }`}
-                    placeholder="Tell us about your dog's personality, how you met, or what makes them special..."
+                    placeholder="(optional) Tell us about your dog's personality, how you met, or what makes them special..."
                 />
                 {fieldErrors.dogStory && (
                     <p className="text-red-500 text-xs mt-1">{fieldErrors.dogStory}</p>
@@ -233,7 +233,7 @@ export default function DogInfoSection({ formData, onInputChange, fieldErrors }:
                     onChange={onInputChange}
                     className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text ${fieldErrors.specialAttributes ? 'border-red-500' : 'border-border'
                         }`}
-                    placeholder="Their unique personality, special skills, what makes them extraordinary..."
+                    placeholder="(optional) Their unique personality, special skills, what makes them extraordinary..."
                 />
                 {fieldErrors.specialAttributes && (
                     <p className="text-red-500 text-xs mt-1">{fieldErrors.specialAttributes}</p>
@@ -255,7 +255,7 @@ export default function DogInfoSection({ formData, onInputChange, fieldErrors }:
                     onChange={onInputChange}
                     className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text ${fieldErrors.favoriteActivities ? 'border-red-500' : 'border-border'
                         }`}
-                    placeholder="Fetch, swimming, hiking, cuddling, specific games they love..."
+                    placeholder="(optional) Fetch, swimming, hiking, cuddling, specific games they love..."
                 />
                 {fieldErrors.favoriteActivities && (
                     <p className="text-red-500 text-xs mt-1">{fieldErrors.favoriteActivities}</p>
@@ -277,7 +277,7 @@ export default function DogInfoSection({ formData, onInputChange, fieldErrors }:
                     onChange={onInputChange}
                     className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text ${fieldErrors.uniqueTraits ? 'border-red-500' : 'border-border'
                         }`}
-                    placeholder="Funny noises they make, strange sleeping positions, quirky behaviors, little rituals..."
+                    placeholder="(optional) Funny noises they make, strange sleeping positions, quirky behaviors, little rituals..."
                 />
                 {fieldErrors.uniqueTraits && (
                     <p className="text-red-500 text-xs mt-1">{fieldErrors.uniqueTraits}</p>

@@ -53,7 +53,7 @@ export default function ImageUpload({ selectedImage, onImageChange, onCropReques
     return (
         <div>
             <label className="block text-sm font-body2 font-medium text-text mb-4">
-                Dog&apos;s Photo *
+                Dog&apos;s Photo <span className="text-accent font-bold">*</span>
             </label>
             <div className="flex flex-col items-center space-y-4">
                 {imagePreview ? (
