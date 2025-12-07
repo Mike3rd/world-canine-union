@@ -31,7 +31,7 @@ export default function RootLayout({
                     <HeartIcon className="text-error mr-1 heart-stroke" size={40} />
                     World Canine Union
                   </h1>
-                  <p className="text-sm text-header-text/80 font-body2 ml-12 -mt-1">
+                  <p className="text-md text-header-text/80 font-body2 ml-12 -mt-1">
                     Global Registry for all other dogs
                   </p>
                 </div>

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
 import Stripe from "stripe";
 import { supabase } from "@/lib/supabase";
+import { sendWelcomeEmail } from "@/lib/email";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-11-17.clover",
@@ -114,10 +115,14 @@ async function handleCheckoutSessionCompleted(
     }
 
     // 3. Generate PDF certificate
-    await generateCertificate(registration);
+    const pdfUrl = await generateCertificate(registration);
 
-    // 4. Send welcome email
-    await sendWelcomeEmail(registration);
+    if (pdfUrl) {
+      // 4. Send welcome email
+      await sendRegistrationEmail(registration, pdfUrl);
+    } else {
+      console.error("❌ Could not generate PDF, skipping email");
+    }
 
     console.log(
       "🎉 Registration fully completed:",
@@ -153,7 +158,7 @@ async function generateCertificate(registration: any) {
 
     if (!response.ok) {
       console.error("❌ PDF generation failed:", response.statusText);
-      return;
+      return null; // ← CHANGE: return null instead of just return
     }
 
     const pdfBlob = await response.blob();
@@ -169,7 +174,7 @@ async function generateCertificate(registration: any) {
 
     if (uploadError) {
       console.warn("⚠️ PDF storage failed:", uploadError.message);
-      return;
+      return null; // ← CHANGE: return null
     }
 
     // Get public URL
@@ -187,32 +192,41 @@ async function generateCertificate(registration: any) {
       .eq("id", registration.id);
 
     console.log("✅ PDF generated and stored:", urlData.publicUrl);
+    return urlData.publicUrl; // ← ADD THIS LINE: return the URL
   } catch (error) {
     console.error("❌ Certificate generation error:", error);
+    return null; // ← CHANGE: return null
   }
 }
 
-async function sendWelcomeEmail(registration: any) {
+// Line 179: Change function name
+async function sendRegistrationEmail(registration: any, pdfUrl: string) {
+  // ← ADD pdfUrl PARAMETER HERE
   try {
     console.log("📧 Sending welcome email to:", registration.owner_email);
 
-    // TODO: Implement email sending with Resend
-    // For now, log that we would send an email
-    console.log("📨 Email would be sent to:", {
+    // Call the real email function from lib/email
+    const emailResult = await sendWelcomeEmail({
       to: registration.owner_email,
-      subject: `Welcome to World Canine Union! Your Registration: ${registration.registration_number}`,
-      body: `Thank you for registering ${registration.dog_name}!`,
+      dogName: registration.dog_name,
+      ownerName: registration.owner_name,
+      wcuNumber: registration.registration_number,
+      pdfUrl: pdfUrl, // ← USE THE PASSED URL
     });
 
-    // Update email sent timestamp
-    await supabase
-      .from("registrations")
-      .update({
-        certificate_sent_at: new Date().toISOString(),
-      })
-      .eq("id", registration.id);
+    if (emailResult.success) {
+      console.log("✅ Email sent successfully!");
 
-    console.log("✅ Email sent (simulated)");
+      // Update email sent timestamp
+      await supabase
+        .from("registrations")
+        .update({
+          certificate_sent_at: new Date().toISOString(),
+        })
+        .eq("id", registration.id);
+    } else {
+      console.error("❌ Email failed:", emailResult.error);
+    }
   } catch (error) {
     console.error("❌ Email sending error:", error);
   }

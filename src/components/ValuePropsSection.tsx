@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function ValuePropsSection() {
   return (
     <section className="py-16 bg-background">
@@ -43,7 +45,39 @@ export default function ValuePropsSection() {
             </p>
           </div>
         </div>
+        {/* ADD THIS: Bridge CTA */}
+        <div className="text-center border-t border-border pt-12">
+          <p className="text-xl font-body2 text-text-muted mb-6 max-w-2xl mx-auto">
+            Ready to give your dog the recognition they deserve?
+            <span className="font-semibold text-accent block mt-2">
+              Choose how you'd like to proceed:
+            </span>
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            {/* Primary CTA - Direct to Registration */}
+            <Link
+              href="/register"
+              className="bg-buttons text-surface px-8 py-4 rounded-xl font-heading font-semibold hover:opacity-90 transition-all shadow-lg hover:shadow-xl min-w-[200px] text-center"
+            >
+              Register Now
+            </Link>
+
+            {/* Secondary CTA - Learn More First */}
+            <Link
+              href="/membership"
+              className="border border-primary text-primary px-8 py-4 rounded-xl font-heading font-semibold hover:bg-primary hover:text-surface transition-all min-w-[200px] text-center"
+            >
+              Learn About Membership
+            </Link>
+          </div>
+
+          <p className="mt-6 text-sm font-body text-text-muted">
+            Or explore our <Link href="/faq" className="text-accent hover:underline">FAQ</Link> for common questions
+          </p>
+        </div>
       </div>
     </section>
+
   );
 }

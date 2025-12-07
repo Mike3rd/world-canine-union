@@ -14,11 +14,11 @@ export default function HeroSection() {
           </p>
         </div>
 
-        {/* Two-Column Content */}
+        {/* Two-Column Content - EQUAL HEIGHT */}
         <div className="max-w-5xl mx-auto mb-12">
-          <div className="grid lg:grid-cols-2 gap-10 items-start">
+          <div className="flex flex-col lg:flex-row gap-10">
             {/* Left Column - Features */}
-            <div className="space-y-6 p-8 bg-surface-light rounded-2xl border border-border shadow-sm">
+            <div className="flex-1 space-y-6 p-8 bg-surface-light rounded-2xl border border-border shadow-sm">
               <h3 className="text-2xl font-heading font-bold text-primary">
                 Your <span className="text-accent">One-Time $XXX Fee</span> Includes:
               </h3>
@@ -61,11 +61,10 @@ export default function HeroSection() {
             </div>
 
             {/* Right Column - Animal Welfare */}
-            <div className="p-8 bg-gradient-to-br from-accent/15 to-accent/5 rounded-2xl border border-accent/30 shadow-sm relative overflow-hidden">
-              {/* Decorative element */}
-              <div className="absolute -top-6 -right-6 w-24 h-24 bg-accent/10 rounded-full blur-xl" />
+            <div className="flex-1 p-8 bg-gradient-to-bl from-background to-white rounded-2xl border border-border shadow-sm relative overflow-hidden">
+              <div className="absolute -top-6 -right-6 w-24 h-24 bg-background rounded-full blur-xl" />
 
-              <div className="relative">
+              <div className="relative h-full flex flex-col">
                 <div className="inline-flex items-center gap-2 mb-4">
                   <div className="text-2xl">❤️</div>
                   <h3 className="text-2xl font-heading font-bold text-primary">
@@ -73,7 +72,7 @@ export default function HeroSection() {
                   </h3>
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-4 flex-1">
                   <p className="font-body2 text-text-muted leading-relaxed">
                     <span className="font-semibold text-accent">A portion of every registration</span> directly supports dog rescue organizations and animal welfare initiatives worldwide.
                   </p>
@@ -99,7 +98,7 @@ export default function HeroSection() {
                     </ul>
                   </div>
 
-                  <div className="pt-4 border-t border-border/50">
+                  <div className="pt-4 border-t border-border/50 mt-auto">
                     <p className="font-body2 italic text-primary">
                       "Celebrate your companion while helping dogs in need."
                     </p>
