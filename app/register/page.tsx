@@ -1,5 +1,4 @@
 import RegistrationForm from '@/components/RegistrationForm';
-import TestStripeButton from "@/components/TestStripeButton"; // Add import
 
 
 export default function RegistrationPage() {
@@ -15,12 +14,17 @@ export default function RegistrationPage() {
             The official global registry celebrating one-of-a-kind dogs. Join our community today!
           </p>
         </div>
-
-        <TestStripeButton />
-
-
-
-
+        {/* Caution */}
+        <div className="mb-6 p-4 bg-surface rounded-lg border border-border">
+          <div className="flex items-start gap-2">
+            <span className="text-accent text-lg mt-0.5">⚠️</span>
+            <div>
+              <p className="font-body2 text-text-muted">
+                <span className="text-accent font-bold">Type carefully—your answers appear on your dog's certificate and webpage exactly as entered on this form.</span> Your email is for WCU records only (never displayed online). Your name is displayed on your canine's official WCU certificate only (never displayed online).  <span className="text-accent font-bold"> Check spelling before submitting.</span>
+              </p>
+            </div>
+          </div>
+        </div>
 
 
         <RegistrationForm />
