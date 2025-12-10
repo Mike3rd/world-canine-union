@@ -32,7 +32,7 @@ export async function sendWelcomeEmail({
 
   try {
     const { data, error } = await resend.emails.send({
-      from: "World Canine Union <onboarding@resend.dev>", // Test domain
+      from: "World Canine Union <noreply@worldcanineunion.org>",
       to: [to],
       subject: `Welcome to World Canine Union! Your Registration: ${wcuNumber}`,
       react: WelcomeEmail({
