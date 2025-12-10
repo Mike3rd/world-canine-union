@@ -147,7 +147,8 @@ async function generateCertificate(registration: any) {
   try {
     console.log("📄 Generating PDF for:", registration.registration_number);
 
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const baseUrl =
+      process.env.NEXT_PUBLIC_APP_URL || "https://worldcanineunion.org";
     const response = await fetch(`${baseUrl}/api/generate-certificate`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
