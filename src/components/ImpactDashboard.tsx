@@ -53,8 +53,19 @@ export default function ImpactDashboard() {
                     .select("shelter_name, shelter_state")
                     .eq("status", "completed");
 
-                const uniqueShelters = new Set(shelters?.map(s => s.shelter_name).filter(Boolean) || []);
-                const uniqueStates = new Set(shelters?.map(s => s.shelter_state).filter(Boolean) || []);
+                // WITH THIS:
+                const shelterNames: string[] = [];
+                const shelterStates: string[] = [];
+
+                if (shelters) {
+                    for (const shelter of shelters) {
+                        if (shelter.shelter_name) shelterNames.push(shelter.shelter_name);
+                        if (shelter.shelter_state) shelterStates.push(shelter.shelter_state);
+                    }
+                }
+
+                const uniqueShelters = new Set(shelterNames);
+                const uniqueStates = new Set(shelterStates);
 
                 setStats({
                     total_dogs: count || 0,
