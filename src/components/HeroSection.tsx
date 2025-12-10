@@ -82,7 +82,7 @@ export default function HeroSection() {
           {/* Bonus CTA */}
           <div className="text-center mt-12 p-8 bg-primary/5 rounded-2xl border border-primary/20">
             <p className="text-xl font-semibold text-primary mb-2">
-              Plus: <span className="text-accent">$5 from every registration</span> supports shelter animals!
+              Plus: <span className="text-accent">$5 from every registration</span> directly supports shelter animals!
             </p>
             <p className="text-text-muted">
               Your celebration helps feed, vaccinate, and care for rescue animals in need
