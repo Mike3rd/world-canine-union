@@ -1,0 +1,11 @@
+{
+  "redirects": [
+    {
+      "source": "www.worldcanineunion.org",
+      "destination": "https://worldcanineunion.org",
+      "permanent": true
+    }
+  ],
+  "cleanUrls": true,
+  "trailingSlash": false
+}
