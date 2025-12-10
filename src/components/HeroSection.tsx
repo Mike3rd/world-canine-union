@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { FileText, Globe, Rainbow, Zap } from "lucide-react";
 
 export default function HeroSection() {
   return (
@@ -15,97 +16,77 @@ export default function HeroSection() {
         </div>
 
         {/* Two-Column Content - EQUAL HEIGHT */}
-        <div className="max-w-5xl mx-auto mb-12">
-          <div className="flex flex-col lg:flex-row gap-10">
-            {/* Left Column - Features */}
-            <div className="flex-1 space-y-6 p-8 bg-surface-light rounded-2xl border border-border shadow-sm">
-              <h3 className="text-2xl font-heading font-bold text-primary">
-                Your <span className="text-accent">One-Time $XXX Fee</span> Includes:
-              </h3>
-              <ul className="space-y-4">
-                {[
-                  {
-                    icon: "📜",
-                    title: "Official Digital Certificate",
-                    desc: "Beautifully designed certificate for your unique companion"
-                  },
-                  {
-                    icon: "🌐",
-                    title: "Forever Digital Legacy",
-                    desc: "Personalized webpage with photos, story, and biography"
-                  },
-                  {
-                    icon: "🌈",
-                    title: "Rainbow Journey Tribute",
-                    desc: "Transforms into a loving memorial when the time comes"
-                  },
-                  {
-                    icon: "⚡",
-                    title: "Lifetime Membership",
-                    desc: "No annual fees—honored forever in our global registry"
-                  }
-                ].map((item, index) => (
-                  <li key={index} className="flex items-start gap-4">
-                    <div className="text-2xl flex-shrink-0 mt-1">{item.icon}</div>
-                    <div>
-                      <h4 className="font-heading font-semibold text-primary mb-1">
-                        {item.title}
-                      </h4>
-                      <p className="font-body2 text-text-muted text-sm">
-                        {item.desc}
-                      </p>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
+        <div className="max-w-7xl mx-auto px-4 mb-16">
+          <h2 className="text-4xl font-heading font-bold text-primary text-center mb-6">
+            Your <span className="text-accent">One-Time $25 Fee</span> Includes:
+          </h2>
+          <p className="text-xl font-body2 text-text-muted text-center mb-12 max-w-3xl mx-auto">
+            Everything you need to celebrate your dog&apos;s unique story and legacy
+          </p>
 
-            {/* Right Column - Animal Welfare */}
-            <div className="flex-1 p-8 bg-gradient-to-bl from-background to-white rounded-2xl border border-border shadow-sm relative overflow-hidden">
-              <div className="absolute -top-6 -right-6 w-24 h-24 bg-background rounded-full blur-xl" />
-
-              <div className="relative h-full flex flex-col">
-                <div className="inline-flex items-center gap-2 mb-4">
-                  <div className="text-2xl">❤️</div>
-                  <h3 className="text-2xl font-heading font-bold text-primary">
-                    Supporting Canine Welfare
-                  </h3>
-                </div>
-
-                <div className="space-y-4 flex-1">
-                  <p className="font-body2 text-text-muted leading-relaxed">
-                    <span className="font-semibold text-accent">A portion of every registration</span> directly supports dog rescue organizations and animal welfare initiatives worldwide.
-                  </p>
-
-                  <div className="bg-surface/50 p-4 rounded-lg border border-border">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="font-body2 font-semibold text-primary">Your Registration Impact</span>
-                      <span className="text-lg">🐾</span>
-                    </div>
-                    <ul className="space-y-2 font-body2 text-sm text-text-muted">
-                      <li className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-accent rounded-full" />
-                        Medical care for rescued dogs
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-accent rounded-full" />
-                        Shelter and rehabilitation
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-accent rounded-full" />
-                        Finding loving forever homes
-                      </li>
-                    </ul>
-                  </div>
-
-                  <div className="pt-4 border-t border-border/50 mt-auto">
-                    <p className="font-body2 italic text-primary">
-                      "Celebrate your companion while helping dogs in need."
-                    </p>
-                  </div>
-                </div>
+          {/* Horizontal Cards Grid */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* Official Certificate Card */}
+            <div className="bg-surface p-8 rounded-2xl border border-border hover:shadow-lg transition-all">
+              <div className="w-12 h-12 bg-primary text-surface rounded-lg flex items-center justify-center mb-4">
+                <FileText className="w-6 h-6" />
               </div>
+              <h3 className="font-heading text-2xl font-semibold text-primary mb-2">
+                Official Digital Certificate
+              </h3>
+              <p className="text-text-muted font-body text-sm">
+                Beautifully designed certificate for your unique companion, ready to download and print.
+              </p>
             </div>
+
+            {/* Digital Legacy Card */}
+            <div className="bg-surface p-8 rounded-2xl border border-border hover:shadow-lg transition-all">
+              <div className="w-12 h-12 bg-secondary text-surface rounded-lg flex items-center justify-center mb-4">
+                <Globe className="w-6 h-6" />
+              </div>
+              <h3 className="font-heading text-2xl font-semibold text-primary mb-2">
+                Forever Digital Legacy
+              </h3>
+              <p className="text-text-muted font-body text-sm">
+                Personalized webpage with photos, story, and biography—a permanent tribute to your dog&apos;s life.
+              </p>
+            </div>
+
+            {/* Rainbow Tribute Card */}
+            <div className="bg-surface p-8 rounded-2xl border border-border hover:shadow-lg transition-all">
+              <div className="w-12 h-12 bg-accent text-surface rounded-lg flex items-center justify-center mb-4">
+                <Rainbow className="w-6 h-6" />
+              </div>
+              <h3 className="font-heading text-2xl font-semibold text-primary mb-2">
+                Rainbow Journey Tribute
+              </h3>
+              <p className="text-text-muted font-body text-sm">
+                Transforms into a loving memorial when the time comes, preserving your dog&apos;s memory forever.
+              </p>
+            </div>
+
+            {/* Lifetime Membership Card */}
+            <div className="bg-surface p-8 rounded-2xl border border-border hover:shadow-lg transition-all">
+              <div className="w-12 h-12 bg-green-500 text-surface rounded-lg flex items-center justify-center mb-4">
+                <Zap className="w-6 h-6" />
+              </div>
+              <h3 className="font-heading text-2xl font-semibold text-primary mb-2">
+                Lifetime Membership
+              </h3>
+              <p className="text-text-muted font-body text-sm">
+                No annual fees—your dog is honored forever in our global registry of extraordinary companions.
+              </p>
+            </div>
+          </div>
+
+          {/* Bonus CTA */}
+          <div className="text-center mt-12 p-8 bg-primary/5 rounded-2xl border border-primary/20">
+            <p className="text-xl font-semibold text-primary mb-2">
+              Plus: <span className="text-accent">$5 from every registration</span> supports shelter dogs!
+            </p>
+            <p className="text-text-muted">
+              Your celebration helps feed, vaccinate, and care for rescue animals in need
+            </p>
           </div>
         </div>
 

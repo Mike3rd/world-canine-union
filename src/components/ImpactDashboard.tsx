@@ -132,7 +132,7 @@ export default function ImpactDashboard() {
 
     return (
         <section className="py-16 bg-background">
-            <div className="container mx-auto px-4">
+            <div className="container max-w-7xl mx-auto px-4">
                 {/* HEADER SECTION - Updated to introduce both */}
                 <h2 className="text-4xl font-heading font-bold text-primary text-center mb-6">
                     Your Registration Makes a Difference
