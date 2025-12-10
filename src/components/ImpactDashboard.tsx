@@ -139,7 +139,7 @@ export default function ImpactDashboard() {
                 </h2>
 
                 <p className="text-xl font-body2 text-text-muted text-center mb-12 max-w-3xl mx-auto">
-                    Every WCU registration includes a <strong>20% donation</strong> that directly supports rescue dogs.
+                    Every WCU registration includes a <strong>20% donation</strong> that directly supports rescue animals.
                     Here&apos;s how your support helps and what our community has accomplished together.
                 </p>
 
@@ -151,10 +151,10 @@ export default function ImpactDashboard() {
                             <Dog className="w-6 h-6" />
                         </div>
                         <h3 className="font-heading text-2xl font-semibold text-primary mb-2">
-                            Feeds Shelter Dogs
+                            Feeds Shelter Animals
                         </h3>
                         <p className="text-text-muted font-body text-sm">
-                            <strong>Your WCU Registration</strong> provides meals for a shelter dog for 3-4 days
+                            <strong>Your WCU Registration</strong> provides meals for a shelter animals for 3-4 days
                         </p>
                     </div>
 
