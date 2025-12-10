@@ -232,3 +232,5 @@ async function sendRegistrationEmail(registration: any, pdfUrl: string) {
     console.error("❌ Email sending error:", error);
   }
 }
+
+export { handleCheckoutSessionCompleted };
