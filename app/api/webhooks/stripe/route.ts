@@ -212,7 +212,7 @@ async function sendRegistrationEmail(registration: any, pdfUrl: string) {
       dogName: registration.dog_name,
       ownerName: registration.owner_name,
       wcuNumber: registration.registration_number,
-      pdfUrl: pdfUrl, // ← Use proxy URL
+      pdfUrl: `https://worldcanineunion.org/api/certificates/${registration.registration_number}`, // ← Use proxy URL
     });
 
     if (emailResult.success) {

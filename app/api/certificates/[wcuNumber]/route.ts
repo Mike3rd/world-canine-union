@@ -46,6 +46,8 @@ export async function GET(
         "Content-Type": "application/pdf",
         "Content-Disposition": `inline; filename="WCU-Certificate-${wcuNumber}.pdf"`,
         "Cache-Control": "public, max-age=86400", // Cache for 24 hours
+        "X-Vercel-Cache-Control": "public, max-age=86400", // ← Vercel-specific
+        "CDN-Cache-Control": "public, max-age=86400", // ← CDN-specific
       },
     });
   } catch (error) {
