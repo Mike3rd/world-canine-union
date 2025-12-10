@@ -15,39 +15,45 @@ export default function OwnerInfoSection({ formData, onInputChange, fieldErrors 
       </h3>
       <div className="grid md:grid-cols-2 gap-6">
         <div>
-          <label className="block text-sm font-body2 font-medium text-text mb-2">
+          <label htmlFor="ownerName" className="block text-sm font-body2 font-medium text-text mb-2">
             Your Name <span className="text-accent font-bold">*</span>
           </label>
           <input
+            id="ownerName"
             type="text"
             name="ownerName"
             required
             value={formData.ownerName}
             onChange={onInputChange}
+            aria-label="Your full name"
+            aria-required="true"
             className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text ${fieldErrors.ownerName ? 'border-red-500' : 'border-border'
               }`}
             placeholder="Your full name"
           />
           {fieldErrors.ownerName && (
-            <p className="text-red-500 text-xs mt-1">{fieldErrors.ownerName}</p>
+            <p id="ownerName-error" className="text-red-500 text-xs mt-1">{fieldErrors.ownerName}</p>
           )}
         </div>
         <div>
-          <label className="block text-sm font-body2 font-medium text-text mb-2">
+          <label htmlFor="ownerEmail" className="block text-sm font-body2 font-medium text-text mb-2">
             Email Address <span className="text-accent font-bold">*</span>
           </label>
           <input
+            id="ownerEmail"
             type="email"
             name="ownerEmail"
             required
             value={formData.ownerEmail}
             onChange={onInputChange}
+            aria-label="Your email address"
+            aria-required="true"
             className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text ${fieldErrors.ownerEmail ? 'border-red-500' : 'border-border'
               }`}
             placeholder="your.email@example.com"
           />
           {fieldErrors.ownerEmail && (
-            <p className="text-red-500 text-xs mt-1">{fieldErrors.ownerEmail}</p>
+            <p id="ownerEmail-error" className="text-red-500 text-xs mt-1">{fieldErrors.ownerEmail}</p>
           )}
         </div>
       </div>
