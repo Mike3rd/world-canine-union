@@ -194,11 +194,32 @@ async function generateCertificatePDF(dogData: any) {
 
     // SUBTITLE
     const subtitleText = "CERTIFICATE OF REGISTRATION";
+    const subtitleWidth = subtitleText.length * 13.5;
+
+    // Left Zapf star
+    page.drawText("✵", {
+      x: (width - subtitleWidth) / 2 - 25,
+      y: height - 150,
+      size: 20,
+      font: zapfDingbats, // ← Must use zapfDingbats font!
+      color: wcuColors.secondary,
+    });
+
+    // Main text
     page.drawText(subtitleText, {
-      x: titleX - 80,
+      x: (width - subtitleWidth) / 2,
       y: height - 150,
       size: 24,
-      font: timesRoman,
+      font: timesRoman, // ← Regular font for regular text
+      color: wcuColors.secondary,
+    });
+
+    // Right Zapf star
+    page.drawText("✵", {
+      x: (width + subtitleWidth) / 2 + 15,
+      y: height - 150,
+      size: 20,
+      font: zapfDingbats, // ← Must use zapfDingbats font!
       color: wcuColors.secondary,
     });
 

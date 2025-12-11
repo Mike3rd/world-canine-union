@@ -49,6 +49,36 @@ export async function submitRegistration(
   selectedImage: File | null
 ) {
   try {
+    // ========== SERVER-SIDE VALIDATION ==========
+    const requiredFields = [
+      "dogName",
+      "gender",
+      "gotchaDay",
+      "primaryBreed",
+      "dogColor",
+      "ownerName",
+      "ownerEmail",
+    ] as const;
+
+    const missingFields = requiredFields.filter((field) => !formData[field]);
+
+    if (missingFields.length > 0) {
+      return {
+        success: false,
+        error: `Missing required fields: ${missingFields.map((f) => f.replace(/([A-Z])/g, " $1").toLowerCase()).join(", ")}`,
+      };
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.ownerEmail)) {
+      return {
+        success: false,
+        error: "Please enter a valid email address",
+      };
+    }
+    // ========== END VALIDATION ==========
+
     // Check for existing registration
     const { data: existingRegistration, error: checkError } = await supabase
       .from("registrations")
@@ -87,6 +117,7 @@ export async function submitRegistration(
           owner_name: formData.ownerName,
           owner_email: formData.ownerEmail,
           birth_date: formData.birthDate || null,
+          gender: formData.gender,
           gotcha_date: formData.gotchaDay || null,
           location: formData.rescueLocation || null,
           breed_description: `${formData.primaryBreed} ${
