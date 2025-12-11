@@ -1,16 +1,17 @@
 import Link from "next/link";
+import { Star, Globe, Heart, Zap } from "lucide-react";
 
 export default function ValuePropsSection() {
   return (
     <section className="py-16 bg-background">
-      <div className="container mx-auto px-4">
+      <div className="max-w-7xl mx-auto px-4 mb-16">
         <h2 className="text-4xl font-heading font-bold text-primary text-center mb-12">
           Why Join the World Canine Union?
         </h2>
         <div className="grid md:grid-cols-3 gap-8">
           <div className="bg-surface p-8 rounded-2xl border border-border hover:shadow-lg transition-all">
             <div className="w-12 h-12 bg-primary text-surface rounded-lg flex items-center justify-center mb-4">
-              <span className="text-lg">🌐</span>
+              <Globe className="w-6 h-6" />
             </div>
             <h3 className="font-heading text-2xl font-semibold text-primary mb-4">
               Global Certification
@@ -22,7 +23,7 @@ export default function ValuePropsSection() {
           </div>
           <div className="bg-surface p-8 rounded-2xl border border-border hover:shadow-lg transition-all">
             <div className="w-12 h-12 bg-secondary text-surface rounded-lg flex items-center justify-center mb-4">
-              <span className="text-lg">🤝</span>
+              <Heart className="w-6 h-6" />
             </div>
             <h3 className="font-heading text-2xl font-semibold text-primary mb-4">
               Community Impact
@@ -34,7 +35,7 @@ export default function ValuePropsSection() {
           </div>
           <div className="bg-surface p-8 rounded-2xl border border-border hover:shadow-lg transition-all">
             <div className="w-12 h-12 bg-accent text-surface rounded-lg flex items-center justify-center mb-4">
-              <span className="text-lg">⭐</span>
+              <Star className="w-6 h-6" />
             </div>
             <h3 className="font-heading text-2xl font-semibold text-primary mb-4">
               Exclusive Benefits
@@ -45,8 +46,9 @@ export default function ValuePropsSection() {
             </p>
           </div>
         </div>
+
         {/* ADD THIS: Bridge CTA */}
-        <div className="text-center border-t border-border pt-12">
+        <div className="text-center pt-12">
           <p className="text-xl font-body2 text-text-muted mb-6 max-w-2xl mx-auto">
             Ready to give your dog the recognition they deserve?
             <span className="font-semibold text-accent block mt-2">
