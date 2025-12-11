@@ -131,8 +131,8 @@ export default function ImpactDashboard() {
     }
 
     return (
-        <section className="py-16 bg-background">
-            <div className="container max-w-7xl mx-auto px-4">
+        <section className="py-16 ">
+            <div className="container max-w-7xl mx-auto px-4 ">
                 {/* HEADER SECTION - Updated to introduce both */}
                 <h2 className="text-4xl font-heading font-bold text-primary text-center mb-6">
                     Your Registration Makes a Difference
@@ -143,60 +143,125 @@ export default function ImpactDashboard() {
                     Here&apos;s how your support helps and what our community has accomplished together.
                 </p>
 
-                {/* Impact Metrics - 4 Cards */}
-                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
-                    {/* Dogs Fed - UPDATED TEXT */}
-                    <div className="bg-surface p-8 rounded-2xl border border-border hover:shadow-lg transition-all">
-                        <div className="w-12 h-12 bg-accent text-surface rounded-lg flex items-center justify-center mb-4">
-                            <Dog className="w-6 h-6" />
+                {/* REVISED IMPACT METRICS - NEW DESIGN */}
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
+                    {/* Dogs Fed - NEW DESIGN */}
+                    <div className="group relative">
+                        <div className="absolute -inset-0.5 bg-gradient-to-r from-amber-400 to-orange-500 rounded-2xl blur opacity-0 group-hover:opacity-70 transition duration-500"></div>
+                        <div className="relative bg-surface p-6 rounded-2xl border-2 border-amber-100 hover:border-amber-300 transition-all shadow-sm hover:shadow-lg">
+                            <div className="flex items-start justify-between mb-4">
+                                <div className="w-14 h-14 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center">
+                                    <Dog className="w-7 h-7 text-white" />
+                                </div>
+                                <span className="text-xs font-medium bg-amber-100 text-amber-800 px-2 py-1 rounded-full">
+                                    3-4 Days
+                                </span>
+                            </div>
+                            <h3 className="font-heading text-xl font-bold text-primary mb-3">
+                                Feeds Shelter Pets
+                            </h3>
+                            <p className="text-text-muted font-body text-sm mb-4">
+                                <span className="font-semibold text-amber-700">$5 from your fee</span> provides nutritious meals for shelter animals
+                            </p>
+                            <div className="pt-3 border-t border-border">
+                                <div className="flex items-center text-xs text-text-muted">
+                                    <div className="w-full bg-amber-100 rounded-full h-1.5 mr-2">
+                                        <div className="bg-gradient-to-r from-amber-400 to-orange-500 h-1.5 rounded-full w-3/4"></div>
+                                    </div>
+                                    <span className="font-semibold text-amber-700">75% Impact</span>
+                                </div>
+                            </div>
                         </div>
-                        <h3 className="font-heading text-2xl font-semibold text-primary mb-2">
-                            Feeds Shelter Animals
-                        </h3>
-                        <p className="text-text-muted font-body text-sm">
-                            <strong>Your WCU Registration</strong> provides meals for a shelter animals for 3-4 days
-                        </p>
                     </div>
 
-                    {/* Vaccines Provided - UPDATED TEXT */}
-                    <div className="bg-surface p-8 rounded-2xl border border-border hover:shadow-lg transition-all">
-                        <div className="w-12 h-12 bg-primary text-surface rounded-lg flex items-center justify-center mb-4">
-                            <Syringe className="w-6 h-6" />
+                    {/* Vaccines Provided - NEW DESIGN */}
+                    <div className="group relative">
+                        <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-400 to-cyan-500 rounded-2xl blur opacity-0 group-hover:opacity-70 transition duration-500"></div>
+                        <div className="relative bg-surface p-6 rounded-2xl border-2 border-blue-100 hover:border-blue-300 transition-all shadow-sm hover:shadow-lg">
+                            <div className="flex items-start justify-between mb-4">
+                                <div className="w-14 h-14 bg-gradient-to-br from-blue-400 to-cyan-500 rounded-xl flex items-center justify-center">
+                                    <Syringe className="w-7 h-7 text-white" />
+                                </div>
+                                <span className="text-xs font-medium bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
+                                    Life-Saving
+                                </span>
+                            </div>
+                            <h3 className="font-heading text-xl font-bold text-primary mb-3">
+                                Provides Vaccines
+                            </h3>
+                            <p className="text-text-muted font-body text-sm mb-4">
+                                <span className="font-semibold text-blue-700">Every 2 registrations</span> funds a complete vaccine for a rescue
+                            </p>
+                            <div className="pt-3 border-t border-border">
+                                <div className="flex items-center text-xs text-text-muted">
+                                    <div className="w-full bg-blue-100 rounded-full h-1.5 mr-2">
+                                        <div className="bg-gradient-to-r from-blue-400 to-cyan-500 h-1.5 rounded-full w-1/2"></div>
+                                    </div>
+                                    <span className="font-semibold text-blue-700">50% Impact</span>
+                                </div>
+                            </div>
                         </div>
-                        <h3 className="font-heading text-2xl font-semibold text-primary mb-2">
-                            Provides Vaccines
-                        </h3>
-                        <p className="text-text-muted font-body text-sm">
-                            <strong>Your WCU Registration</strong> contributes to life-saving vaccines
-                        </p>
                     </div>
 
-                    {/* Medical Treatments - UPDATED TEXT */}
-                    <div className="bg-surface p-8 rounded-2xl border border-border hover:shadow-lg transition-all">
-                        <div className="w-12 h-12 bg-green-500 text-surface rounded-lg flex items-center justify-center mb-4">
-                            <Heart className="w-6 h-6" />
+                    {/* Medical Treatments - NEW DESIGN */}
+                    <div className="group relative">
+                        <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400 to-emerald-500 rounded-2xl blur opacity-0 group-hover:opacity-70 transition duration-500"></div>
+                        <div className="relative bg-surface p-6 rounded-2xl border-2 border-green-100 hover:border-green-300 transition-all shadow-sm hover:shadow-lg">
+                            <div className="flex items-start justify-between mb-4">
+                                <div className="w-14 h-14 bg-gradient-to-br from-green-400 to-emerald-500 rounded-xl flex items-center justify-center">
+                                    <Heart className="w-7 h-7 text-white" />
+                                </div>
+                                <span className="text-xs font-medium bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                                    Emergency Care
+                                </span>
+                            </div>
+                            <h3 className="font-heading text-xl font-bold text-primary mb-3">
+                                Funds Medical Care
+                            </h3>
+                            <p className="text-text-muted font-body text-sm mb-4">
+                                <span className="font-semibold text-green-700">Every 8 registrations</span> provides emergency medical treatment
+                            </p>
+                            <div className="pt-3 border-t border-border">
+                                <div className="flex items-center text-xs text-text-muted">
+                                    <div className="w-full bg-green-100 rounded-full h-1.5 mr-2">
+                                        <div className="bg-gradient-to-r from-green-400 to-emerald-500 h-1.5 rounded-full w-1/4"></div>
+                                    </div>
+                                    <span className="font-semibold text-green-700">25% Impact</span>
+                                </div>
+                            </div>
                         </div>
-                        <h3 className="font-heading text-2xl font-semibold text-primary mb-2">
-                            Funds Medical Care
-                        </h3>
-                        <p className="text-text-muted font-body text-sm">
-                            <strong>Your WCU Registration</strong> helps provide emergency medical treatment
-                        </p>
                     </div>
 
-                    {/* Spay/Neuters - UPDATED TEXT */}
-                    <div className="bg-surface p-8 rounded-2xl border border-border hover:shadow-lg transition-all">
-                        <div className="w-12 h-12 bg-purple-500 text-surface rounded-lg flex items-center justify-center mb-4">
-                            <Home className="w-6 h-6" />
+                    {/* Spay/Neuters - NEW DESIGN */}
+                    <div className="group relative">
+                        <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-400 to-violet-500 rounded-2xl blur opacity-0 group-hover:opacity-70 transition duration-500"></div>
+                        <div className="relative bg-surface p-6 rounded-2xl border-2 border-purple-100 hover:border-purple-300 transition-all shadow-sm hover:shadow-lg">
+                            <div className="flex items-start justify-between mb-4">
+                                <div className="w-14 h-14 bg-gradient-to-br from-purple-400 to-violet-500 rounded-xl flex items-center justify-center">
+                                    <Home className="w-7 h-7 text-white" />
+                                </div>
+                                <span className="text-xs font-medium bg-purple-100 text-purple-800 px-2 py-1 rounded-full">
+                                    Prevents Homelessness
+                                </span>
+                            </div>
+                            <h3 className="font-heading text-xl font-bold text-primary mb-3">
+                                Supports Spay/Neuter
+                            </h3>
+                            <p className="text-text-muted font-body text-sm mb-4">
+                                <span className="font-semibold text-purple-700">Every 12 registrations</span> funds a spay/neuter surgery
+                            </p>
+                            <div className="pt-3 border-t border-border">
+                                <div className="flex items-center text-xs text-text-muted">
+                                    <div className="w-full bg-purple-100 rounded-full h-1.5 mr-2">
+                                        <div className="bg-gradient-to-r from-purple-400 to-violet-500 h-1.5 rounded-full w-1/5"></div>
+                                    </div>
+                                    <span className="font-semibold text-purple-700">20% Impact</span>
+                                </div>
+                            </div>
                         </div>
-                        <h3 className="font-heading text-2xl font-semibold text-primary mb-2">
-                            Supports Spay/Neuter
-                        </h3>
-                        <p className="text-text-muted font-body text-sm">
-                            <strong>Your WCU Registration</strong> helps fund spay/neuter surgeries
-                        </p>
                     </div>
                 </div>
+
                 {/* Two-Column Layout: Stats + Recent Members */}
                 <div className="grid lg:grid-cols-2 gap-8 mb-16">
                     {/* Left Column: Community Stats */}

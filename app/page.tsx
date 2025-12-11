@@ -13,7 +13,7 @@ export default function Home() {
       <ValuePropsSection />
       <DetailsSection />
       <ImpactDashboard />
-      <DogShowSection />
+      {/* <DogShowSection /> */}
       <TopShelters />
 
     </div>
