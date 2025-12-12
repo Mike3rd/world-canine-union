@@ -204,7 +204,7 @@ async function generateCertificatePDF(dogData: any) {
 
     // Left Zapf star
     page.drawText("♦", {
-      x: (width - subtitleWidth) / 2 - 30,
+      x: (width - subtitleWidth) / 2 - 20,
       y: height - 150,
       size: 25,
       font: zapfDingbats, // ← Must use zapfDingbats font!
@@ -222,7 +222,7 @@ async function generateCertificatePDF(dogData: any) {
 
     // Right Zapf star
     page.drawText("♦", {
-      x: (width + subtitleWidth) / 2 + 13,
+      x: (width + subtitleWidth) / 2 + 2,
       y: height - 150,
       size: 25,
       font: zapfDingbats, // ← Must use zapfDingbats font!

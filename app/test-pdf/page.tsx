@@ -8,7 +8,7 @@ export default function TestPDFPage() {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                registration_number: "WCU-00092",
+                registration_number: "WCU-TEST-ALL2",
                 dog_name: "Test Dog",
                 // ... other test data
             }),
