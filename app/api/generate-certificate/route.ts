@@ -242,7 +242,7 @@ async function generateCertificatePDF(dogData: any) {
       { label: "Date Issued:", value: new Date().toLocaleDateString() },
       { label: "Name of Dog:", value: dogData.dog_name },
       {
-        label: "Gender:",
+        label: "Gender of Dog:",
         value: dogData.gender.charAt(0).toUpperCase() + dogData.gender.slice(1),
       },
       { label: "Name of Owner:", value: dogData.owner_name },
