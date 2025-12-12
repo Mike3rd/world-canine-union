@@ -197,10 +197,10 @@ async function generateCertificatePDF(dogData: any) {
     const subtitleWidth = subtitleText.length * 13.5;
 
     // Left Zapf star
-    page.drawText("✵", {
+    page.drawText("✤", {
       x: (width - subtitleWidth) / 2 - 25,
       y: height - 150,
-      size: 20,
+      size: 25,
       font: zapfDingbats, // ← Must use zapfDingbats font!
       color: wcuColors.secondary,
     });
@@ -215,10 +215,10 @@ async function generateCertificatePDF(dogData: any) {
     });
 
     // Right Zapf star
-    page.drawText("✵", {
+    page.drawText("✤", {
       x: (width + subtitleWidth) / 2 + 15,
       y: height - 150,
-      size: 20,
+      size: 25,
       font: zapfDingbats, // ← Must use zapfDingbats font!
       color: wcuColors.secondary,
     });
@@ -235,7 +235,7 @@ async function generateCertificatePDF(dogData: any) {
       },
       { label: "Date Issued:", value: new Date().toLocaleDateString() },
       { label: "Name of Dog:", value: dogData.dog_name || "Unknown" },
-      { label: "Sex of Dog:", value: dogData.gender || "Unknown" },
+      { label: "Sex of Dog:", value: dogData.gender || "No sex specified" },
       { label: "Name of Owner:", value: dogData.owner_name || "Unknown" },
       {
         label: "Gotcha Day:",
@@ -363,7 +363,7 @@ async function generateCertificatePDF(dogData: any) {
         y: certTextY - index * lineHeight,
         size: fontSize,
         font: helveticaRegular,
-        color: wcuColors.secondary,
+        color: wcuColors.accent,
       });
     });
 
