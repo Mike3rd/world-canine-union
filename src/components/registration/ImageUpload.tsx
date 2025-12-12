@@ -11,6 +11,7 @@ interface ImageUploadProps {
 
 export default function ImageUpload({ selectedImage, onImageChange, onCropRequest }: ImageUploadProps) {
     const [imagePreview, setImagePreview] = useState<string>("");
+    const fileInputId = "dog-photo-upload";
 
     const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
@@ -52,7 +53,10 @@ export default function ImageUpload({ selectedImage, onImageChange, onCropReques
 
     return (
         <div>
-            <label className="block text-sm font-body2 font-medium text-text mb-4">
+            <label
+                htmlFor={fileInputId}
+                className="block text-sm font-body2 font-medium text-text mb-4"
+            >
                 Dog&apos;s Photo <span className="text-accent font-bold">*</span>
             </label>
             <div className="flex flex-col items-center space-y-4">
@@ -70,6 +74,8 @@ export default function ImageUpload({ selectedImage, onImageChange, onCropReques
                             type="button"
                             onClick={handleRemoveImage}
                             className="absolute -top-2 -right-2 bg-error text-surface w-6 h-6 rounded-full text-xs"
+
+                            aria-label="Remove photo"
                         >
                             ×
                         </button>
@@ -81,14 +87,16 @@ export default function ImageUpload({ selectedImage, onImageChange, onCropReques
                         </span>
                     </div>
                 )}
-                <label className="bg-buttons text-surface px-6 py-3 rounded-xl font-heading font-semibold hover:opacity-90 transition-all cursor-pointer">
+                <label htmlFor={fileInputId} className="bg-buttons text-surface px-6 py-3 rounded-xl font-heading font-semibold hover:opacity-90 transition-all cursor-pointer">
                     Choose Photo
                     <input
                         type="file"
+                        id={fileInputId}
                         accept="image/*"
                         onChange={handleImageChange}
                         className="hidden"
                         formNoValidate
+                        aria-label="Upload photo of your dog"
                     />
                 </label>
                 <p className="text-xs text-text-muted text-center">

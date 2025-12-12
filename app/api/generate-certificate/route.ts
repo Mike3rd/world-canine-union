@@ -131,9 +131,10 @@ async function generateCertificatePDF(dogData: any) {
     const zapfDingbats = await pdfDoc.embedFont(StandardFonts.ZapfDingbats);
 
     const wcuColors = {
-      primary: rgb(0.212, 0.271, 0.31),
+      logo: rgb(0.212, 0.271, 0.31),
+      primary: rgb(0.0157, 0.302, 0.251),
       secondary: rgb(0.471, 0.565, 0.612),
-      accent: rgb(0.6, 0.141, 0),
+      accent: rgb(0.56, 0.12, 0.12),
       gray: rgb(0.9, 0.9, 0.9),
       black: rgb(0, 0, 0),
     };
@@ -151,7 +152,7 @@ async function generateCertificatePDF(dogData: any) {
       y: 40,
       width: width - 80,
       height: height - 80,
-      borderColor: wcuColors.secondary,
+      borderColor: wcuColors.primary,
       borderWidth: 1,
     });
 
@@ -160,7 +161,7 @@ async function generateCertificatePDF(dogData: any) {
       y: 45,
       width: width - 90,
       height: height - 90,
-      borderColor: wcuColors.secondary,
+      borderColor: wcuColors.primary,
       borderWidth: 2,
     });
 
@@ -181,7 +182,7 @@ async function generateCertificatePDF(dogData: any) {
       y: height - 90,
       size: 33,
       font: timesRoman,
-      color: wcuColors.primary,
+      color: wcuColors.black,
     });
 
     page.drawText("Global Registry for All Other Dogs", {
@@ -189,20 +190,20 @@ async function generateCertificatePDF(dogData: any) {
       y: height - 105,
       size: 12,
       font: helveticaRegular,
-      color: wcuColors.primary,
+      color: wcuColors.black,
     });
 
     // SUBTITLE
     const subtitleText = "CERTIFICATE OF REGISTRATION";
-    const subtitleWidth = subtitleText.length * 13.5;
+    const subtitleWidth = subtitleText.length * 13.8;
 
     // Left Zapf star
-    page.drawText("✤", {
-      x: (width - subtitleWidth) / 2 - 25,
+    page.drawText("♦", {
+      x: (width - subtitleWidth) / 2 - 30,
       y: height - 150,
       size: 25,
       font: zapfDingbats, // ← Must use zapfDingbats font!
-      color: wcuColors.secondary,
+      color: wcuColors.primary,
     });
 
     // Main text
@@ -211,16 +212,16 @@ async function generateCertificatePDF(dogData: any) {
       y: height - 150,
       size: 24,
       font: timesRoman, // ← Regular font for regular text
-      color: wcuColors.secondary,
+      color: wcuColors.primary,
     });
 
     // Right Zapf star
-    page.drawText("✤", {
-      x: (width + subtitleWidth) / 2 + 15,
+    page.drawText("♦", {
+      x: (width + subtitleWidth) / 2 + 13,
       y: height - 150,
       size: 25,
       font: zapfDingbats, // ← Must use zapfDingbats font!
-      color: wcuColors.secondary,
+      color: wcuColors.primary,
     });
 
     // === GROUP 1: Compact Fields ===
@@ -255,16 +256,16 @@ async function generateCertificatePDF(dogData: any) {
         y: fieldY,
         size: 11,
         font: helveticaRegular,
-        color: wcuColors.secondary,
+        color: wcuColors.black,
       });
 
       // Value
       page.drawText(field.value, {
         x: startX + 125,
         y: fieldY,
-        size: 14,
+        size: 12,
         font: courierRegular,
-        color: wcuColors.black,
+        color: wcuColors.primary,
       });
     });
 
@@ -272,9 +273,10 @@ async function generateCertificatePDF(dogData: any) {
     const spacerY = currentY - group1Fields.length * 23 - 20;
     page.drawLine({
       start: { x: startX, y: spacerY },
-      end: { x: startX + 400, y: spacerY },
+      end: { x: startX + 420, y: spacerY },
       thickness: 0.5,
-      color: wcuColors.gray,
+      color: wcuColors.secondary,
+      dashArray: [2, 3],
     });
 
     // === GROUP 2: Multi-line Fields ===
@@ -310,7 +312,7 @@ async function generateCertificatePDF(dogData: any) {
         y: fieldY,
         size: 11,
         font: helveticaRegular,
-        color: wcuColors.secondary,
+        color: wcuColors.black,
       });
 
       // Value
@@ -319,7 +321,7 @@ async function generateCertificatePDF(dogData: any) {
         y: fieldY - 16,
         size: 12,
         font: courierRegular,
-        color: wcuColors.black,
+        color: wcuColors.primary,
         maxWidth: 400,
         lineHeight: 14,
       });
@@ -330,7 +332,7 @@ async function generateCertificatePDF(dogData: any) {
     const certTextY = lastGroup2Y - 0;
 
     const dogName = dogData.dog_name || "This dog";
-    const certText = `This document certifies that ${dogName} is officially registered with the World Canine Union`;
+    const certText = `This document certifies that ${dogName} is officially registered with the World Canine Union.`;
 
     // Match your other field styling
     const fontSize = 12;
@@ -409,10 +411,10 @@ async function generateCertificatePDF(dogData: any) {
       color: wcuColors.primary,
     });
 
-    page.drawText("• REGISTERED •", {
-      x: rowStartX + 26,
+    page.drawText("~ REGISTERED ~", {
+      x: rowStartX + 28,
       y: rowY - 23,
-      size: 9,
+      size: 8,
       font: helveticaRegular,
       color: wcuColors.primary,
     });
@@ -424,12 +426,12 @@ async function generateCertificatePDF(dogData: any) {
       y: rowY,
       size: 16,
       font: courierRegular,
-      color: rgb(0.1, 0.1, 0.1),
+      color: wcuColors.primary,
     });
 
     page.drawLine({
       start: { x: signature1X, y: rowY - 5 },
-      end: { x: signature1X + 140, y: rowY - 5 },
+      end: { x: signature1X + 130, y: rowY - 5 },
       thickness: 0.5,
       color: wcuColors.secondary,
     });
@@ -439,7 +441,7 @@ async function generateCertificatePDF(dogData: any) {
       y: rowY - 16,
       size: 9,
       font: helveticaRegular,
-      color: rgb(0.4, 0.4, 0.4),
+      color: wcuColors.black,
     });
 
     // 3. SECOND SIGNATURE (Right)
@@ -449,13 +451,13 @@ async function generateCertificatePDF(dogData: any) {
       y: rowY,
       size: 16,
       font: courierRegular,
-      color: rgb(0.1, 0.1, 0.1),
+      color: wcuColors.primary,
     });
 
     page.drawLine({
       start: { x: signature2X, y: rowY - 5 },
-      end: { x: signature2X + 140, y: rowY - 5 },
-      thickness: 1,
+      end: { x: signature2X + 130, y: rowY - 5 },
+      thickness: 0.5,
       color: wcuColors.secondary,
     });
 
@@ -464,7 +466,7 @@ async function generateCertificatePDF(dogData: any) {
       y: rowY - 16,
       size: 9,
       font: helveticaRegular,
-      color: rgb(0.4, 0.4, 0.4),
+      color: wcuColors.black,
     });
 
     // Save and return

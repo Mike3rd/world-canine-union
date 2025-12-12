@@ -9,6 +9,7 @@ export default function SubmitButton({ isSubmitting }: SubmitButtonProps) {
                 type="submit"
                 disabled={isSubmitting}
                 className="w-full bg-buttons text-surface py-4 rounded-xl font-heading font-semibold text-lg hover:opacity-90 transition-all shadow-lg cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                aria-label={isSubmitting ? "Processing registration" : "Submit registration and continue to payment"}
             >
                 {isSubmitting ? (
                     <>
