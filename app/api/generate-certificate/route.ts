@@ -237,20 +237,18 @@ async function generateCertificatePDF(dogData: any) {
     const group1Fields = [
       {
         label: "Certificate Number:",
-        value: dogData.registration_number || "WCU-00000",
+        value: dogData.registration_number,
       },
       { label: "Date Issued:", value: new Date().toLocaleDateString() },
-      { label: "Name of Dog:", value: dogData.dog_name || "Unknown" },
+      { label: "Name of Dog:", value: dogData.dog_name },
       {
-        label: "Gender of Dog:",
-        value: capitalizeFirst(dogData.gender) || "Unknown", // ← UPDATED
+        label: "Gender:",
+        value: dogData.gender.charAt(0).toUpperCase() + dogData.gender.slice(1),
       },
-      { label: "Name of Owner:", value: dogData.owner_name || "Unknown" },
+      { label: "Name of Owner:", value: dogData.owner_name },
       {
         label: "Gotcha Day:",
-        value: dogData.gotcha_date
-          ? new Date(dogData.gotcha_date).toLocaleDateString()
-          : "Unknown",
+        value: new Date(dogData.gotcha_date).toLocaleDateString(),
       },
     ];
 

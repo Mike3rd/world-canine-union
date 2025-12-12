@@ -118,14 +118,14 @@ export async function submitRegistration(
           owner_email: formData.ownerEmail,
           birth_date: formData.birthDate || null,
           gender: formData.gender,
-          gotcha_date: formData.gotchaDay || null,
+          gotcha_date: formData.gotchaDay,
           location: formData.rescueLocation || null,
           breed_description: `${formData.primaryBreed} ${
             formData.secondaryBreed ? `+ ${formData.secondaryBreed}` : ""
           } ${
             formData.tertiaryBreed ? `+ ${formData.tertiaryBreed}` : ""
           }`.trim(),
-          dog_color: formData.dogColor || null,
+          dog_color: formData.dogColor,
           rescue_story: formData.dogStory,
           dog_description: formData.dogDescription || null,
           special_attributes: formData.specialAttributes || null,
@@ -141,9 +141,11 @@ export async function submitRegistration(
       .select();
 
     if (registrationError) {
+      console.error("🚨 DATABASE INSERT FAILED:", registrationError);
       return {
         success: false,
-        error: "Registration failed. Please try again.",
+        error:
+          "Registration system is temporarily unavailable. Please try again in a few minutes.",
       };
     }
 
