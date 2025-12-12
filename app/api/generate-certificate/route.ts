@@ -139,6 +139,11 @@ async function generateCertificatePDF(dogData: any) {
       black: rgb(0, 0, 0),
     };
 
+    function capitalizeFirst(str: string) {
+      if (!str) return "Unknown";
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
     // Add a page
     const page = pdfDoc.addPage([612, 792]);
     const { width, height } = page.getSize();
@@ -236,7 +241,10 @@ async function generateCertificatePDF(dogData: any) {
       },
       { label: "Date Issued:", value: new Date().toLocaleDateString() },
       { label: "Name of Dog:", value: dogData.dog_name || "Unknown" },
-      { label: "Sex of Dog:", value: dogData.gender || "No sex specified" },
+      {
+        label: "Gender of Dog:",
+        value: capitalizeFirst(dogData.gender) || "Unknown", // ← UPDATED
+      },
       { label: "Name of Owner:", value: dogData.owner_name || "Unknown" },
       {
         label: "Gotcha Day:",
