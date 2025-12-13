@@ -148,50 +148,97 @@ async function generateCertificatePDF(dogData: any) {
     const page = pdfDoc.addPage([612, 792]);
     const { width, height } = page.getSize();
 
-    // Keep centerX for bottom text
-    const centerX = width / 2;
+    // === BORDER === (Centered)
+    const borderMargin = 40;
+    const innerBorderMargin = 45;
 
-    // === BORDER ===
+    // Outer border (centered)
     page.drawRectangle({
-      x: 40,
-      y: 40,
-      width: width - 80,
-      height: height - 80,
+      x: borderMargin,
+      y: borderMargin,
+      width: width - borderMargin * 2,
+      height: height - borderMargin * 2,
       borderColor: wcuColors.primary,
       borderWidth: 1,
     });
 
+    // Inner border (centered)
     page.drawRectangle({
-      x: 45,
-      y: 45,
-      width: width - 90,
-      height: height - 90,
+      x: innerBorderMargin,
+      y: innerBorderMargin,
+      width: width - innerBorderMargin * 2,
+      height: height - innerBorderMargin * 2,
       borderColor: wcuColors.primary,
       borderWidth: 2,
+    });
+
+    // === CORNER SYMBOLS ===
+    const cornerSymbol = "❖";
+    const symbolSize = 25;
+    const horizontalOffsetL = 60;
+    const horizontalOffsetR = 65;
+    const verticalOffsetT = 70;
+    const verticalOffsetB = 55;
+    const xAdjust = 8; // ⚡ ADJUST THIS TO CENTER SYMBOLS ⚡
+
+    // Top-Left
+    page.drawText(cornerSymbol, {
+      x: horizontalOffsetL - xAdjust,
+      y: height - verticalOffsetT,
+      size: symbolSize,
+      font: zapfDingbats,
+      color: wcuColors.primary,
+    });
+
+    // Top-Right
+    page.drawText(cornerSymbol, {
+      x: width - horizontalOffsetR - xAdjust,
+      y: height - verticalOffsetT,
+      size: symbolSize,
+      font: zapfDingbats,
+      color: wcuColors.primary,
+    });
+
+    // Bottom-Left
+    page.drawText(cornerSymbol, {
+      x: horizontalOffsetL - xAdjust,
+      y: verticalOffsetB,
+      size: symbolSize,
+      font: zapfDingbats,
+      color: wcuColors.primary,
+    });
+
+    // Bottom-Right
+    page.drawText(cornerSymbol, {
+      x: width - horizontalOffsetR - xAdjust,
+      y: verticalOffsetB,
+      size: symbolSize,
+      font: zapfDingbats,
+      color: wcuColors.primary,
     });
 
     // === HEADER WITH LOGO ===
     const logoX = 100;
     const titleX = logoX + 105;
 
-    page.drawText("❤", {
-      x: logoX - 30,
-      y: height - 101,
-      size: 52,
-      font: zapfDingbats,
-      color: wcuColors.accent,
-    });
+    //page.drawText("❤", {
+    //x: logoX - 30,
+    //y: height - 101,
+    //size: 52,
+    //font: zapfDingbats,
+    //color: wcuColors.accent,
+    //});
 
     page.drawText("World Canine Union", {
-      x: logoX + 18,
+      x: logoX + 65,
       y: height - 90,
       size: 33,
       font: timesRoman,
       color: wcuColors.black,
     });
 
-    page.drawText("Global Registry for All Other Dogs", {
-      x: logoX + 25,
+    page.drawText("Global registry for all other dogs", {
+      x: logoX + 110,
       y: height - 105,
       size: 12,
       font: helveticaRegular,
@@ -200,38 +247,20 @@ async function generateCertificatePDF(dogData: any) {
 
     // SUBTITLE
     const subtitleText = "CERTIFICATE OF REGISTRATION";
-    const subtitleWidth = subtitleText.length * 13.8;
-
-    // Left Zapf star
-    page.drawText("♦", {
-      x: (width - subtitleWidth) / 2 - 20,
-      y: height - 150,
-      size: 25,
-      font: zapfDingbats, // ← Must use zapfDingbats font!
-      color: wcuColors.primary,
-    });
+    const subtitleWidth = subtitleText.length * 16;
 
     // Main text
     page.drawText(subtitleText, {
       x: (width - subtitleWidth) / 2,
       y: height - 150,
-      size: 24,
+      size: 28,
       font: timesRoman, // ← Regular font for regular text
-      color: wcuColors.primary,
-    });
-
-    // Right Zapf star
-    page.drawText("♦", {
-      x: (width + subtitleWidth) / 2 + 2,
-      y: height - 150,
-      size: 25,
-      font: zapfDingbats, // ← Must use zapfDingbats font!
       color: wcuColors.primary,
     });
 
     // === GROUP 1: Compact Fields ===
     const startX = 100;
-    let currentY = height - 190;
+    let currentY = height - 180;
 
     // USE REAL DATA from dogData
     const group1Fields = [
@@ -240,16 +269,21 @@ async function generateCertificatePDF(dogData: any) {
         value: dogData.registration_number,
       },
       { label: "Date Issued:", value: new Date().toLocaleDateString() },
-      { label: "Name of Dog:", value: dogData.dog_name },
+
+      { label: "Name:", value: dogData.dog_name },
       {
-        label: "Gender of Dog:",
+        label: "Gender:",
         value: dogData.gender.charAt(0).toUpperCase() + dogData.gender.slice(1),
       },
-      { label: "Name of Owner:", value: dogData.owner_name },
+      {
+        label: "Birth Date:",
+        value: new Date(dogData.birth_date).toLocaleDateString() || "Unknown",
+      },
       {
         label: "Gotcha Day:",
         value: new Date(dogData.gotcha_date).toLocaleDateString(),
       },
+      { label: "Owner(s):", value: dogData.owner_name },
     ];
 
     // GROUP 1: Label and value on same line
@@ -270,13 +304,13 @@ async function generateCertificatePDF(dogData: any) {
         x: startX + 125,
         y: fieldY,
         size: 12,
-        font: courierRegular,
+        font: helveticaRegular,
         color: wcuColors.primary,
       });
     });
 
     // === SPACER BETWEEN GROUPS ===
-    const spacerY = currentY - group1Fields.length * 23 - 20;
+    const spacerY = currentY - group1Fields.length * 23 - 14;
     page.drawLine({
       start: { x: startX, y: spacerY },
       end: { x: startX + 420, y: spacerY },
@@ -286,21 +320,21 @@ async function generateCertificatePDF(dogData: any) {
     });
 
     // === GROUP 2: Multi-line Fields ===
-    let group2Y = spacerY - 33;
+    let group2Y = spacerY - 25;
 
     const group2Fields = [
       {
-        label: "Breed(s) of Dog:",
+        label: "Breed(s):",
         value: dogData.breed_description || "Mixed breed",
         lineLimit: 3,
       },
       {
-        label: "Color of Dog:",
+        label: "Color:",
         value: dogData.dog_color || "Various colors",
         lineLimit: 1,
       },
       {
-        label: "Markings of Dog:",
+        label: "Physical Description & Markings:",
         value: dogData.dog_description || "No markings specified",
         lineLimit: 3,
       },
@@ -326,7 +360,7 @@ async function generateCertificatePDF(dogData: any) {
         x: startX,
         y: fieldY - 16,
         size: 12,
-        font: courierRegular,
+        font: helveticaRegular,
         color: wcuColors.primary,
         maxWidth: 400,
         lineHeight: 14,
@@ -376,15 +410,16 @@ async function generateCertificatePDF(dogData: any) {
     });
 
     // === HORIZONTAL ROW: SEAL & SIGNATURES ===
-    const rowY = certTextY - 95;
-    const rowStartX = 90;
-    const spacing = 155;
-    const spacingsig1 = 135;
+    const signaturesY = 120; // Position signatures and seal at this Y coordinate
+    const pageCenterX = page.getWidth() / 2;
 
-    // 1. SEAL
+    // 1. CENTERED SEAL/LOGO
+    const LOGO_Y_POSITION = signaturesY; // Same Y as signatures
+
+    // Draw centered seal/logo
     page.drawEllipse({
-      x: rowStartX + 60,
-      y: rowY,
+      x: pageCenterX,
+      y: LOGO_Y_POSITION,
       xScale: 50,
       yScale: 50,
       borderColor: wcuColors.primary,
@@ -392,8 +427,8 @@ async function generateCertificatePDF(dogData: any) {
     });
 
     page.drawEllipse({
-      x: rowStartX + 60,
-      y: rowY,
+      x: pageCenterX,
+      y: LOGO_Y_POSITION,
       xScale: 45,
       yScale: 45,
       borderColor: wcuColors.primary,
@@ -402,74 +437,77 @@ async function generateCertificatePDF(dogData: any) {
     });
 
     page.drawText("✪", {
-      x: rowStartX + 51,
-      y: rowY + 15,
+      x: pageCenterX - 9,
+      y: LOGO_Y_POSITION + 15,
       size: 25,
       font: zapfDingbats,
       color: wcuColors.accent,
     });
 
     page.drawText("WCU", {
-      x: rowStartX + 24,
-      y: rowY - 12,
+      x: pageCenterX - 36,
+      y: LOGO_Y_POSITION - 12,
       size: 30,
       font: timesRoman,
       color: wcuColors.primary,
     });
 
     page.drawText("~ REGISTERED ~", {
-      x: rowStartX + 28,
-      y: rowY - 23,
+      x: pageCenterX - 32,
+      y: LOGO_Y_POSITION - 23,
       size: 8,
       font: helveticaRegular,
       color: wcuColors.primary,
     });
 
-    // 2. FIRST SIGNATURE (Center)
-    const signature1X = rowStartX + spacingsig1;
+    // 2. LEFT SIGNATURE (Michael Turko)
+    const signatureSpacing = 140; // Space from center to each signature
+    const signature1X = pageCenterX - signatureSpacing - 65; // 65 = half of signature width
+
     page.drawText("Michael Turko", {
-      x: signature1X,
-      y: rowY,
-      size: 16,
-      font: courierRegular,
+      x: signature1X + 15,
+      y: signaturesY,
+      size: 17,
+      font: timesRomanItalic,
       color: wcuColors.primary,
     });
 
     page.drawLine({
-      start: { x: signature1X, y: rowY - 5 },
-      end: { x: signature1X + 130, y: rowY - 5 },
+      start: { x: signature1X, y: signaturesY - 5 },
+      end: { x: signature1X + 130, y: signaturesY - 5 },
       thickness: 0.5,
       color: wcuColors.secondary,
     });
 
     page.drawText("Director, World Canine Union", {
-      x: signature1X,
-      y: rowY - 16,
+      x: signature1X + 7,
+      y: signaturesY - 16,
       size: 9,
       font: helveticaRegular,
       color: wcuColors.black,
     });
 
-    // 3. SECOND SIGNATURE (Right)
-    const signature2X = signature1X + spacing;
+    // 3. RIGHT SIGNATURE (Elayne Dell)
+    const signature2X = pageCenterX + signatureSpacing - 65; // 65 = half of signature width
+
     page.drawText("Elayne Dell", {
-      x: signature2X,
-      y: rowY,
-      size: 16,
-      font: courierRegular,
+      x: signature2X + 25,
+      y: signaturesY,
+      size: 17,
+      font: timesRomanItalic,
       color: wcuColors.primary,
     });
 
     page.drawLine({
-      start: { x: signature2X, y: rowY - 5 },
-      end: { x: signature2X + 130, y: rowY - 5 },
+      start: { x: signature2X, y: signaturesY - 5 },
+      end: { x: signature2X + 130, y: signaturesY - 5 },
       thickness: 0.5,
       color: wcuColors.secondary,
     });
 
     page.drawText("Co-Director, World Canine Union", {
       x: signature2X,
-      y: rowY - 16,
+      y: signaturesY - 16,
       size: 9,
       font: helveticaRegular,
       color: wcuColors.black,
