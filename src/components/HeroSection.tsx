@@ -10,6 +10,9 @@ export default function HeroSection() {
           <h1 className="text-5xl md:text-6xl font-heading font-bold text-primary mb-6">
             More Soul than Pedigree
           </h1>
+          <h1 className="text-5xl md:text-6xl font-heading font-bold text-primary mb-6">
+            Global Registry for all other Dogs
+          </h1>
           <p className="text-xl md:text-2xl text-text-muted font-body2 max-w-3xl mx-auto mb-8 leading-relaxed">
             The official global registry celebrating one-of-a-kind dogs. Join our community today!
           </p>

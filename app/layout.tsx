@@ -71,22 +71,21 @@ export default function RootLayout({
                 href="/"
                 className="inline-block hover:opacity-80 transition-opacity"
               >
-                <div className="flex items-center">
+                <div className="flex items-center gap-1">
+                  {/* Fixed height, auto width maintains your 256x285 ratio */}
                   <img
                     src="\images\wcu-logo-nav.png"
                     alt="WCU Logo"
-                    className="h-18 w-18" // No right margin
+                    className="h-14 w-auto"
+                    style={{
+                      height: '56px', // 256x285 ratio means width will be ~50px
+                      width: 'auto'
+                    }}
                   />
 
-                  {/* Add left padding to the text container instead */}
-                  <div className="pl-2"> {/* pl-2 = 8px padding left */}
-                    <h1 className="text-4xl font-logo font-bold text-header-text leading-tight">
-                      World Canine Union
-                    </h1>
-                    <p className="text-md text-header-text/80 font-body2 -mt-1">
-                      Global Registry for all other dogs
-                    </p>
-                  </div>
+                  <h1 className="text-4xl font-logo font-bold text-header-text">
+                    World Canine Union
+                  </h1>
                 </div>
               </Link>
             </div>
