@@ -4,10 +4,55 @@ import "./globals.css";
 
 import HeartIcon from '@/components/HeartIcon';
 
+
 export const metadata: Metadata = {
   title: "World Canine Union - Global Registry for all Other Dogs",
   description:
     "The official global registry celebrating one-of-a-kind dogs. Join our community today!",
+  keywords: [
+    "dog registry",
+    "rescue organizations and canine welfare initiatives",
+    "mixed breed dogs",
+    "rescue animals",
+    "unique dogs",
+    "adopt a dog",
+    "dog shows",
+    "animal welfare",
+    "rescue dogs",
+  ],
+  openGraph: {
+    title: "World Canine Union – Global Registry for all Other Dogs",
+    description:
+      "More Soul than Pedigree. The official global registry celebrating one-of-a-kind dogs. Join our community today!",
+    url: "https://worldcanineunion.org",
+    siteName: "World Canine Union",
+    images: [
+      {
+        url: "https://worldcanineunion.org/wcu-logo.png",
+        width: 360,
+        height: 360,
+        alt: "World Canine Union",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+
+  },
+  icons: {
+    icon: [
+      { url: "/favicon-96x96.png", sizes: "96x96", type: "image/png" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+    other: [{ rel: "manifest", url: "/site.webmanifest" }],
+  },
+  manifest: "/site.webmanifest",
+  appleWebApp: {
+    title: "World Canine Union",
+  },
 };
 
 export default function RootLayout({

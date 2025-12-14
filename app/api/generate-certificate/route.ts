@@ -422,7 +422,7 @@ async function generateCertificatePDF(dogData: any) {
       y: LOGO_Y_POSITION,
       xScale: 50,
       yScale: 50,
-      borderColor: wcuColors.primary,
+      borderColor: wcuColors.black,
       borderWidth: 1.5,
     });
 
@@ -431,7 +431,7 @@ async function generateCertificatePDF(dogData: any) {
       y: LOGO_Y_POSITION,
       xScale: 45,
       yScale: 45,
-      borderColor: wcuColors.primary,
+      borderColor: wcuColors.black,
       borderWidth: 0.5,
       borderDashArray: [2, 2],
     });
@@ -449,7 +449,7 @@ async function generateCertificatePDF(dogData: any) {
       y: LOGO_Y_POSITION - 12,
       size: 30,
       font: timesRoman,
-      color: wcuColors.primary,
+      color: wcuColors.black,
     });
 
     page.drawText("~ REGISTERED ~", {
@@ -457,7 +457,7 @@ async function generateCertificatePDF(dogData: any) {
       y: LOGO_Y_POSITION - 23,
       size: 8,
       font: helveticaRegular,
-      color: wcuColors.primary,
+      color: wcuColors.black,
     });
 
     // 2. LEFT SIGNATURE (Michael Turko)
