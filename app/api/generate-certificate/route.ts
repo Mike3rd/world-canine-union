@@ -79,7 +79,7 @@ export async function POST(request: Request) {
 
     const { data: dogData, error } = await supabase
       .from("registrations")
-      .select("*")
+      .select("*, birth_date")
       .eq("registration_number", registrationNumber)
       .single();
 
@@ -237,10 +237,10 @@ async function generateCertificatePDF(dogData: any) {
       color: wcuColors.black,
     });
 
-    page.drawText("Global registry for all other dogs", {
-      x: logoX + 110,
-      y: height - 105,
-      size: 12,
+    page.drawText("Soul over Pedigree", {
+      x: logoX + 140,
+      y: height - 106,
+      size: 14,
       font: helveticaRegular,
       color: wcuColors.black,
     });
@@ -268,7 +268,14 @@ async function generateCertificatePDF(dogData: any) {
         label: "Certificate Number:",
         value: dogData.registration_number,
       },
-      { label: "Date Issued:", value: new Date().toLocaleDateString() },
+      {
+        label: "Date Issued:",
+        value: new Date().toLocaleDateString("en-US", {
+          month: "long",
+          day: "numeric",
+          year: "numeric",
+        }),
+      },
 
       { label: "Name:", value: dogData.dog_name },
       {
@@ -277,11 +284,11 @@ async function generateCertificatePDF(dogData: any) {
       },
       {
         label: "Birth Date:",
-        value: new Date(dogData.birth_date).toLocaleDateString() || "Unknown",
+        value: formatDate(dogData.birth_date),
       },
       {
         label: "Gotcha Day:",
-        value: new Date(dogData.gotcha_date).toLocaleDateString(),
+        value: formatDate(dogData.gotcha_date),
       },
       { label: "Owner(s):", value: dogData.owner_name },
     ];
@@ -522,16 +529,31 @@ async function generateCertificatePDF(dogData: any) {
   }
 }
 
-function formatDate(dateString: string): string {
-  if (!dateString) return "Not specified";
+function formatDate(dateString: string | null): string {
+  if (!dateString) return "Unknown";
+
   try {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      month: "numeric",
-      day: "numeric",
-      year: "numeric",
-    });
+    // Direct string formatting - NO TIMEZONE ISSUES
+    const [year, month, day] = dateString.split("-");
+
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+
+    const monthName = monthNames[parseInt(month) - 1];
+    return `${monthName} ${parseInt(day)}, ${year}`;
   } catch {
-    return dateString;
+    return "Unknown";
   }
 }

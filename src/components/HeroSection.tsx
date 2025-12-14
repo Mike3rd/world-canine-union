@@ -8,7 +8,7 @@ export default function HeroSection() {
         {/* Hero Header */}
         <div className="text-center mb-12">
           <h1 className="text-5xl md:text-6xl font-heading font-bold text-primary mb-6">
-            More Soul than Pedigree
+            Soul over Pedigree
           </h1>
           <h1 className="text-5xl md:text-6xl font-heading font-bold text-primary mb-6">
             Global Registry for all other Dogs
