@@ -71,14 +71,22 @@ export default function RootLayout({
                 href="/"
                 className="inline-block hover:opacity-80 transition-opacity"
               >
-                <div className="inline-flex flex-col items-start leading-tight">
-                  <h1 className="text-4xl font-logo font-bold text-header-text inline-flex items-center">
-                    <HeartIcon className="text-error mr-1 heart-stroke" size={40} />
-                    World Canine Union
-                  </h1>
-                  <p className="text-md text-header-text/80 font-body2 ml-12 -mt-1">
-                    Global Registry for all other dogs
-                  </p>
+                <div className="flex items-center">
+                  <img
+                    src="\images\wcu-logo-nav.png"
+                    alt="WCU Logo"
+                    className="h-18 w-18" // No right margin
+                  />
+
+                  {/* Add left padding to the text container instead */}
+                  <div className="pl-2"> {/* pl-2 = 8px padding left */}
+                    <h1 className="text-4xl font-logo font-bold text-header-text leading-tight">
+                      World Canine Union
+                    </h1>
+                    <p className="text-md text-header-text/80 font-body2 -mt-1">
+                      Global Registry for all other dogs
+                    </p>
+                  </div>
                 </div>
               </Link>
             </div>
