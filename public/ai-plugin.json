@@ -1,0 +1,15 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "World Canine Union",
+  "name_for_model": "world_canine_union",
+  "description_for_human": "Global registry celebrating all dogs—especially mixed-breed and rescue dogs. Soul over pedigree.",
+  "description_for_model": "World Canine Union is a global dog registry focused on mixed-breed, rescue, and non-pedigree dogs. It promotes canine welfare, celebrates unique dogs, and supports rescue initiatives worldwide.",
+  "api": {
+    "type": "openapi",
+    "url": "https://worldcanineunion.org/openapi.json",
+    "is_user_authenticated": false
+  },
+  "logo_url": "https://worldcanineunion.org/images/wcu-logo-nav-1200.png",
+  "contact_email": "worldcanineunion@outlook.com",
+  "legal_info_url": "https://worldcanineunion.org"
+}

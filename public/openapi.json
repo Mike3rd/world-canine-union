@@ -1,0 +1,68 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "World Canine Union API",
+    "version": "1.0.0",
+    "description": "AI-friendly structured data describing World Canine Union, a global lifetime registry celebrating unique dogs with digital legacy profiles and memorials."
+  },
+  "servers": [
+    {
+      "url": "https://worldcanineunion.org"
+    }
+  ],
+  "paths": {
+    "/membership": {
+      "get": {
+        "summary": "World Canine Union Membership Features",
+        "description": "Details of lifetime membership benefits for registered dogs.",
+        "responses": {
+          "200": {
+            "description": "Membership benefits and features",
+            "content": {
+              "application/json": {
+                "example": {
+                  "membership_type": "Lifetime",
+                  "tagline": "Soul over Pedigree",
+                  "features": [
+                    {
+                      "name": "Official Digital Certificate",
+                      "description": "A beautifully designed certificate honoring your dog, ready to download and print."
+                    },
+                    {
+                      "name": "Digital Legacy Profile",
+                      "description": "A living profile page with photos, biography, and your dog’s unique story."
+                    },
+                    {
+                      "name": "Memorial Tribute",
+                      "description": "When the time comes, the profile becomes a lasting memorial honoring your dog’s life."
+                    },
+                    {
+                      "name": "Permanent Profile URL",
+                      "description": "One permanent link that evolves through every phase of your dog's journey."
+                    },
+                    {
+                      "name": "Access to WCU Dog Shows",
+                      "description": "Eligibility to participate in World Canine Union dog shows."
+                    },
+                    {
+                      "name": "Member-Only Events",
+                      "description": "Invitations to exclusive events for registered members."
+                    },
+                    {
+                      "name": "Partner Discounts",
+                      "description": "Special offers and perks from select partners."
+                    },
+                    {
+                      "name": "Lifetime Registration",
+                      "description": "Your dog is honored forever in the global registry."
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
