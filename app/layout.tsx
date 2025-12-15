@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     siteName: "World Canine Union",
     images: [
       {
-        url: "https://worldcanineunion.org/images/wcu-logo-nav-1787.pngg",
+        url: "https://worldcanineunion.org/images/wcu-logo-nav-1200.png",
         width: 1787,
         height: 2046,
         alt: "World Canine Union",
