@@ -27,7 +27,7 @@ export default function DogInfoSection({ formData, onInputChange, fieldErrors }:
                     <label htmlFor="dogName" className="block text-sm font-body2 font-medium text-text mb-2">
                         Dog&apos;s Name <span className="text-accent font-bold">*</span>
                         <span className="text-xs text-text-muted ml-2">
-                            {formData.dogName.length}/30
+                            {formData.dogName.length}/50
                         </span>
                     </label>
                     <input
@@ -41,7 +41,7 @@ export default function DogInfoSection({ formData, onInputChange, fieldErrors }:
                         className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text ${fieldErrors.dogName ? 'border-red-500' : 'border-border'
                             }`}
                         placeholder="Enter your dog's name"
-                        maxLength={30}
+                        maxLength={50}
                     />
                     {fieldErrors.dogName && (
                         <p id="dogName-error" className="text-red-500 text-xs mt-1">{fieldErrors.dogName}</p>
@@ -114,10 +114,24 @@ export default function DogInfoSection({ formData, onInputChange, fieldErrors }:
             </div>
 
             {/* Breed Mix */}
+
             <div>
-                <label className="block text-sm font-body2 font-medium text-text mb-2">
-                    Suspected Breed Mix <span className="text-accent font-bold">*</span>
-                </label>
+                <div className="mb-2">
+                    <label className="block text-sm font-body2 font-medium text-text mb-2">
+                        Suspected Breed Mix <span className="text-accent font-bold">*</span>
+                        <span className="text-xs text-text-muted ml-2">
+                            {/* Calculate total length of all breed fields */}
+                            {(
+                                formData.primaryBreed.length +
+                                (formData.secondaryBreed ? formData.secondaryBreed.length + 3 : 0) + // "+ " adds 3 chars
+                                (formData.tertiaryBreed ? formData.tertiaryBreed.length + 3 : 0)     // "+ " adds 3 chars
+                            )}/125
+                        </span>
+                    </label>
+                    <p className="text-xs text-text-muted mb-2">
+                        Total of all breed fields must be 125 characters or less
+                    </p>
+                </div>
                 <div className="space-y-3">
                     <div>
                         <label htmlFor="primaryBreed" className="sr-only">Primary breed</label>
@@ -133,6 +147,7 @@ export default function DogInfoSection({ formData, onInputChange, fieldErrors }:
                             className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text ${fieldErrors.primaryBreed ? 'border-red-500' : 'border-border'
                                 }`}
                             placeholder="Primary breed (e.g., Labrador)"
+                            maxLength={50}
                         />
                     </div>
                     <div>
@@ -146,6 +161,7 @@ export default function DogInfoSection({ formData, onInputChange, fieldErrors }:
                             aria-label="Secondary breed (optional)"
                             className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text"
                             placeholder="Secondary breed (optional)"
+                            maxLength={50}
                         />
                     </div>
                     <div>
@@ -159,6 +175,7 @@ export default function DogInfoSection({ formData, onInputChange, fieldErrors }:
                             aria-label="Tertiary breed (optional)"
                             className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text"
                             placeholder="Tertiary breed (optional)"
+                            maxLength={50}
                         />
                     </div>
                 </div>
@@ -205,7 +222,7 @@ export default function DogInfoSection({ formData, onInputChange, fieldErrors }:
                 <label htmlFor="dogDescription" className="block text-sm font-body2 font-medium text-text mb-2">
                     Physical Description & Markings
                     <span className="text-xs text-text-muted ml-2">
-                        {formData.dogDescription.length}/150
+                        {formData.dogDescription.length}/200
                     </span>
                 </label>
                 <textarea
@@ -215,10 +232,10 @@ export default function DogInfoSection({ formData, onInputChange, fieldErrors }:
                     value={formData.dogDescription}
                     onChange={onInputChange}
                     aria-label="Physical description and markings"
-                    maxLength={150}
+                    maxLength={200}
                     className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text ${fieldErrors.dogDescription ? 'border-red-500' : 'border-border'
                         }`}
-                    placeholder="(optional) Distinctive markings, scars, eye color, tail type, ear shape, size, weight..."
+                    placeholder="Distinctive markings, scars, eye color, tail type, ear shape, size, weight..."
                 />
                 {fieldErrors.dogDescription && (
                     <p id="dogDescription-error" className="text-red-500 text-xs mt-1">{fieldErrors.dogDescription}</p>
@@ -246,7 +263,7 @@ export default function DogInfoSection({ formData, onInputChange, fieldErrors }:
                     maxLength={500}
                     className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text ${fieldErrors.dogStory ? 'border-red-500' : 'border-border'
                         }`}
-                    placeholder="(optional) Tell us about your dog's personality, how you met, or what makes them special..."
+                    placeholder="Tell us about your dog's personality, how you met, or what makes them special..."
                 />
                 {fieldErrors.dogStory && (
                     <p id="dogStory-error" className="text-red-500 text-xs mt-1">{fieldErrors.dogStory}</p>
@@ -271,7 +288,7 @@ export default function DogInfoSection({ formData, onInputChange, fieldErrors }:
                     maxLength={500}
                     className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text ${fieldErrors.specialAttributes ? 'border-red-500' : 'border-border'
                         }`}
-                    placeholder="(optional) Their unique personality, special skills, what makes them extraordinary..."
+                    placeholder="Their unique personality, special skills, what makes them extraordinary..."
                 />
                 {fieldErrors.specialAttributes && (
                     <p id="specialAttributes-error" className="text-red-500 text-xs mt-1">{fieldErrors.specialAttributes}</p>
@@ -296,7 +313,7 @@ export default function DogInfoSection({ formData, onInputChange, fieldErrors }:
                     maxLength={300}
                     className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text ${fieldErrors.favoriteActivities ? 'border-red-500' : 'border-border'
                         }`}
-                    placeholder="(optional) Fetch, swimming, hiking, cuddling, specific games they love..."
+                    placeholder="Fetch, swimming, hiking, cuddling, specific games they love..."
                 />
                 {fieldErrors.favoriteActivities && (
                     <p id="favoriteActivities-error" className="text-red-500 text-xs mt-1">{fieldErrors.favoriteActivities}</p>
@@ -321,7 +338,7 @@ export default function DogInfoSection({ formData, onInputChange, fieldErrors }:
                     maxLength={500}
                     className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text ${fieldErrors.uniqueTraits ? 'border-red-500' : 'border-border'
                         }`}
-                    placeholder="(optional) Funny noises they make, strange sleeping positions, quirky behaviors, little rituals..."
+                    placeholder="Funny noises they make, strange sleeping positions, quirky behaviors, little rituals..."
                 />
                 {fieldErrors.uniqueTraits && (
                     <p id="uniqueTraits-error" className="text-red-500 text-xs mt-1">{fieldErrors.uniqueTraits}</p>

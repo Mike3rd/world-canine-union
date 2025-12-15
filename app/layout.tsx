@@ -6,9 +6,9 @@ import HeartIcon from '@/components/HeartIcon';
 
 
 export const metadata: Metadata = {
-  title: "World Canine Union - Global Registry for all Other Dogs",
+  title: "World Canine Union - Global Registry For All Other Dogs",
   description:
-    "The official global registry celebrating one-of-a-kind dogs. Join our community today!",
+    "Soul over Pedigree. The official global registry celebrating one-of-a-kind dogs. Join our community today!",
   keywords: [
     "dog registry",
     "rescue organizations and canine welfare initiatives",
@@ -21,16 +21,16 @@ export const metadata: Metadata = {
     "rescue dogs",
   ],
   openGraph: {
-    title: "World Canine Union – Global Registry for all Other Dogs",
+    title: "World Canine Union – Global Registry For All Other Dogs",
     description:
-      "More Soul than Pedigree. The official global registry celebrating one-of-a-kind dogs. Join our community today!",
+      "Soul over Pedigree. The official global registry celebrating one-of-a-kind dogs. Join our community today!",
     url: "https://worldcanineunion.org",
     siteName: "World Canine Union",
     images: [
       {
-        url: "https://worldcanineunion.org/wcu-logo.png",
-        width: 360,
-        height: 360,
+        url: "https://worldcanineunion.org/images/wcu-logo-nav-1787.pngg",
+        width: 1787,
+        height: 2046,
         alt: "World Canine Union",
       },
     ],

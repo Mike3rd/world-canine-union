@@ -17,6 +17,9 @@ export default function OwnerInfoSection({ formData, onInputChange, fieldErrors 
         <div>
           <label htmlFor="ownerName" className="block text-sm font-body2 font-medium text-text mb-2">
             Your Name <span className="text-accent font-bold">*</span>
+            <span className="text-xs text-text-muted ml-2">
+              {formData.ownerName.length}/50 {/* Add this counter */}
+            </span>
           </label>
           <input
             id="ownerName"
@@ -30,6 +33,7 @@ export default function OwnerInfoSection({ formData, onInputChange, fieldErrors 
             className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text ${fieldErrors.ownerName ? 'border-red-500' : 'border-border'
               }`}
             placeholder="Your full name"
+            maxLength={50}
           />
           {fieldErrors.ownerName && (
             <p id="ownerName-error" className="text-red-500 text-xs mt-1">{fieldErrors.ownerName}</p>
