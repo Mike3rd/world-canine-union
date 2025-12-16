@@ -101,9 +101,9 @@ export default function EditDogPage() {
     }
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6  ">
             {/* Header */}
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col md:flex-row space-y-3 md:space-y-0 md:space-x-3 px-6 md:px-8">
                 <div>
                     <button
                         onClick={() => router.push('/admin/dashboard')}
@@ -274,7 +274,7 @@ export default function EditDogPage() {
 
             {/* Current PDF Info */}
             {dog.pdf_url && (
-                <div className="bg-blue-50 p-6 rounded-lg border border-blue-200">
+                <div className="bg-blue-50 p-6 rounded-lg border border-blue-200 ">
                     <h3 className="text-lg font-semibold text-blue-800 mb-2">Current PDF Certificate</h3>
                     <p className="text-blue-700 mb-2">
                         <a
