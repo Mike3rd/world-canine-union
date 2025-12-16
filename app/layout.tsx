@@ -70,7 +70,7 @@ export default function RootLayout({
         <StructuredData />
         <div className="flex flex-col min-h-screen">
           <header className="border-b border-border bg-header-bg">
-            <div className="container mx-auto px-4 py-4">
+            <div className="container mx-auto px-4 py-3">
               <Link
                 href="/"
                 className="inline-block hover:opacity-80 transition-opacity"
@@ -87,7 +87,7 @@ export default function RootLayout({
                     }}
                   />
 
-                  <h1 className="text-4xl font-logo font-bold text-header-text">
+                  <h1 className="text-3xl md:text-4xl font-logo font-bold text-header-text">
                     World Canine Union
                   </h1>
                 </div>
