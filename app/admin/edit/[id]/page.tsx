@@ -102,37 +102,39 @@ export default function EditDogPage() {
 
     return (
         <div className="space-y-6  ">
-            {/* Header */}
-            <div className="flex flex-col md:flex-row space-y-3 md:space-y-0 md:space-x-3 px-6 md:px-8">
-                <div>
+            {/* Header - FIXED FOR MOBILE */}
+            <div className="flex flex-col md:flex-row space-y-3 md:space-y-0 md:space-x-3 px-4 md:px-8">
+                <div className="flex-1 min-w-0"> {/* ← CRITICAL: Allows text wrapping */}
                     <button
                         onClick={() => router.push('/admin/dashboard')}
                         className="flex items-center text-gray-600 hover:text-gray-800 mb-2"
                     >
-                        <ArrowLeft className="h-4 w-4 mr-1" />
-                        Back to Dashboard
+                        <ArrowLeft className="h-4 w-4 mr-1 flex-shrink-0" />
+                        <span className="truncate">Back to Dashboard</span>
                     </button>
-                    <h1 className="text-2xl font-bold text-gray-900">
+                    <h1 className="text-xl md:text-2xl font-bold text-gray-900 break-words">
                         Edit: {dog.dog_name} ({dog.registration_number})
                     </h1>
-                    <p className="text-gray-600">Owner: {dog.owner_name} • {dog.owner_email}</p>
+                    <p className="text-sm md:text-base text-gray-600 truncate">
+                        Owner: {dog.owner_name} • {dog.owner_email}
+                    </p>
                 </div>
 
-                <div className="flex space-x-3">
+                <div className="flex flex-wrap gap-2"> {/* ← Changed from space-x-3 to gap-2 */}
                     <button
                         onClick={handleRegeneratePDF}
-                        className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                        className="flex items-center px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm md:text-base flex-1 md:flex-none"
                     >
-                        <FileText className="h-4 w-4 mr-2" />
-                        Regenerate PDF
+                        <FileText className="h-4 w-4 mr-2 flex-shrink-0" />
+                        <span className="truncate">Regen PDF</span> {/* ← Shorter on mobile */}
                     </button>
                     <button
                         onClick={handleSave}
                         disabled={saving}
-                        className="flex items-center px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 disabled:opacity-50"
+                        className="flex items-center px-3 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 disabled:opacity-50 text-sm md:text-base flex-1 md:flex-none"
                     >
-                        <Save className="h-4 w-4 mr-2" />
-                        {saving ? 'Saving...' : 'Save Changes'}
+                        <Save className="h-4 w-4 mr-2 flex-shrink-0" />
+                        <span className="truncate">{saving ? 'Saving...' : 'Save'}</span> {/* ← Shorter */}
                     </button>
                 </div>
             </div>
