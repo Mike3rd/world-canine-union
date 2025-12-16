@@ -67,7 +67,6 @@ export default function RootLayout({
     <html lang="en" data-theme="default">
       {/* default, night, retro, holiday */}
       <body className="min-h-screen bg-background text-text font-body">
-
         <div className="flex flex-col min-h-screen">
           <header className="border-b border-border bg-header-bg">
             <div className="container mx-auto px-4 py-4">
