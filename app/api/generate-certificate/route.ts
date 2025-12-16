@@ -557,3 +557,5 @@ function formatDate(dateString: string | null): string {
     return "Unknown";
   }
 }
+
+export { generateCertificatePDF };

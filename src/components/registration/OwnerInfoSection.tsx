@@ -16,7 +16,7 @@ export default function OwnerInfoSection({ formData, onInputChange, fieldErrors 
       <div className="grid md:grid-cols-2 gap-6">
         <div>
           <label htmlFor="ownerName" className="block text-sm font-body2 font-medium text-text mb-2">
-            Your Name <span className="text-accent font-bold">*</span>
+            Your Name(s) <span className="text-accent font-bold">*</span>
             <span className="text-xs text-text-muted ml-2">
               {formData.ownerName.length}/50 {/* Add this counter */}
             </span>
