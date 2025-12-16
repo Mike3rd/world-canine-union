@@ -1,0 +1,49 @@
+/* app/dog/dog-profile.css */
+/* DOG PROFILE THEME - Completely separate from main site */
+@theme {
+  /* Dog Profile Variables - Must use --color-* prefix for Tailwind */
+  --color-dog-primary: #36454F;      /* Charcoal - Primary brand color */
+  --color-dog-primary-dark: #263238; /* Darker charcoal for hover */
+  --color-dog-secondary: #78909C;    /* Steel blue - Secondary */
+  --color-dog-accent: #992400;       /* Burnt orange - Strategic accent */
+  --color-dog-neutral: #37474F;      /* Neutral dark */
+  --color-dog-header-bg: #36454F;     /* Charcoal for header background */
+  --color-dog-header-text: #FFFFFF;   /* White for header text */
+  --color-dog-text: #263238;         /* Body text - Deep charcoal */
+  --color-dog-text-muted: #546E7A;   /* Muted text */
+  --color-dog-background: #F0F4F8;   /* Light blue-gray background */
+  --color-dog-surface: #FFFFFF;      /* White surfaces */
+  --color-dog-buttons: #992400;      /* Burnt orange for buttons */
+  --color-dog-buttons-hover: #C62828;/* Deep red for button hover */
+  --color-dog-border: #CFD8DC;       /* Light border */
+  --color-dog-success: #2E7D32;      /* Deep green */
+  --color-dog-warning: #F57C00;      /* Amber */
+  --color-dog-error: #C62828;        /* Deep red */
+  --color-dog-card-gradient-from: #F0F4F8;
+  --color-dog-card-gradient-to: #E3F2FD;
+}
+
+/* Custom classes for gradients and hover states */
+.dog-button-primary {
+  background-color: var(--color-dog-buttons);
+  color: white;
+}
+
+.dog-button-primary:hover {
+  background-color: var(--color-dog-buttons-hover);
+}
+
+.dog-button-secondary {
+  background-color: var(--color-dog-background);
+  color: var(--color-dog-text);
+}
+
+.dog-button-secondary:hover {
+  background-color: var(--color-dog-border);
+}
+
+.dog-bg-gradient-card {
+  background: linear-gradient(135deg, 
+    var(--color-dog-card-gradient-from), 
+    var(--color-dog-card-gradient-to));
+}
