@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Search } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -10,31 +10,82 @@ export default function AdminDashboard() {
 
     const [searchResults, setSearchResults] = useState<any[]>([]);
     const [searching, setSearching] = useState(false);
+    const [hasSearched, setHasSearched] = useState(false);
+
+    // Stats state
+    const [stats, setStats] = useState({
+        total: 0,
+        issues: 0,
+        recent: 0
+    });
+    useEffect(() => {
+        loadStats();
+    }, []);
+
+    const loadStats = async () => {
+        try {
+            const { supabase } = await import('@/lib/supabase');
+
+            // Get today's start for "Recent Today"
+            const today = new Date();
+            const startOfDay = new Date(today.setHours(0, 0, 0, 0)).toISOString();
+
+            // Run all 3 queries at once
+            const [totalRes, paymentIssuesRes, recentRes] = await Promise.all([
+                supabase.from('registrations').select('*', { count: 'exact', head: true }),
+                supabase.from('registrations').select('*', { count: 'exact', head: true })
+                    .eq('status', 'completed')  // Registration complete
+                    .is('pdf_url', null),       // But no PDF generated (payment/cron issue)
+                supabase.from('registrations').select('*', { count: 'exact', head: true })
+                    .gte('created_at', startOfDay)
+            ]);
+
+            setStats({
+                total: totalRes.count || 0,
+                issues: paymentIssuesRes.count || 0,
+                recent: recentRes.count || 0
+            });
+
+        } catch (error) {
+            console.error('Failed to load stats:', error);
+        }
+    };
 
     const handleSearch = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!searchTerm.trim()) return;
-
+        setHasSearched(true);
         setSearching(true);
-        setSearchResults([]); // Clear previous results
+        setSearchResults([]);
 
         try {
             const { supabase } = await import('@/lib/supabase');
 
-            // Search by WCU number OR email
-            const { data, error } = await supabase
-                .from('registrations')
-                .select('*')
-                .or(`registration_number.ilike.%${searchTerm}%,owner_email.ilike.%${searchTerm}%`)
+            const search = searchTerm.trim();
+            const isWcu = search.toUpperCase().startsWith('WCU-');
+
+            let query = supabase.from('registrations').select('*');
+
+            if (isWcu) {
+                query = query.eq('registration_number', search.toUpperCase());
+            } else {
+                query = query.or(`owner_email.ilike.%${search}%,dog_name.ilike.%${search}%`);
+            }
+
+            const { data, error } = await query
                 .order('created_at', { ascending: false })
                 .limit(10);
 
-            if (error) throw error;
+            if (error) {
+                console.error('Search error:', error);
+                setSearchResults([]);
+            } else {
+                setSearchResults(data || []);
+            }
 
-            setSearchResults(data || []);
         } catch (error) {
-            console.error('Search error:', error);
-            alert('Error searching: ' + (error as Error).message);
+            console.error('Search failed:', error);
+            setSearchResults([]);
         } finally {
             setSearching(false);
         }
@@ -48,7 +99,7 @@ export default function AdminDashboard() {
     return (
         <div className="space-y-8">
             {/* Header */}
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center px-5">
                 <div>
                     <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
                     <p className="text-gray-600 mt-2">Manage registrations and regenerate PDFs</p>
@@ -65,15 +116,18 @@ export default function AdminDashboard() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="bg-white p-6 rounded-lg shadow">
                     <h3 className="text-lg font-semibold text-gray-700">Total Registrations</h3>
-                    <p className="text-3xl font-bold text-amber-600 mt-2">--</p>
+                    <p className="text-3xl font-bold text-amber-600 mt-2">{stats.total.toLocaleString()} </p>
                 </div>
                 <div className="bg-white p-6 rounded-lg shadow">
-                    <h3 className="text-lg font-semibold text-gray-700">Pending PDFs</h3>
-                    <p className="text-3xl font-bold text-amber-600 mt-2">--</p>
+                    <h3 className="text-lg font-semibold text-gray-700">⚠️ Needs Attention</h3>
+                    <p className="text-3xl font-bold text-amber-600 mt-2">
+                        {stats.issues}
+                    </p>
+                    <p className="text-xs text-gray-500 mt-1">Paid but no certificate</p>
                 </div>
                 <div className="bg-white p-6 rounded-lg shadow">
                     <h3 className="text-lg font-semibold text-gray-700">Recent Today</h3>
-                    <p className="text-3xl font-bold text-amber-600 mt-2">--</p>
+                    <p className="text-3xl font-bold text-amber-600 mt-2">{stats.recent}</p>
                 </div>
             </div>
 
@@ -88,7 +142,10 @@ export default function AdminDashboard() {
                         <input
                             type="text"
                             value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
+                            onChange={(e) => {
+                                setSearchTerm(e.target.value);
+                                setHasSearched(false); // ← ADD THIS LINE INSIDE
+                            }}
                             className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
                             placeholder="Search by WCU number (WCU-00001) or owner email..."
                             autoFocus
@@ -183,7 +240,7 @@ export default function AdminDashboard() {
                             </tbody>
                         </table>
                     </div>
-                ) : searchTerm ? (
+                ) : hasSearched ? ( // ← CHANGED TO CHECK hasSearched
                     <div className="text-center py-8 text-gray-500">
                         <p>No dogs found matching "{searchTerm}"</p>
                         <p className="text-sm mt-2">Try a different WCU number or email</p>
