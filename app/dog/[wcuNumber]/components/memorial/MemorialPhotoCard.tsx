@@ -20,7 +20,7 @@ export default function MemorialPhotoCard({ photoUrl, dogName }: MemorialPhotoCa
                 </div>
             </div>
 
-            <div className="relative bg-gradient-to-br from-memorial-gradient to-memorial-gradient-end">
+            <div className="relative bg-gradient-to-br from-memorial-gradient-end to-memorial-gradient-end">
                 {photoUrl ? (
                     <div className="relative w-full pt-[133.5%]">
                         <Image
