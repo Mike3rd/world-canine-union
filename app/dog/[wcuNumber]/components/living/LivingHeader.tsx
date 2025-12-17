@@ -43,14 +43,17 @@ export default function LivingHeader({
                         </div>
                     </div>
                     <div className="mt-4 md:mt-0">
-                        <div className="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/20">
+                        <a
+                            href="/"
+                            className="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 hover:bg-white/20 transition"
+                        >
                             <div className="flex items-center gap-2">
-                                <span className="text-lg font-bold">✪</span>
+                                <span className="text-lg font-bold text-dog-accent">✪</span>
                                 <div className="text-sm font-semibold tracking-wider uppercase">
                                     WCU REGISTERED
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
                 </div>
             </div>
