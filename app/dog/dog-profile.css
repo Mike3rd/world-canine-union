@@ -1,6 +1,6 @@
-@import "tailwindcss";
 /* app/dog/dog-profile.css */
 /* DOG PROFILE THEME - Completely separate from main site */
+@import "tailwindcss";
 @theme {
   /* Dog Profile Variables - Must use --color-* prefix for Tailwind */
   --color-dog-primary: #36454F;      /* Charcoal - Primary brand color */
@@ -8,7 +8,7 @@
   --color-dog-secondary: #78909C;    /* Steel blue - Secondary */
   --color-dog-accent: #992400;       /* Burnt orange - Strategic accent */
   --color-dog-neutral: #37474F;      /* Neutral dark */
-  --color-dog-header-bg: #36454F;     /* Charcoal for header background */
+  --color-dog-header-bg: #000000;     /* Charcoal for header background */
   --color-dog-header-text: #FFFFFF;   /* White for header text */
   --color-dog-text: #263238;         /* Body text - Deep charcoal */
   --color-dog-text-muted: #546E7A;   /* Muted text */
@@ -22,6 +22,8 @@
   --color-dog-error: #C62828;        /* Deep red */
   --color-dog-card-gradient-from: #F0F4F8;
   --color-dog-card-gradient-to: #E3F2FD;
+
+  
 }
 
 /* Custom classes for gradients and hover states */

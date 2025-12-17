@@ -2,8 +2,10 @@
 import { supabase } from "@/lib/supabase"
 import { notFound } from 'next/navigation'
 import LivingProfile from './components/living/LivingProfile'
+import MemorialProfile from './components/memorial/MemorialProfile'
 import { Registration } from '../../../types/database'
 import '../dog-profile.css'
+import '../memorial-profile.css'
 
 export default async function DogProfilePage({
     params,
@@ -38,7 +40,9 @@ export default async function DogProfilePage({
       shelter_website,
       dog_color,
       gender,
-      created_at
+      created_at,
+      is_memorial,
+      memorial_date
     `)
         .eq('registration_number', searchNumber)
         .single()
@@ -47,8 +51,19 @@ export default async function DogProfilePage({
         notFound()
     }
 
-    // For now, always show living profile
-    // Later we'll check: if (registration.is_memorial) return <MemorialProfile />
+    // TEMPORARY DEBUG - Add this line
+    console.log('DEBUG:', {
+        wcuNumber: registration.registration_number,
+        name: registration.dog_name,
+        isMemorial: registration.is_memorial,
+        memorialDate: registration.memorial_date
+    })
+
+    if (registration.is_memorial) {
+        // You'll need to import MemorialProfile
+        // import MemorialProfile from './components/memorial/MemorialProfile'
+        return <MemorialProfile registration={registration as Registration} />
+    }
 
     return <LivingProfile registration={registration as Registration} />
 }

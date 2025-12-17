@@ -24,4 +24,6 @@ export interface Registration {
   certificate_generated_at: string | null;
   dog_color: string | null;
   gender: string | null;
+  is_memorial?: boolean;
+  memorial_date?: string | null;
 }

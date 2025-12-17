@@ -1,0 +1,90 @@
+/* app/dog/memorial-profile.css */
+@import "tailwindcss";
+
+@theme {
+  /* Memorial Color Palette - Peaceful, Respectful */
+  --color-memorial-primary: #2C3E50;      /* Deep blue-gray - Primary */
+  --color-memorial-primary-dark: #1A252F; /* Darker blue-gray */
+  --color-memorial-secondary: #6C7A89;    /* Soft gray-blue - Secondary */
+  --color-memorial-accent: #8E44AD;       /* Purple - Accent for special elements */
+  --color-memorial-accent-light: #9B59B6; /* Lighter purple */
+  --color-memorial-rainbow: #FF9A9E;      /* Rainbow gradient start */
+  --color-memorial-rainbow-end: #A1C4FD;  /* Rainbow gradient end */
+  --color-memorial-gradient: #A1C4FD;  /* Memorial gradient */
+  --color-memorial-gradient-end: #CEACDF;  /* Memorial gradient end */
+  
+  /* UI Colors */
+  --color-memorial-header-bg: #220f2b;    /* Header background */
+  --color-memorial-header-text: #FFFFFF;
+  --color-memorial-background: #F5F7FA;   /* Very light blue-gray background */
+  --color-memorial-surface: #FFFFFF;      /* Card surfaces */
+  --color-memorial-text: #34495E;         /* Soft dark blue text */
+  --color-memorial-text-muted: #7F8C8D;   /* Muted text */
+  --color-memorial-border: #BDC3C7;       /* Light borders */
+  --color-memorial-buttons: #8E44AD;      /* Purple buttons */
+  --color-memorial-buttons-hover: #9B59B6;/* Light purple hover */
+  --color-memorial-candle: #FFD700;       /* Candle gold/yellow */
+  --color-memorial-candle-flame: #FF6B6B; /* Candle flame orange-red */
+}
+
+/* Rainbow Bridge Gradient */
+.memorial-rainbow-gradient {
+  background: linear-gradient(90deg, 
+    var(--color-memorial-rainbow),
+    #FAD0C4,
+    #FFD1FF,
+    #A1C4FD
+  );
+}
+
+/* Virtual Candle Animation */
+
+.test-flame {
+  width: 50px;
+  height: 150px;
+  background: orange;
+  animation: flicker 0.3s infinite alternate;
+}
+@keyframes flicker {
+  0%, 100% { 
+    transform: scale(1) translateY(0); 
+    opacity: 1;
+  }
+  25% { 
+    transform: scale(1.05) translateY(-2px); 
+    opacity: 0.9;
+  }
+  50% { 
+    transform: scale(0.95) translateY(1px); 
+    opacity: 1;
+  }
+  75% { 
+    transform: scale(1.02) translateY(-1px); 
+    opacity: 0.95;
+  }
+}
+
+@keyframes flicker-slow {
+  0%, 100% { 
+    transform: scale(1); 
+    opacity: 0.8;
+  }
+  50% { 
+    transform: scale(1.1); 
+    opacity: 1;
+  }
+}
+
+.animate-flicker {
+  animation: flicker 0.3s infinite alternate;
+  transform-origin: center bottom;
+}
+
+.animate-flicker-slow {
+  animation: flicker-slow 0.5s infinite alternate;
+  transform-origin: center bottom;
+}
+
+.candle-flame {
+  filter: drop-shadow(0 0 8px rgba(255, 100, 0, 0.6));
+}
