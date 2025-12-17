@@ -39,7 +39,7 @@ export const WelcomeEmail: React.FC<WelcomeEmailProps> = ({
             <div>
                 <h3>📄 Your Dog's Online Profile </h3>
                 <p>View your dog's online eternal profile page:</p>
-                <p>View {dogName}'s profile: https://worldcanineunion.org/dogs/{wcuNumber}</p>
+                <p>View {dogName}'s profile: https://worldcanineunion.org/dog/{wcuNumber}</p>
             </div>
 
 
