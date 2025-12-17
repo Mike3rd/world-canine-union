@@ -32,7 +32,7 @@ export default function LivingPhotoCard({ photoUrl, dogName }: LivingPhotoCardPr
                     </div>
                 )}
                 {/* Photo Badge */}
-                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full shadow-lg">
+                <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full shadow-lg">
                     <span className="text-sm font-semibold text-dog-text">Official WCU Photo</span>
                 </div>
             </div>

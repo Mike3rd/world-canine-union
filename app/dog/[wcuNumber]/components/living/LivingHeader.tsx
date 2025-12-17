@@ -1,5 +1,6 @@
 // app/dog/[wcuNumber]/components/living/LivingHeader.tsx
 import { Heart, Sparkles } from 'lucide-react'
+import HeartIcon from '../HeartIcon'
 
 interface LivingHeaderProps {
     dogName: string
@@ -19,10 +20,16 @@ export default function LivingHeader({
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="flex flex-col md:flex-row items-center justify-between">
                     <div>
-                        <h1 className="text-4xl md:text-5xl font-bold mb-2">
-                            {dogName}
-                        </h1>
-                        <div className="flex items-center space-x-4 text-dog-border">
+                        {/* Heart + Name on same line */}
+                        <div className="flex items-center mb-2"> {/* ← Flex row for heart + name */}
+                            <HeartIcon className="w-15 h-15 mr-3" /> {/* Adjust size as needed */}
+                            <h1 className="text-4xl md:text-5xl font-bold">
+                                {dogName}
+                            </h1>
+                        </div>
+
+                        {/* WCU number, gender, age on next line */}
+                        <div className="flex items-center justify-center md:justify-start space-x-4 text-dog-border">
                             <span className="flex items-center">
                                 <Sparkles className="w-4 h-4 mr-1" />
                                 {registrationNumber}
@@ -36,9 +43,13 @@ export default function LivingHeader({
                         </div>
                     </div>
                     <div className="mt-4 md:mt-0">
-                        <div className="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full">
-                            <Heart className="w-5 h-5 mr-2" />
-                            <span>World Canine Union</span>
+                        <div className="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/20">
+                            <div className="flex items-center gap-2">
+                                <span className="text-lg font-bold">✪</span>
+                                <div className="text-sm font-semibold tracking-wider uppercase">
+                                    WCU REGISTERED
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -21,7 +21,7 @@ export default function LivingDescriptionCard({
 
             {description && (
                 <div className="mb-6">
-                    <p className="text-dog-neutral text-lg leading-relaxed">
+                    <p className="text-dog-neutral text-lg leading-relaxed font-body">
                         {description}
                     </p>
                 </div>
@@ -33,7 +33,7 @@ export default function LivingDescriptionCard({
                         <Heart className="w-5 h-5 mr-2 text-dog-error" />
                         Rescue & Adoption Story
                     </h3>
-                    <p className="text-dog-text-muted leading-relaxed">
+                    <p className="text-dog-text-muted leading-relaxed font-body ">
                         {rescueStory}
                     </p>
                 </div>
