@@ -68,6 +68,15 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Merriweather';
+  src: url('/fonts/merriweather/merriweather-light-webfont.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-stretch: 75% 125%;
+  font-display: swap;
+}
+
 
 
 
@@ -75,7 +84,8 @@
 @theme {
   /* ===== SOPHISTICATED WORLD CANINE UNION THEME ===== */
   /* Fonts */
-  --font-logo: 'SourGummy', sans-serif;
+  --font-logo: 'Merriweather', serif;
+   /*--font-logo: 'chewy', sans-serif;*/
   --font-heading: 'Oxanium', sans-serif;
   --font-body: 'IBM Plex Sans', sans-serif;
   --font-body2: 'Inter', sans-serif;
