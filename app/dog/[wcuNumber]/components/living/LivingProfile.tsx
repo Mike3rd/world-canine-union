@@ -9,6 +9,7 @@ import LivingShelterRecognition from './LivingShelterRecognition'
 import LivingCertificateCard from './LivingCertificateCard'
 import LivingShareCard from './LivingShareCard'
 
+
 interface LivingProfileProps {
     registration: Registration
 }
@@ -78,6 +79,7 @@ export default function LivingProfile({ registration }: LivingProfileProps) {
                             gotchaDate={registration.gotcha_date}
                             location={registration.location}
                             dogColor={registration.dog_color}
+                            ownerName={registration.owner_name}
                         />
 
                         {(registration.shelter_name ||

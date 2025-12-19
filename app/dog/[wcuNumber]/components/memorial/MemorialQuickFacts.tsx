@@ -7,6 +7,7 @@ interface MemorialQuickFactsProps {
     gotchaDate: string | null
     location: string | null
     dogColor: string | null
+    ownerName: string | null
     memorialDate: string | null
 }
 
@@ -16,7 +17,8 @@ export default function MemorialQuickFacts({
     gotchaDate,
     location,
     dogColor,
-    memorialDate
+    memorialDate,
+    ownerName
 }: MemorialQuickFactsProps) {
 
     const formatDate = (dateString: string | null) => {
@@ -87,6 +89,20 @@ export default function MemorialQuickFacts({
                     </div>
                 )}
 
+                {dogColor && (
+                    <div className="flex items-start">
+                        <div className="flex-shrink-0 w-8">
+                            <Palette className="w-5 h-5 text-memorial-secondary" />
+                        </div>
+                        <div>
+                            <p className="text-sm text-memorial-text-muted">Color</p>
+                            <p className="font-medium font-body text-memorial-text">
+                                {dogColor}
+                            </p>
+                        </div>
+                    </div>
+                )}
+
                 {birthDate && (
                     <div className="flex items-start">
                         <div className="flex-shrink-0 w-8">
@@ -110,6 +126,35 @@ export default function MemorialQuickFacts({
                             <p className="text-sm text-memorial-text-muted">Gotcha Day</p>
                             <p className="font-medium font-body text-memorial-text">
                                 {formatDate(gotchaDate)}
+                            </p>
+                        </div>
+                    </div>
+                )}
+
+
+                {location && (
+                    <div className="flex items-start">
+                        <div className="flex-shrink-0 w-8">
+                            <MapPin className="w-5 h-5 text-memorial-secondary" />
+                        </div>
+                        <div>
+                            <p className="text-sm text-memorial-text-muted">Rescued From</p>
+                            <p className="font-medium font-body text-memorial-text">
+                                {location}
+                            </p>
+                        </div>
+                    </div>
+                )}
+
+                {ownerName && (
+                    <div className="flex items-start">
+                        <div className="flex-shrink-0 w-8">
+                            <Users className="w-5 h-5 text-memorial-secondary" />
+                        </div>
+                        <div>
+                            <p className="text-sm text-memorial-text-muted">Rescued By</p>
+                            <p className="font-medium font-body text-memorial-text">
+                                {ownerName}
                             </p>
                         </div>
                     </div>
@@ -151,33 +196,8 @@ export default function MemorialQuickFacts({
                     </>
                 )}
 
-                {location && (
-                    <div className="flex items-start">
-                        <div className="flex-shrink-0 w-8">
-                            <MapPin className="w-5 h-5 text-memorial-secondary" />
-                        </div>
-                        <div>
-                            <p className="text-sm text-memorial-text-muted">Rescued From</p>
-                            <p className="font-medium font-body text-memorial-text">
-                                {location}
-                            </p>
-                        </div>
-                    </div>
-                )}
 
-                {dogColor && (
-                    <div className="flex items-start">
-                        <div className="flex-shrink-0 w-8">
-                            <Palette className="w-5 h-5 text-memorial-secondary" />
-                        </div>
-                        <div>
-                            <p className="text-sm text-memorial-text-muted">Color</p>
-                            <p className="font-medium font-body text-memorial-text">
-                                {dogColor}
-                            </p>
-                        </div>
-                    </div>
-                )}
+
             </div>
         </div>
     )

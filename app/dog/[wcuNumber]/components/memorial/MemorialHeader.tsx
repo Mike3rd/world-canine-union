@@ -51,7 +51,8 @@ export default function MemorialHeader({
                         </div>
 
                         {/* Details */}
-                        <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-6 space-y-2 sm:space-y-0">
+                        <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0">
+                            {/* First row: WCU Number & Gender */}
                             <div className="flex items-center space-x-4 text-memorial-border">
                                 <span className="flex items-center">
                                     <Sparkles className="w-4 h-4 mr-1" />
@@ -60,25 +61,32 @@ export default function MemorialHeader({
                                 {gender && (
                                     <span className="capitalize">{gender}</span>
                                 )}
-                                {/* Show date range if both dates exist */}
-                                {gotchaDate && memorialDate && (
-                                    <span className="flex items-center">
-                                        <span className="mr-1">🏠</span>
-                                        <span className="font-medium">
-                                            {formatDateRange(gotchaDate, memorialDate)}
-                                        </span>
-                                    </span>
-                                )}
-                                {/* Show only memorial date if no gotcha date */}
-                                {!gotchaDate && memorialDate && (
-                                    <span className="flex items-center text-memorial-accent-light">
-                                        <span className="mr-1">🕊️</span>
-                                        <span className="font-medium">
-                                            {formatDate(memorialDate)}
-                                        </span>
-                                    </span>
-                                )}
                             </div>
+
+                            {/* Second row: Date information - only shows if we have dates */}
+                            {(gotchaDate || memorialDate) && (
+                                <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-6">
+                                    {/* Show date range if both dates exist */}
+                                    {gotchaDate && memorialDate && (
+                                        <div className="flex items-center text-memorial-border">
+                                            <span className="mr-2 ml-2">🏠</span>
+                                            <span className="font-medium">
+                                                {formatDateRange(gotchaDate, memorialDate)}
+                                            </span>
+                                        </div>
+                                    )}
+
+                                    {/* Show only memorial date if no gotcha date */}
+                                    {!gotchaDate && memorialDate && (
+                                        <div className="flex items-center text-memorial-accent-light">
+                                            <span className="mr-1">🕊️</span>
+                                            <span className="font-medium">
+                                                {formatDate(memorialDate)}
+                                            </span>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     </div>
 

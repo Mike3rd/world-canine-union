@@ -7,6 +7,7 @@ interface LivingQuickFactsProps {
     gotchaDate: string | null
     location: string | null
     dogColor: string | null
+    ownerName: string | null
 }
 
 export default function LivingQuickFacts({
@@ -14,7 +15,8 @@ export default function LivingQuickFacts({
     birthDate,
     gotchaDate,
     location,
-    dogColor
+    dogColor,
+    ownerName
 }: LivingQuickFactsProps) {
 
     const formatDate = (dateString: string | null) => {
@@ -42,6 +44,18 @@ export default function LivingQuickFacts({
                         <div>
                             <p className="text-sm text-dog-text-muted">Breed</p>
                             <p className="font-medium text-dog-text font-body">{breedDescription}</p>
+                        </div>
+                    </div>
+                )}
+
+                {dogColor && (
+                    <div className="flex items-start">
+                        <div className="flex-shrink-0 w-8">
+                            <Palette className="w-5 h-5 text-dog-secondary" />
+                        </div>
+                        <div>
+                            <p className="text-sm text-dog-text-muted">Color</p>
+                            <p className="font-medium text-dog-text font-body">{dogColor}</p>
                         </div>
                     </div>
                 )}
@@ -76,20 +90,20 @@ export default function LivingQuickFacts({
                             <MapPin className="w-5 h-5 text-dog-secondary" />
                         </div>
                         <div>
-                            <p className="text-sm text-dog-text-muted">Location</p>
+                            <p className="text-sm text-dog-text-muted">Rescued From</p>
                             <p className="font-medium text-dog-text font-body">{location}</p>
                         </div>
                     </div>
                 )}
 
-                {dogColor && (
+                {ownerName && (
                     <div className="flex items-start">
                         <div className="flex-shrink-0 w-8">
-                            <Palette className="w-5 h-5 text-dog-secondary" />
+                            <Users className="w-5 h-5 text-dog-secondary" />
                         </div>
                         <div>
-                            <p className="text-sm text-dog-text-muted">Color</p>
-                            <p className="font-medium text-dog-text font-body">{dogColor}</p>
+                            <p className="text-sm text-dog-text-muted">Family</p>
+                            <p className="font-medium text-dog-text font-body">{ownerName}</p>
                         </div>
                     </div>
                 )}

@@ -20,6 +20,12 @@ interface MemorialProfileProps {
 }
 
 export default function MemorialProfile({ registration }: MemorialProfileProps) {
+    console.log('=== MEMORIAL PROFILE DEBUG ===');
+    console.log('memorial_message value:', registration.memorial_message);
+    console.log('memorial_message type:', typeof registration.memorial_message);
+    console.log('memorial_message exists?', !!registration.memorial_message);
+    console.log('memorial_message length:', registration.memorial_message?.length);
+    console.log('================================');
     return (
         <div className="min-h-screen bg-memorial-background">
             <MemorialHeader
@@ -44,8 +50,10 @@ export default function MemorialProfile({ registration }: MemorialProfileProps) 
                             birthDate={registration.birth_date}
                             gotchaDate={registration.gotcha_date}
                             memorialDate={registration.memorial_date ?? null}
-                            memorialCause={registration.memorial_cause ?? null}
                             memorialMessage={registration.memorial_message ?? null}
+                            location={registration.location}
+                            shelterName={registration.shelter_name}
+                            shelterState={registration.shelter_state}
                         />
 
                         <MemorialVirtualCandle
@@ -68,6 +76,7 @@ export default function MemorialProfile({ registration }: MemorialProfileProps) 
                             location={registration.location}
                             dogColor={registration.dog_color}
                             memorialDate={registration.memorial_date ?? null}
+                            ownerName={registration.owner_name}
                         />
 
                         {registration.memorial_favorite_memories && (

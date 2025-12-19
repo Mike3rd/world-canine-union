@@ -22,6 +22,7 @@ export default async function DogProfilePage({
         .select(`
       id,
       registration_number,
+      owner_name,
       dog_name,
       birth_date,
       location,
@@ -42,7 +43,9 @@ export default async function DogProfilePage({
       gender,
       created_at,
       is_memorial,
-      memorial_date
+      memorial_date,
+      memorial_message,
+      memorial_favorite_memories
     `)
         .eq('registration_number', searchNumber)
         .single()
@@ -50,14 +53,6 @@ export default async function DogProfilePage({
     if (error || !registration) {
         notFound()
     }
-
-    // TEMPORARY DEBUG - Add this line
-    console.log('DEBUG:', {
-        wcuNumber: registration.registration_number,
-        name: registration.dog_name,
-        isMemorial: registration.is_memorial,
-        memorialDate: registration.memorial_date
-    })
 
     if (registration.is_memorial) {
         // You'll need to import MemorialProfile
