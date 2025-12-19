@@ -55,11 +55,11 @@ export default function MemorialProfile({ registration }: MemorialProfileProps) 
                             shelterName={registration.shelter_name}
                             shelterState={registration.shelter_state}
                         />
-                        {/* 
+
                         <MemorialVirtualCandle
                             dogId={registration.id}
                             dogName={registration.dog_name}
-                        />    */}
+                        />
 
                         <MemorialTributes
                             dogId={registration.id}

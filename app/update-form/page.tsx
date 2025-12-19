@@ -1,5 +1,8 @@
 // /app/update-form/page.tsx
 import UpdateForm from './UpdateForm';
+import { Suspense } from 'react';
+import UpdateFormWrapper from './UpdateFormWrapper';
+import LoadingState from './components/LoadingState';
 
 export default function UpdateFormPage() {
     return (
@@ -16,7 +19,9 @@ export default function UpdateFormPage() {
                 </div>
 
                 {/* Main Form Container */}
-                <UpdateForm />
+                <Suspense fallback={<LoadingState />}>
+                    <UpdateFormWrapper />
+                </Suspense>
 
                 {/* Footer Note */}
                 <div className="mt-8 text-center text-sm text-gray-500">

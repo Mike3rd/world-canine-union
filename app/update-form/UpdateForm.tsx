@@ -14,10 +14,13 @@ import MemorialSection from './components/MemorialSection';
 import SubmitSection from './components/SubmitSection';
 import ShelterInfoSection from './components/ShelterInfoSection';
 
-export default function UpdateForm() {
+interface UpdateFormProps {
+    token?: string | null;
+}
+
+export default function UpdateForm({ token }: UpdateFormProps) {
     const router = useRouter();
-    const searchParams = useSearchParams();
-    const token = searchParams.get('token');
+
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
