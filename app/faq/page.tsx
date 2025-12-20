@@ -9,8 +9,19 @@ export default function FAQPage() {
     const [openSection, setOpenSection] = useState<string | null>('general');
     const [openQuestions, setOpenQuestions] = useState<Record<string, boolean>>({});
 
-    const toggleSection = (sectionId: string) => {
-        setOpenSection(openSection === sectionId ? null : sectionId);
+    // Function to handle section click with smooth scroll
+    const handleSectionClick = (sectionId: string) => {
+        const element = document.getElementById(`section-${sectionId}`);
+        if (element) {
+            // Scroll to section
+            element.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+
+            // Open the section (close if already open and clicked again)
+            setOpenSection(prev => prev === sectionId ? null : sectionId);
+        }
     };
 
     const toggleQuestion = (questionId: string) => {
@@ -48,7 +59,7 @@ export default function FAQPage() {
                         {faqSections.map(section => (
                             <button
                                 key={section.id}
-                                onClick={() => toggleSection(section.id)}
+                                onClick={() => handleSectionClick(section.id)}
                                 className={`px-4 py-2 rounded-full border transition ${openSection === section.id
                                     ? 'bg-accent text-white border-accent'
                                     : 'bg-white text-primary border-border hover:border-accent'
@@ -65,11 +76,12 @@ export default function FAQPage() {
                     {faqSections.map(section => (
                         <div
                             key={section.id}
-                            className="bg-white rounded-xl shadow-lg border border-border overflow-hidden"
+                            id={`section-${section.id}`}
+                            className="bg-white rounded-xl shadow-lg border border-border overflow-hidden scroll-mt-20"
                         >
                             {/* Section Header */}
                             <button
-                                onClick={() => toggleSection(section.id)}
+                                onClick={() => handleSectionClick(section.id)}
                                 className="w-full px-6 py-4 flex items-center justify-between bg-surface hover:bg-gray-50 transition"
                             >
                                 <div className="flex items-center">
