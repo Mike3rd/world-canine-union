@@ -486,7 +486,7 @@ async function generateCertificatePDF(dogData: any) {
       color: wcuColors.secondary,
     });
 
-    page.drawText("Director, World Canine Union", {
+    page.drawText("Founder, World Canine Union", {
       x: signature1X + 7,
       y: signaturesY - 16,
       size: 9,
@@ -512,7 +512,7 @@ async function generateCertificatePDF(dogData: any) {
       color: wcuColors.secondary,
     });
 
-    page.drawText("Co-Director, World Canine Union", {
+    page.drawText("Co-Founder, World Canine Union", {
       x: signature2X,
       y: signaturesY - 16,
       size: 9,

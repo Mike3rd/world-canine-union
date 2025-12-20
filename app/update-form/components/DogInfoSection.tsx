@@ -73,6 +73,24 @@ export default function DogInfoSection({ formData, handleChange }: DogInfoSectio
                 <p className="text-xs text-text-muted mt-1">Leave blank to keep current</p>
             </div>
 
+            {/* Gotcha Day (Adoption Date) */}
+            <div>
+                <label htmlFor="gotchaDay" className="block text-sm font-body2 font-medium text-text mb-2">
+                    Gotcha Day (Adoption Date)
+                </label>
+                <input
+                    id="gotchaDay"
+                    type="date"
+                    name="gotchaDay"
+                    value={formData.gotchaDay || ''}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text"
+                />
+                <p className="text-xs text-text-muted mt-1">
+                    The day you brought your dog home. Leave blank to keep current.
+                </p>
+            </div>
+
             {/* Breed Mix */}
             <div>
                 <div className="mb-2">

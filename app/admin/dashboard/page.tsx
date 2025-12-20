@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Search } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { FileText, RefreshCw, AlertCircle, CheckSquare, Image as ImageIcon, Search, Users } from 'lucide-react';
+
 
 export default function AdminDashboard() {
     const [searchTerm, setSearchTerm] = useState('');
@@ -110,6 +111,62 @@ export default function AdminDashboard() {
                 >
                     Logout
                 </button>
+            </div>
+
+            {/* Navigation Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {/* Update Requests Card */}
+                <div
+                    onClick={() => router.push('/admin/update-requests')}
+                    className="bg-white p-6 rounded-lg shadow border border-gray-200 hover:border-amber-300 hover:shadow-md transition cursor-pointer"
+                >
+                    <div className="flex items-center">
+                        <div className="p-3 bg-amber-100 rounded-lg">
+                            <AlertCircle className="h-6 w-6 text-amber-600" />
+                        </div>
+                        <div className="ml-4">
+                            <h3 className="text-lg font-semibold text-gray-800">Update Requests</h3>
+                            <p className="text-sm text-gray-600 mt-1">Review owner-submitted updates</p>
+                        </div>
+                    </div>
+                    <div className="mt-4 text-right">
+                        <span className="text-amber-600 text-sm font-medium">View pending →</span>
+                    </div>
+                </div>
+
+                {/* Search & Edit Card */}
+                <div className="bg-white p-6 rounded-lg shadow border border-gray-200">
+                    <div className="flex items-center">
+                        <div className="p-3 bg-blue-100 rounded-lg">
+                            <Search className="h-6 w-6 text-blue-600" />
+                        </div>
+                        <div className="ml-4">
+                            <h3 className="text-lg font-semibold text-gray-800">Search & Edit</h3>
+                            <p className="text-sm text-gray-600 mt-1">Find dogs and edit records</p>
+                        </div>
+                    </div>
+                    <div className="mt-4">
+                        <p className="text-sm text-gray-500">Use the search below to find dogs</p>
+                    </div>
+                </div>
+
+                {/* PDF Regeneration Card */}
+                <div className="bg-white p-6 rounded-lg shadow border border-gray-200">
+                    <div className="flex items-center">
+                        <div className="p-3 bg-green-100 rounded-lg">
+                            <RefreshCw className="h-6 w-6 text-green-600" />
+                        </div>
+                        <div className="ml-4">
+                            <h3 className="text-lg font-semibold text-gray-800">PDF Regeneration</h3>
+                            <p className="text-sm text-gray-600 mt-1">Fix missing certificates</p>
+                        </div>
+                    </div>
+                    <div className="mt-4">
+                        <p className="text-xs text-gray-500">
+                            Use the search below to find dogs, then click "Regen PDF"
+                        </p>
+                    </div>
+                </div>
             </div>
 
             {/* Quick Stats - Placeholder */}

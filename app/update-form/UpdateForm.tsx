@@ -13,6 +13,8 @@ import DogInfoSection from './components/DogInfoSection';
 import MemorialSection from './components/MemorialSection';
 import SubmitSection from './components/SubmitSection';
 import ShelterInfoSection from './components/ShelterInfoSection';
+import ImageUpload from '@/components/registration/ImageUpload';
+import ImageCropModal from '@/components/registration/ImageCropModal';
 
 interface UpdateFormProps {
     token?: string | null;
@@ -29,6 +31,9 @@ export default function UpdateForm({ token }: UpdateFormProps) {
     const [reportPassing, setReportPassing] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [success, setSuccess] = useState(false);
+    const [selectedImage, setSelectedImage] = useState<File | null>(null);
+    const [showCropModal, setShowCropModal] = useState(false);
+    const [cropImage, setCropImage] = useState<string>("");
 
     useEffect(() => {
         if (!token) {
@@ -159,6 +164,31 @@ export default function UpdateForm({ token }: UpdateFormProps) {
             [name]: value
         }));
     };
+
+    const handleCropRequest = (imageUrl: string) => {
+        setCropImage(imageUrl);
+        setShowCropModal(true);
+    };
+
+    const handleCropComplete = (croppedImage: File) => {
+        setSelectedImage(croppedImage);
+        setShowCropModal(false);
+        if (cropImage) {
+            URL.revokeObjectURL(cropImage);
+        }
+    };
+
+    const handleCloseCrop = () => {
+        setShowCropModal(false);
+        // Clear the file input
+        const fileInputs = document.querySelectorAll('input[type="file"]');
+        fileInputs.forEach(input => {
+            (input as HTMLInputElement).value = '';
+        });
+        if (cropImage) {
+            URL.revokeObjectURL(cropImage);
+        }
+    };
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setSubmitting(true);
@@ -208,7 +238,8 @@ export default function UpdateForm({ token }: UpdateFormProps) {
                 shelter_city: formData.shelterCity || null,
                 shelter_state: formData.shelterState || null,
                 shelter_website: formData.shelterWebsite || null,
-                location: formData.rescueLocation || null, // Map to 'location' column
+                location: formData.rescueLocation || null,
+                has_new_photo: selectedImage ? true : false,
             };
 
             const { error: insertError } = await supabase
@@ -248,6 +279,19 @@ export default function UpdateForm({ token }: UpdateFormProps) {
         <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-200">
             <form onSubmit={handleSubmit} className="space-y-8">
                 <FormHeader dogData={dogData} />
+                <div className="space-y-6 pt-4 border-t border-border">
+                    <h3 className="text-xl font-heading font-semibold text-primary border-l-4 border-primary pl-4">
+                        Update Dog's Photo (Optional)
+                    </h3>
+                    <p className="text-text-muted text-sm">
+                        Upload a new photo to replace the current one. Admin will review and apply the new photo.
+                    </p>
+                    <ImageUpload
+                        selectedImage={selectedImage}
+                        onImageChange={setSelectedImage}
+                        onCropRequest={handleCropRequest}
+                    />
+                </div>
                 <OwnerInfoSection formData={formData} handleChange={handleChange} />
                 <DogInfoSection formData={formData} handleChange={handleChange} />
                 <ShelterInfoSection
@@ -262,6 +306,14 @@ export default function UpdateForm({ token }: UpdateFormProps) {
                 />
                 <SubmitSection submitting={submitting} />
             </form>
+
+            {showCropModal && (
+                <ImageCropModal
+                    image={cropImage}
+                    onCropComplete={handleCropComplete}
+                    onClose={handleCloseCrop}
+                />
+            )}
         </div>
     );
 }
