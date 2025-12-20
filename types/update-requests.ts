@@ -49,4 +49,5 @@ export interface UpdateRequest {
   reviewed_at?: string | null;
   reviewed_by?: string | null;
   admin_notes?: string | null;
+  staging_photo_path?: string | null;
 }

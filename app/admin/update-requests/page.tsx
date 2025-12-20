@@ -93,11 +93,15 @@ export default function UpdateRequestsPage() {
     };
 
     const hasNewPhoto = (request: UpdateRequest) => {
-        return request.requested_data?.has_new_photo === true;
+        return request.status === 'pending' &&
+            request.staging_photo_path !== null &&
+            request.staging_photo_path !== undefined;
     };
     const pendingRequests = requests.filter(r => r.status === 'pending');
-    const memorialRequests = requests.filter(r => r.update_type === 'memorial');
-    const photoRequests = requests.filter(r => hasNewPhoto(r));
+    const memorialRequests = requests.filter(r =>
+        r.update_type === 'memorial' && r.status === 'pending'
+    );
+    const photoRequests = requests.filter(r => hasNewPhoto(r) && r.status === 'pending');
 
     if (loading) {
         return (

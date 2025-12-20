@@ -97,19 +97,18 @@ export default function UpdateRequestReviewPage() {
         setProcessing(true);
         try {
             const { supabase } = await import('@/lib/supabase');
+            let finalAdminNotes = adminNotes || '';
 
             if (status === 'approved') {
                 // Apply the updates to the registration
                 const updatesToApply = { ...request.requested_data };
 
                 // Handle OLD data with wrong field names (backward compatibility)
-                // 1. gotcha_day → gotcha_date
                 if ('gotcha_day' in updatesToApply) {
                     updatesToApply.gotcha_date = (updatesToApply as any).gotcha_day;
                     delete (updatesToApply as any).gotcha_day;
                 }
 
-                // 2. special_qualities → special_attributes  
                 if ('special_qualities' in updatesToApply) {
                     updatesToApply.special_attributes = (updatesToApply as any).special_qualities;
                     delete (updatesToApply as any).special_qualities;
@@ -117,6 +116,89 @@ export default function UpdateRequestReviewPage() {
 
                 // Remove has_new_photo flag since it's not a real column
                 delete (updatesToApply as any).has_new_photo;
+
+                // Handle photo move from staging to production
+                // Handle photo move from staging to production
+                if (request.staging_photo_path) {
+                    try {
+                        const productionPath = `dog-photos/${request.wcu_number}-photo.webp`;
+
+                        // 1. First, check if production file exists and remove it
+                        try {
+                            const { data: existingFiles } = await supabase.storage
+                                .from('wcu-dogs')
+                                .list('dog-photos', {
+                                    search: `${request.wcu_number}-photo`
+                                });
+
+                            // Remove any existing files with this WCU number
+                            if (existingFiles && existingFiles.length > 0) {
+                                const filesToRemove = existingFiles.map((file: any) => `dog-photos/${file.name}`);
+                                await supabase.storage
+                                    .from('wcu-dogs')
+                                    .remove(filesToRemove);
+                                console.log(`Removed ${filesToRemove.length} existing photo(s) for ${request.wcu_number}`);
+                            }
+                        } catch (cleanupError) {
+                            console.log('Cleanup of existing photos skipped or failed:', cleanupError);
+                            // Continue anyway - we'll try to overwrite
+                        }
+
+                        // 2. Copy staging file to production
+                        const { error: copyError } = await supabase.storage
+                            .from('wcu-dogs')
+                            .copy(
+                                request.staging_photo_path,
+                                productionPath
+                            );
+
+                        if (copyError) {
+                            // If copy fails due to "already exists", try with a different approach
+                            if (copyError.message.includes('already exists') || copyError.message.includes('resource already exists')) {
+                                // Try upload with overwrite by using a direct upload to same path
+                                const { data: stagingFile } = await supabase.storage
+                                    .from('wcu-dogs')
+                                    .download(request.staging_photo_path);
+
+                                if (stagingFile) {
+                                    const { error: uploadError } = await supabase.storage
+                                        .from('wcu-dogs')
+                                        .upload(productionPath, stagingFile, {
+                                            upsert: true,
+                                            cacheControl: '3600'
+                                        });
+
+                                    if (uploadError) throw uploadError;
+                                } else {
+                                    throw new Error('Could not download staging file');
+                                }
+                            } else {
+                                throw copyError;
+                            }
+                        }
+
+                        // 3. Get public URL for the new photo
+                        const { data: urlData } = supabase.storage
+                            .from('wcu-dogs')
+                            .getPublicUrl(productionPath);
+
+                        // 4. Update photo_url in the registration
+                        updatesToApply.photo_url = urlData.publicUrl;
+
+                        // 5. Delete staging file
+                        await supabase.storage
+                            .from('wcu-dogs')
+                            .remove([request.staging_photo_path]);
+
+                        console.log(`✅ Photo successfully moved for ${request.wcu_number}`);
+
+                    } catch (photoError) {
+                        console.error('Photo move failed:', photoError);
+                        // Add note about photo failure but don't fail the whole approval
+                        if (finalAdminNotes) finalAdminNotes += ' ';
+                        finalAdminNotes += `[Photo update failed: ${photoError instanceof Error ? photoError.message : 'Unknown error'}]`;
+                    }
+                }
 
                 // Apply the updates
                 const { error: updateError } = await supabase
@@ -127,14 +209,20 @@ export default function UpdateRequestReviewPage() {
                 if (updateError) throw updateError;
             }
 
+            if (status === 'rejected' && request.staging_photo_path) {
+                // Delete staging photo since update was rejected
+                await supabase.storage
+                    .from('wcu-dogs')
+                    .remove([request.staging_photo_path]);
+            }
+
             // Update the request status
             const { error: requestUpdateError } = await supabase
                 .from('update_requests')
                 .update({
                     status: status,
                     reviewed_at: new Date().toISOString(),
-                    admin_notes: adminNotes.trim() || null,
-                    // In a real app, you would store the admin user ID here
+                    admin_notes: finalAdminNotes.trim() || null,
                     reviewed_by: null
                 })
                 .eq('id', request.id);
@@ -342,7 +430,17 @@ export default function UpdateRequestReviewPage() {
         );
     }
 
-    const hasNewPhoto = request.requested_data?.has_new_photo === true;
+    const getStagingPhotoUrl = (stagingPath: string) => {
+        const { supabase } = require('@/lib/supabase');
+        const { data } = supabase.storage
+            .from('wcu-dogs')
+            .getPublicUrl(stagingPath);
+        return data.publicUrl;
+    };
+
+    const hasNewPhoto = (request: UpdateRequest) => {
+        return request.staging_photo_path !== null && request.staging_photo_path !== undefined;
+    };
 
     return (
         <div className="space-y-6">
@@ -379,15 +477,37 @@ export default function UpdateRequestReviewPage() {
             </div>
 
             {/* Alert for new photo */}
-            {hasNewPhoto && (
+            {request.staging_photo_path && (
                 <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg">
                     <div className="flex items-center">
                         <ImageIcon className="h-5 w-5 text-blue-500 mr-2" />
-                        <div>
-                            <h3 className="text-sm font-medium text-blue-800">Photo Update Requested</h3>
+                        <div className="flex-1">
+                            <h3 className="text-sm font-medium text-blue-800">📸 New Photo Uploaded to Staging</h3>
                             <p className="text-sm text-blue-700 mt-1">
-                                Owner has uploaded a new photo. After approving this request, you'll need to manually upload the new photo to Supabase storage.
+                                Owner has uploaded a new photo to staging. You can review it before moving to production.
                             </p>
+
+                            <div className="mt-3 flex flex-wrap gap-3">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        const url = getStagingPhotoUrl(request.staging_photo_path!);
+                                        window.open(url, '_blank');
+                                    }}
+                                    className="px-4 py-2 bg-white border border-blue-300 text-blue-700 rounded-lg hover:bg-blue-50 text-sm"
+                                >
+                                    👁️ View Staging Photo
+                                </button>
+
+                                <div className="text-xs text-blue-600 bg-blue-100 px-3 py-1 rounded">
+                                    File: {request.staging_photo_path.split('/').pop()}
+                                </div>
+                            </div>
+
+                            <div className="mt-3 text-xs text-blue-600">
+                                <p>• Current photo will be overwritten when you approve</p>
+                                <p>• Staging photo will be deleted if you reject</p>
+                            </div>
                         </div>
                     </div>
                 </div>

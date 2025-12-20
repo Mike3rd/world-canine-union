@@ -17,7 +17,8 @@ export default function AdminDashboard() {
     const [stats, setStats] = useState({
         total: 0,
         issues: 0,
-        recent: 0
+        recent: 0,
+        pendingUpdates: 0
     });
     useEffect(() => {
         loadStats();
@@ -31,20 +32,23 @@ export default function AdminDashboard() {
             const today = new Date();
             const startOfDay = new Date(today.setHours(0, 0, 0, 0)).toISOString();
 
-            // Run all 3 queries at once
-            const [totalRes, paymentIssuesRes, recentRes] = await Promise.all([
+            // Run all 4 queries at once
+            const [totalRes, paymentIssuesRes, recentRes, pendingUpdatesRes] = await Promise.all([
                 supabase.from('registrations').select('*', { count: 'exact', head: true }),
                 supabase.from('registrations').select('*', { count: 'exact', head: true })
-                    .eq('status', 'completed')  // Registration complete
-                    .is('pdf_url', null),       // But no PDF generated (payment/cron issue)
+                    .eq('status', 'completed')
+                    .is('pdf_url', null),
                 supabase.from('registrations').select('*', { count: 'exact', head: true })
-                    .gte('created_at', startOfDay)
+                    .gte('created_at', startOfDay),
+                supabase.from('update_requests').select('*', { count: 'exact', head: true })
+                    .eq('status', 'pending')
             ]);
 
             setStats({
                 total: totalRes.count || 0,
                 issues: paymentIssuesRes.count || 0,
-                recent: recentRes.count || 0
+                recent: recentRes.count || 0,
+                pendingUpdates: pendingUpdatesRes.count || 0
             });
 
         } catch (error) {
@@ -129,8 +133,14 @@ export default function AdminDashboard() {
                             <p className="text-sm text-gray-600 mt-1">Review owner-submitted updates</p>
                         </div>
                     </div>
-                    <div className="mt-4 text-right">
-                        <span className="text-amber-600 text-sm font-medium">View pending →</span>
+                    <div className="mt-4 flex justify-between items-center">
+                        <div>
+                            <p className="text-2xl font-bold text-yellow-600">
+                                {stats.pendingUpdates}
+                            </p>
+                            <p className="text-xs text-gray-500">Pending review</p>
+                        </div>
+                        <span className="text-amber-600 text-sm font-medium">View all →</span>
                     </div>
                 </div>
 
@@ -186,6 +196,7 @@ export default function AdminDashboard() {
                     <h3 className="text-lg font-semibold text-gray-700">Recent Today</h3>
                     <p className="text-3xl font-bold text-amber-600 mt-2">{stats.recent}</p>
                 </div>
+
             </div>
 
             {/* Search Section */}

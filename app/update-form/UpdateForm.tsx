@@ -203,7 +203,7 @@ export default function UpdateForm({ token }: UpdateFormProps) {
                 .filter(breed => breed && breed.length > 0)
                 .join(' + ');
 
-
+            // Build the base update data
             const updateData = {
                 // Owner updates
                 owner_name: formData.ownerName || null,
@@ -213,7 +213,7 @@ export default function UpdateForm({ token }: UpdateFormProps) {
                 dog_name: formData.dogName || null,
                 gender: formData.gender || null,
                 birth_date: formData.birthDate || null,
-                gotcha_date: formData.gotchaDay || null, // Map to gotcha_date
+                gotcha_date: formData.gotchaDay || null,
 
                 // Breed (combined)
                 breed_description: breedDescription || null,
@@ -224,7 +224,7 @@ export default function UpdateForm({ token }: UpdateFormProps) {
 
                 // Story fields
                 rescue_story: formData.dogStory || null,
-                special_attributes: formData.specialAttributes || null, // Map to special_attributes
+                special_attributes: formData.specialAttributes || null,
                 favorite_activities: formData.favoriteActivities || null,
                 unique_traits: formData.uniqueTraits || null,
 
@@ -239,20 +239,51 @@ export default function UpdateForm({ token }: UpdateFormProps) {
                 shelter_state: formData.shelterState || null,
                 shelter_website: formData.shelterWebsite || null,
                 location: formData.rescueLocation || null,
-                has_new_photo: selectedImage ? true : false,
+                has_new_photo: false, // Default to false, will update if upload succeeds
             };
 
+            let stagingPhotoPath = null;
+
+            // Handle photo upload to staging if new image selected
+            if (selectedImage) {
+                try {
+                    const timestamp = Date.now();
+                    const fileExtension = selectedImage.name.split('.').pop() || 'webp';
+                    const stagingName = `${dogData.registration_number}-photo-NEW-${timestamp}.${fileExtension}`;
+                    stagingPhotoPath = `staging/${stagingName}`;
+
+                    const { error: uploadError } = await supabase.storage
+                        .from('wcu-dogs')
+                        .upload(stagingPhotoPath, selectedImage, {
+                            cacheControl: '3600',
+                            upsert: false
+                        });
+
+                    if (uploadError) throw uploadError;
+
+                    updateData.has_new_photo = true;
+
+                } catch (photoError) {
+                    console.error('Photo upload failed:', photoError);
+                    // Don't fail the whole request if photo upload fails
+                    updateData.has_new_photo = false;
+                }
+            }
+
+            // Insert the update request
             const { error: insertError } = await supabase
                 .from('update_requests')
                 .insert({
                     wcu_number: dogData.registration_number,
-                    update_type: reportPassing ? 'memorial' : 'general', // FIXED: 'memorial' or 'general'
+                    update_type: reportPassing ? 'memorial' : 'general',
                     requested_data: updateData,
+                    staging_photo_path: stagingPhotoPath, // Store the staging path
                     status: 'pending'
                 });
 
             if (insertError) throw insertError;
 
+            // Mark token as used
             await supabase
                 .from('update_tokens')
                 .update({
@@ -284,7 +315,7 @@ export default function UpdateForm({ token }: UpdateFormProps) {
                         Update Dog's Photo (Optional)
                     </h3>
                     <p className="text-text-muted text-sm">
-                        Upload a new photo to replace the current one. Admin will review and apply the new photo.
+                        Upload a new photo to replace the current one. New photos will be reviewed by admin before appearing on your dog's profile.
                     </p>
                     <ImageUpload
                         selectedImage={selectedImage}
