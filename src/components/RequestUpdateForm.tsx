@@ -1,7 +1,9 @@
+// components/RequestUpdateForm.tsx - FINAL VERSION
 'use client';
 
 import { useState } from 'react';
 import { supabase } from '@/lib/supabase';
+import { sendUpdateRequestEmail } from '@/lib/update-email';
 
 export default function RequestUpdateForm() {
     const [wcuNumber, setWcuNumber] = useState('');
@@ -14,11 +16,22 @@ export default function RequestUpdateForm() {
         setMessage(null);
 
         try {
-            // 1. Look up the dog by WCU number
+            // Clean and validate WCU number
+            const cleanWcuNumber = wcuNumber.trim().toUpperCase();
+            if (!cleanWcuNumber.match(/^WCU-\d{5}$/)) {
+                setMessage({
+                    type: 'error',
+                    text: 'Invalid format. Please use WCU-00000 format.'
+                });
+                setLoading(false);
+                return;
+            }
+
+            // Look up the dog by WCU number
             const { data: dog, error: lookupError } = await supabase
                 .from('registrations')
                 .select('registration_number, dog_name, owner_email')
-                .eq('registration_number', wcuNumber.trim().toUpperCase())
+                .eq('registration_number', cleanWcuNumber)
                 .single();
 
             if (lookupError || !dog) {
@@ -26,18 +39,19 @@ export default function RequestUpdateForm() {
                     type: 'error',
                     text: 'WCU number not found. Please check and try again.'
                 });
+                setLoading(false);
                 return;
             }
 
-            // 2. Generate a secure token for the magic link
+            // Generate token
             const token = crypto.randomUUID();
-            const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+            const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
-            // 3. Store the token in a temporary table (we'll create this)
+            // Store token
             const { error: tokenError } = await supabase
                 .from('update_tokens')
                 .insert({
-                    token,
+                    token: token,
                     registration_number: dog.registration_number,
                     expires_at: expiresAt.toISOString(),
                     used: false
@@ -49,24 +63,37 @@ export default function RequestUpdateForm() {
                     type: 'error',
                     text: 'Failed to generate update link. Please try again.'
                 });
+                setLoading(false);
                 return;
             }
 
-            // 4. Send magic link email (simulated for now - we'll implement email later)
+            // Generate link
             const updateLink = `${window.location.origin}/update-form?token=${token}`;
 
-            // TODO: Integrate with Resend for actual email sending
-            console.log('Magic link for email:', dog.owner_email);
-            console.log('Update link:', updateLink);
-
-            // For now, show the link to the user (in production, this would be emailed)
-            setMessage({
-                type: 'success',
-                text: `A secure update link has been sent to the email on file for ${dog.dog_name}. 
-               For testing: ${updateLink}`
+            // Send email
+            const emailResult = await sendUpdateRequestEmail({
+                to: dog.owner_email,
+                dogName: dog.dog_name,
+                ownerName: dog.owner_name || 'Valued Owner',
+                wcuNumber: dog.registration_number,
+                updateLink: updateLink,
+                hoursValid: 24
             });
 
-            setWcuNumber('');
+            if (!emailResult.success) {
+                console.error('Email sending failed:', emailResult.error);
+                setMessage({
+                    type: 'error',
+                    text: `Failed to send email to ${dog.owner_email}. Please check junk folder or try again.`
+                });
+            } else {
+                // Email sent successfully - NO TESTING LINK SHOWN
+                setMessage({
+                    type: 'success',
+                    text: `A secure update link has been sent to ${dog.owner_email} for ${dog.dog_name}. Check your inbox and junk folder.`
+                });
+                setWcuNumber('');
+            }
 
         } catch (error) {
             console.error('Update request error:', error);
