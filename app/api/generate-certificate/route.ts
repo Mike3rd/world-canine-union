@@ -79,7 +79,7 @@ export async function POST(request: Request) {
 
     const { data: dogData, error } = await supabase
       .from("registrations")
-      .select("*, birth_date")
+      .select("*, birth_date, is_memorial, memorial_date")
       .eq("registration_number", registrationNumber)
       .single();
 
@@ -137,6 +137,7 @@ async function generateCertificatePDF(dogData: any) {
       accent: rgb(0.56, 0.12, 0.12),
       gray: rgb(0.9, 0.9, 0.9),
       black: rgb(0, 0, 0),
+      purple: rgb(0.31, 0.176, 0.553),
     };
 
     function capitalizeFirst(str: string) {
@@ -158,7 +159,7 @@ async function generateCertificatePDF(dogData: any) {
       y: borderMargin,
       width: width - borderMargin * 2,
       height: height - borderMargin * 2,
-      borderColor: wcuColors.primary,
+      borderColor: wcuColors.black,
       borderWidth: 1,
     });
 
@@ -230,16 +231,16 @@ async function generateCertificatePDF(dogData: any) {
     //});
 
     page.drawText("World Canine Union", {
-      x: logoX + 65,
+      x: logoX + 62,
       y: height - 90,
       size: 33,
       font: timesRoman,
-      color: wcuColors.black,
+      color: wcuColors.primary,
     });
 
-    page.drawText("Soul over Pedigree", {
-      x: logoX + 140,
-      y: height - 106,
+    page.drawText("Global Registry for all other Dogs", {
+      x: logoX + 100,
+      y: height - 110,
       size: 14,
       font: helveticaRegular,
       color: wcuColors.black,
@@ -255,7 +256,7 @@ async function generateCertificatePDF(dogData: any) {
       y: height - 150,
       size: 28,
       font: timesRoman, // ← Regular font for regular text
-      color: wcuColors.primary,
+      color: wcuColors.black,
     });
 
     // === GROUP 1: Compact Fields ===
@@ -316,6 +317,41 @@ async function generateCertificatePDF(dogData: any) {
       });
     });
 
+    // ===== ADD MEMORIAL TEXT HERE =====
+    if (dogData.is_memorial) {
+      const memorialBlockY = currentY - 115; // Change this single number
+      const memorialBlockX = 375; // Change this single number
+
+      // Heart
+      page.drawText("❤", {
+        x: memorialBlockX + 57,
+        y: memorialBlockY + 10,
+        size: 20,
+        font: zapfDingbats,
+        color: wcuColors.purple,
+      });
+
+      // Title
+      page.drawText("In Loving Memory", {
+        x: memorialBlockX + 18,
+        y: memorialBlockY,
+        size: 14,
+        font: timesRomanItalic,
+        color: wcuColors.purple,
+      });
+
+      // Date
+      if (dogData.memorial_date) {
+        const memorialDateText = formatDate(dogData.memorial_date);
+        page.drawText(memorialDateText, {
+          x: memorialBlockX + 18,
+          y: memorialBlockY - 14,
+          size: 11,
+          font: helveticaRegular,
+          color: wcuColors.black,
+        });
+      }
+    }
     // === SPACER BETWEEN GROUPS ===
     const spacerY = currentY - group1Fields.length * 23 - 14;
     page.drawLine({
@@ -475,7 +511,7 @@ async function generateCertificatePDF(dogData: any) {
       x: signature1X + 15,
       y: signaturesY,
       size: 17,
-      font: timesRomanItalic,
+      font: timesRoman,
       color: wcuColors.primary,
     });
 
@@ -501,7 +537,7 @@ async function generateCertificatePDF(dogData: any) {
       x: signature2X + 25,
       y: signaturesY,
       size: 17,
-      font: timesRomanItalic,
+      font: timesRoman,
       color: wcuColors.primary,
     });
 
