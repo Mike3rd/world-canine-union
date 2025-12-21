@@ -30,7 +30,7 @@ export default function RequestUpdateForm() {
             // Look up the dog by WCU number
             const { data: dog, error: lookupError } = await supabase
                 .from('registrations')
-                .select('registration_number, dog_name, owner_email')
+                .select('registration_number, dog_name, owner_email, owner_name')
                 .eq('registration_number', cleanWcuNumber)
                 .single();
 
@@ -74,7 +74,7 @@ export default function RequestUpdateForm() {
             const emailResult = await sendUpdateRequestEmail({
                 to: dog.owner_email,
                 dogName: dog.dog_name,
-                ownerName: dog.owner_name || 'Valued Owner',
+                ownerName: dog.owner_name || `World's Best Dog Owner`,
                 wcuNumber: dog.registration_number,
                 updateLink: updateLink,
                 hoursValid: 24

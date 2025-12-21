@@ -137,6 +137,39 @@ export const UpdateRequestEmail: React.FC<UpdateRequestEmailProps> = ({
                 </ul>
             </div>
 
+            <p style={{
+                marginTop: '20px',
+                fontSize: '14px',
+                color: '#546E7A',
+                padding: '15px',
+                backgroundColor: '#E8F5E9',
+                borderRadius: '6px',
+                border: '1px solid #C8E6C9'
+            }}>
+                <strong>⏰ Reminder:</strong> Your admin will review the updates within <strong>24-48 hours</strong>.
+                You can check back on your dog's profile page to see when updates are approved:
+                <br />
+                <a
+                    href={`https://worldcanineunion.org/dog/${wcuNumber}`}
+                    style={{ color: '#2E7D32', textDecoration: 'underline' }}
+                >
+                    https://worldcanineunion.org/dog/{wcuNumber}
+                </a>
+            </p>
+
+            <p style={{
+                marginTop: '20px',
+                fontSize: '14px',
+                color: '#546E7A',
+                padding: '15px',
+                backgroundColor: '#FFF3E0',
+                borderRadius: '6px',
+                border: '1px solid #FFE0B2'
+            }}>
+                <strong>📝 Note:</strong> You won't receive another email when your updates are approved.
+                Please check the profile page above after 24-48 hours to see the changes.
+            </p>
+
             {/* Security Notice */}
             <p style={{
                 marginTop: '30px',
