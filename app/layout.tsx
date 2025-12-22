@@ -3,6 +3,7 @@ import Link from "next/link";
 import Script from "next/script";
 import "./globals.css";
 import StructuredData from "@/components/StructuredData";
+import Topbar from "@/components/navigation/Topbar";
 
 
 export const metadata: Metadata = {
@@ -56,54 +57,15 @@ export const metadata: Metadata = {
 };
 
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" data-theme="default">
-      {/* default, night, retro, holiday */}
+    <html lang="en">
       <body className="min-h-screen bg-background text-text font-body">
         <StructuredData />
         <div className="flex flex-col min-h-screen">
-          <header className="border-b border-border bg-header-bg">
-            <div className="container mx-auto px-4 py-4">
-              <Link
-                href="/"
-                className="inline-block hover:opacity-80 transition-opacity"
-              >
-                <div className="flex items-center gap-1">
-                  {/* Fixed height, auto width maintains your 256x285 ratio */}
-                  <img
-                    src="\images\wcu-logo-nav.png"
-                    alt="WCU Logo"
-                    className="h-14 w-auto"
-                    style={{
-                      height: '56px', // 256x285 ratio means width will be ~50px
-                      width: 'auto'
-                    }}
-                  />
-
-                  <h1 className="text-3xl md:text-4xl font-logo font-bold text-header-text pt-2">
-                    World Canine Union
-                  </h1>
-                </div>
-              </Link>
-            </div>
-          </header>
+          <Topbar /> {/* Replaces old header */}
           <main className="flex-1">{children}</main>
-          <footer className="border-t border-border bg-footer-bg py-6 mt-12">
-            <div className="container mx-auto px-4 text-center text-footer-text text-sm">
-              <p>
-                World Canine Union — A global mission-driven initiative
-                supporting canine welfare.
-              </p>
-              <p className="sr-only">
-                <a href="/fact-sheet.json">World Canine Union Fact Sheet</a>
-              </p>
-            </div>
-          </footer>
+          <footer>...</footer>
         </div>
       </body>
     </html>
