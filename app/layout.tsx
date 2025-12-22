@@ -4,6 +4,7 @@ import Script from "next/script";
 import "./globals.css";
 import StructuredData from "@/components/StructuredData";
 import Topbar from "@/components/navigation/Topbar";
+import Footer from "@/components/navigation/Footer";
 
 
 export const metadata: Metadata = {
@@ -65,7 +66,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <div className="flex flex-col min-h-screen">
           <Topbar /> {/* Replaces old header */}
           <main className="flex-1">{children}</main>
-          <footer>...</footer>
+          <Footer />
         </div>
       </body>
     </html>
