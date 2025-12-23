@@ -87,7 +87,22 @@ export async function POST(request: NextRequest) {
         hasBody: !!fullEmail.text,
       });
     }
+    if (
+      eventType === "email.sent" ||
+      eventType === "email.delivered" ||
+      eventType === "email.bounced" ||
+      eventType === "email.opened"
+    ) {
+      console.log(`📤 Processing ${eventType} event`);
+      return await handleOutgoingStatus(eventType, body);
+    }
 
+    // If we get here, it's an unhandled event type
+    console.log(`ℹ️ Unhandled event type: ${eventType}`);
+    return NextResponse.json({
+      success: true,
+      note: `Unhandled event: ${eventType}`,
+    });
     // For now, ignore other event types
     console.log(`⚠️ Ignoring event type: ${eventType}`);
     return NextResponse.json({
@@ -104,5 +119,55 @@ export async function POST(request: NextRequest) {
       },
       { status: 500 }
     );
+  }
+
+  // New helper function to update email_logs
+  async function handleOutgoingStatus(eventType: string, body: any) {
+    const messageId = body.data?.messageId; // Resend's ID from when you SENT the email
+
+    if (!messageId) {
+      console.warn("⚠️ No messageId in outgoing status webhook");
+      return NextResponse.json({ error: "No messageId" }, { status: 400 });
+    }
+
+    console.log(
+      `Updating email_logs for message: ${messageId}, event: ${eventType}`
+    );
+
+    const updateData: any = {
+      updated_at: new Date().toISOString(),
+    };
+
+    // Map the webhook event to database fields
+    if (eventType === "email.sent") {
+      updateData.sent_at = new Date().toISOString();
+      updateData.current_status = "sent";
+    } else if (eventType === "email.delivered") {
+      updateData.delivered_at = new Date().toISOString();
+      updateData.current_status = "delivered";
+    } else if (eventType === "email.bounced") {
+      updateData.bounced_at = new Date().toISOString();
+      updateData.bounced_reason = body.data?.bounce?.type;
+      updateData.current_status = "bounced";
+    } else if (eventType === "email.opened") {
+      updateData.opened_at = new Date().toISOString();
+      updateData.current_status = "opened";
+    }
+
+    const { error } = await supabase
+      .from("email_logs")
+      .update(updateData)
+      .eq("resend_message_id", messageId); // CRITICAL: matches the ID saved when sending
+
+    if (error) {
+      console.error(`❌ Failed to update email_logs for ${eventType}:`, error);
+      return NextResponse.json(
+        { error: "Database update failed" },
+        { status: 500 }
+      );
+    }
+
+    console.log(`✅ email_logs updated for ${eventType}`);
+    return NextResponse.json({ success: true, updated: true });
   }
 }

@@ -70,6 +70,32 @@ export default function EmailAdminPage() {
         }
     };
 
+    const handleEmailClick = async (email: SupportEmail) => {
+        // 1. Select the email
+        setSelectedEmail(email);
+
+        // 2. If it's unread, mark it as read
+        if (email.status === 'unread') {
+            try {
+                // Update in database
+                const { error } = await supabase
+                    .from('support_emails')
+                    .update({ status: 'read' })
+                    .eq('id', email.id);
+
+                if (error) throw error;
+
+                // Update in local state
+                setEmails(prev => prev.map(e =>
+                    e.id === email.id ? { ...e, status: 'read' } : e
+                ));
+
+            } catch (error) {
+                console.error('Failed to mark email as read:', error);
+            }
+        }
+    };
+
     const handleSendReply = async () => {
         if (!selectedEmail || !replyText.trim()) return;
 
@@ -182,7 +208,7 @@ export default function EmailAdminPage() {
                         {emails.map(email => (
                             <div
                                 key={email.id}
-                                onClick={() => setSelectedEmail(email)}
+                                onClick={() => handleEmailClick(email)}
                                 className={`p-4 border rounded-lg cursor-pointer hover:bg-gray-50 ${selectedEmail?.id === email.id ? 'bg-blue-50 border-blue-200' : ''
                                     } ${email.status === 'unread' ? 'border-l-4 border-l-blue-500' : ''}`}
                             >
@@ -191,7 +217,7 @@ export default function EmailAdminPage() {
                                         <p className="font-semibold truncate">{email.from_name}</p>
                                         <p className="text-sm text-gray-600 truncate">{email.subject}</p>
                                     </div>
-                                    <span className={`px-2 py-1 text-xs rounded-full ${email.status === 'unread' ? 'bg-blue-100 text-blue-800' :
+                                    <span className={`px-2 py-1 text-xs rounded-full ${email.status === 'unread' ? 'bg-blue-100 text-blue-800' : email.status === 'read' ? 'bg-gray-100 text-gray-800' :
                                         email.status === 'replied' ? 'bg-green-100 text-green-800' :
                                             'bg-gray-100 text-gray-800'
                                         }`}>
