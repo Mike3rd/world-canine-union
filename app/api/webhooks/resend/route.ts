@@ -123,24 +123,9 @@ export async function POST(request: NextRequest) {
 
   // New helper function to update email_logs
   async function handleOutgoingStatus(eventType: string, body: any) {
-    // DEBUG: Log the ENTIRE outgoing webhook body
-    console.log(`🔍 Full ${eventType} webhook:`, JSON.stringify(body, null, 2));
+    const emailId = body.data?.email_id;
 
-    // Try different possible field names for the message ID
-    const messageId =
-      body.data?.messageId ||
-      body.data?.id ||
-      body.data?.email_id ||
-      body.messageId;
-
-    console.log(`🔍 Looking for messageId. Found: "${messageId}" in fields:`, {
-      messageId: body.data?.messageId,
-      id: body.data?.id,
-      email_id: body.data?.email_id,
-      rootMessageId: body.messageId,
-    });
-
-    if (!messageId) {
+    if (!emailId) {
       console.warn("⚠️ No messageId found in ANY field");
       // Don't return error - just log and return success to Resend
       return NextResponse.json({
@@ -148,7 +133,9 @@ export async function POST(request: NextRequest) {
         warning: "No messageId found",
       });
     }
-
+    console.log(
+      `Updating email_logs for email: ${emailId}, event: ${eventType}`
+    );
     const updateData: any = {
       updated_at: new Date().toISOString(),
     };
@@ -172,7 +159,7 @@ export async function POST(request: NextRequest) {
     const { error } = await supabase
       .from("email_logs")
       .update(updateData)
-      .eq("resend_message_id", messageId); // CRITICAL: matches the ID saved when sending
+      .eq("resend_message_id", emailId); // CRITICAL: matches the ID saved when sending
 
     if (error) {
       console.error(`❌ Failed to update email_logs for ${eventType}:`, error);
