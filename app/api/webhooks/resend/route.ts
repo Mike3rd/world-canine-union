@@ -42,41 +42,80 @@ export async function POST(request: NextRequest) {
 
 // Handle incoming support emails
 async function handleEmailReceived(body: any) {
-  console.log("📧 Full received email payload:", JSON.stringify(body, null, 2));
+  const emailId = body.data?.email_id;
 
-  // Resend email.received structure is different
-  const emailData = {
-    original_message_id: body.data?.id,
-    from_email: body.data?.from,
-    from_name: extractName(body.data?.from),
-    subject: body.data?.subject || "(no subject)",
-    // Check different possible locations for message content
-    message_text: body.data?.text || body.data?.plain_text || "",
-    message_html: body.data?.html || "",
-    received_at: new Date().toISOString(),
-    wcu_number: extractWcuNumber(
-      body.data?.subject,
-      body.data?.text || body.data?.plain_text || ""
-    ),
-    status: "unread" as const,
-    raw_payload: body,
-  };
-
-  console.log("📦 Email data to save:", emailData);
-
-  const { error } = await supabase.from("support_emails").insert([emailData]);
-
-  if (error) {
-    console.error("❌ Failed to save support email:", error);
-  } else {
-    console.log("✅ Email saved to database");
+  if (!emailId) {
+    console.error("❌ No email_id in webhook payload");
+    return NextResponse.json({ error: "No email ID" }, { status: 400 });
   }
 
-  return NextResponse.json({
-    success: true,
-    saved: !error,
-    event: "email.received",
-  });
+  try {
+    // 1. Fetch the full email content from Resend API
+    const resendResponse = await fetch(
+      `https://api.resend.com/emails/${emailId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!resendResponse.ok) {
+      throw new Error(`Failed to fetch email: ${resendResponse.status}`);
+    }
+
+    const fullEmail = await resendResponse.json();
+
+    console.log("📧 Full email content from Resend API:", {
+      hasText: !!fullEmail.text,
+      hasHtml: !!fullEmail.html,
+      textLength: fullEmail.text?.length,
+    });
+
+    // 2. Save to database with full content
+    const emailData = {
+      original_message_id: fullEmail.id || emailId,
+      from_email: fullEmail.from || body.data?.from,
+      from_name: extractName(fullEmail.from || body.data?.from),
+      subject: fullEmail.subject || body.data?.subject || "(no subject)",
+      message_text: fullEmail.text || "",
+      message_html: fullEmail.html || "",
+      received_at: new Date().toISOString(),
+      wcu_number: extractWcuNumber(
+        fullEmail.subject || body.data?.subject,
+        fullEmail.text || ""
+      ),
+      status: "unread",
+      raw_payload: body,
+    };
+
+    console.log("📦 Email data to save (with content):", {
+      subject: emailData.subject,
+      hasText: !!emailData.message_text,
+      hasHtml: !!emailData.message_html,
+    });
+
+    const { error } = await supabase.from("support_emails").insert([emailData]);
+
+    if (error) {
+      console.error("❌ Failed to save support email:", error);
+      return NextResponse.json({ error: "Database error" }, { status: 500 });
+    }
+
+    console.log("✅ Email saved with full content");
+    return NextResponse.json({
+      success: true,
+      hasContent: !!emailData.message_text,
+      event: "email.received",
+    });
+  } catch (error) {
+    console.error("❌ Error processing email.received:", error);
+    return NextResponse.json(
+      { error: "Failed to process email" },
+      { status: 500 }
+    );
+  }
 }
 
 // Handle outgoing email status updates
