@@ -1,0 +1,185 @@
+// app/api/webhooks/resend/route.ts - UPDATED FOR ALL EVENTS
+import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const eventType = body.type;
+
+    console.log(`📨 Resend webhook: ${eventType}`, {
+      timestamp: new Date().toISOString(),
+      messageId: body.data?.messageId || body.data?.id,
+    });
+
+    // Route different event types
+    switch (eventType) {
+      case "email.received":
+        return await handleEmailReceived(body);
+
+      case "email.sent":
+      case "email.delivered":
+      case "email.bounced":
+      case "email.complained":
+      case "email.opened":
+      case "email.clicked":
+        return await handleEmailStatusUpdate(eventType, body);
+
+      default:
+        console.log(`⚠️ Unhandled event type: ${eventType}`);
+        return NextResponse.json({ received: true, unhandled: eventType });
+    }
+  } catch (error) {
+    console.error("❌ Webhook error:", error);
+    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+  }
+}
+
+// Handle incoming support emails
+async function handleEmailReceived(body: any) {
+  const emailId = body.data?.email_id;
+
+  if (!emailId) {
+    console.error("❌ No email_id in webhook payload");
+    return NextResponse.json({ error: "No email ID" }, { status: 400 });
+  }
+
+  try {
+    // 1. Fetch the full email content from Resend API
+    const resendResponse = await fetch(
+      `https://api.resend.com/emails/${emailId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!resendResponse.ok) {
+      throw new Error(`Failed to fetch email: ${resendResponse.status}`);
+    }
+
+    const fullEmail = await resendResponse.json();
+
+    console.log("📧 Full email content from Resend API:", {
+      hasText: !!fullEmail.text,
+      hasHtml: !!fullEmail.html,
+      textLength: fullEmail.text?.length,
+    });
+
+    // 2. Save to database with full content
+    const emailData = {
+      original_message_id: fullEmail.id || emailId,
+      from_email: fullEmail.from || body.data?.from,
+      from_name: extractName(fullEmail.from || body.data?.from),
+      subject: fullEmail.subject || body.data?.subject || "(no subject)",
+      message_text: fullEmail.text || "",
+      message_html: fullEmail.html || "",
+      received_at: new Date().toISOString(),
+      wcu_number: extractWcuNumber(
+        fullEmail.subject || body.data?.subject,
+        fullEmail.text || ""
+      ),
+      status: "unread",
+      raw_payload: body,
+    };
+
+    console.log("📦 Email data to save (with content):", {
+      subject: emailData.subject,
+      hasText: !!emailData.message_text,
+      hasHtml: !!emailData.message_html,
+    });
+
+    const { error } = await supabase.from("support_emails").insert([emailData]);
+
+    if (error) {
+      console.error("❌ Failed to save support email:", error);
+      return NextResponse.json({ error: "Database error" }, { status: 500 });
+    }
+
+    console.log("✅ Email saved with full content");
+    return NextResponse.json({
+      success: true,
+      hasContent: !!emailData.message_text,
+      event: "email.received",
+    });
+  } catch (error) {
+    console.error("❌ Error processing email.received:", error);
+    return NextResponse.json(
+      { error: "Failed to process email" },
+      { status: 500 }
+    );
+  }
+}
+
+// Handle outgoing email status updates
+async function handleEmailStatusUpdate(eventType: string, body: any) {
+  const messageId = body.data?.messageId;
+  if (!messageId) {
+    console.log("⚠️ No messageId in status update");
+    return NextResponse.json({ success: false, error: "No messageId" });
+  }
+
+  // Map event to database field
+  const statusMap: Record<string, { field: string; status: string }> = {
+    "email.sent": { field: "sent_at", status: "sent" },
+    "email.delivered": { field: "delivered_at", status: "delivered" },
+    "email.bounced": { field: "bounced_at", status: "bounced" },
+    "email.complained": { field: "complained_at", status: "complained" },
+    "email.opened": { field: "opened_at", status: "opened" },
+    "email.clicked": { field: "clicked_at", status: "clicked" },
+  };
+
+  const mapping = statusMap[eventType];
+  if (!mapping) {
+    return NextResponse.json({ success: false, error: "Unknown event" });
+  }
+
+  // Update the email_logs table
+  const updateData: any = {
+    [mapping.field]: new Date().toISOString(),
+    current_status: mapping.status,
+    updated_at: new Date().toISOString(),
+  };
+
+  // Add bounce/complaint reasons if available
+  if (eventType === "email.bounced" && body.data?.bounce) {
+    updateData.bounced_reason = body.data.bounce.type;
+  }
+
+  const { error } = await supabase
+    .from("email_logs")
+    .update(updateData)
+    .eq("resend_message_id", messageId);
+
+  if (error) {
+    console.error(`❌ Failed to update email status (${eventType}):`, error);
+  }
+
+  return NextResponse.json({
+    success: true,
+    updated: !error,
+    event: eventType,
+    messageId,
+  });
+}
+
+// Helper functions (same as before)
+function extractName(from: string): string {
+  if (!from) return "Unknown";
+  const nameMatch = from.match(/^([^<]+)</);
+  return nameMatch ? nameMatch[1].trim() : from;
+}
+
+function extractWcuNumber(subject: string, body: string): string | null {
+  const wcuRegex = /WCU-\d{5}/i;
+  const subjectMatch = subject?.match(wcuRegex);
+  const bodyMatch = body?.match(wcuRegex);
+  return subjectMatch?.[0] || bodyMatch?.[0] || null;
+}
