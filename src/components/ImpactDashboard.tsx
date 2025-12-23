@@ -19,6 +19,7 @@ interface RecentRegistration {
     breed_description: string;
     shelter_name: string | null;
     created_at: string;
+    photo_url: string | null;
 }
 
 export default function ImpactDashboard() {
@@ -79,13 +80,13 @@ export default function ImpactDashboard() {
                 setStats(statsData);
             }
 
-            // Fetch recent registrations (capped at 5)
+            // Fetch recent registrations (capped at 3)
             const { data: recentData, error: recentError } = await supabase
                 .from("registrations")
-                .select("registration_number, dog_name, breed_description, shelter_name, created_at")
+                .select("registration_number, dog_name, breed_description, shelter_name, created_at, photo_url")
                 .eq("status", "completed")
                 .order("created_at", { ascending: false })
-                .limit(5);
+                .limit(3);
 
             if (recentError) throw recentError;
             setRecentDogs(recentData || []);
@@ -313,6 +314,7 @@ export default function ImpactDashboard() {
                     </div>
 
                     {/* Right Column: Recent Members */}
+                    {/* Right Column: Recent Members */}
                     <div className="bg-surface p-8 rounded-2xl border border-border hover:shadow-lg transition-all">
                         <h3 className="font-heading text-2xl font-semibold text-primary mb-6">
                             Recent Members of Our Pack
@@ -320,24 +322,49 @@ export default function ImpactDashboard() {
                         <div className="space-y-4">
                             {recentDogs.length > 0 ? (
                                 recentDogs.map((dog) => (
-                                    <div
+                                    <Link
                                         key={dog.registration_number}
-                                        className="flex items-center justify-between p-4 hover:bg-primary/5 rounded-lg transition-colors border-b border-border last:border-0"
+                                        href={`/dog/${dog.registration_number}`}
+                                        className="block sm:flex sm:items-center justify-between p-4 hover:bg-primary/5 rounded-lg transition-colors border-b border-border last:border-0 group"
                                     >
-                                        <div>
-                                            <p className="font-medium text-text">
-                                                <span className="text-primary font-bold">{dog.registration_number}</span>
-                                                {" "}• {dog.dog_name}
-                                            </p>
-                                            <p className="text-sm text-text-muted">
-                                                {dog.breed_description || "Mixed Breed"}
-                                                {dog.shelter_name && ` • Rescued from ${dog.shelter_name}`}
-                                            </p>
+                                        {/* Mobile: Image above, Desktop: Image to left */}
+                                        <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+                                            {/* Image container */}
+                                            <div className="flex-shrink-0 mx-auto sm:mx-0">
+                                                <div className="relative bg-gradient-to-br from-gray-200 to-gray-300 rounded-lg border border-border overflow-hidden w-16 h-[85px] sm:w-12 sm:h-16">
+                                                    {dog.photo_url ? (
+                                                        <img
+                                                            src={dog.photo_url}
+                                                            alt={`${dog.dog_name}`}
+                                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                                                            loading="lazy"
+                                                        />
+                                                    ) : (
+                                                        <div className="w-full h-full flex items-center justify-center">
+                                                            <span className="text-2xl">🐕</span>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                            {/* Text info */}
+                                            <div className="flex-1 min-w-0">
+                                                <p className="font-medium text-text text-center sm:text-left truncate">
+                                                    <span className="text-primary font-bold">{dog.registration_number}</span>
+                                                    {" "}• {dog.dog_name}
+                                                </p>
+                                                <p className="text-sm text-text-muted text-center sm:text-left line-clamp-2">
+                                                    {dog.breed_description || "Mixed Breed"}
+                                                    {dog.shelter_name && ` • Rescued from ${dog.shelter_name}`}
+                                                </p>
+                                            </div>
                                         </div>
-                                        <div className="text-sm text-text-muted">
+
+                                        {/* Date with proper spacing */}
+                                        <div className="text-sm text-text-muted mt-3 sm:mt-0 text-center sm:text-right sm:ml-6 whitespace-nowrap">
                                             {new Date(dog.created_at).toLocaleDateString()}
                                         </div>
-                                    </div>
+                                    </Link>
                                 ))
                             ) : (
                                 <div className="text-center py-8 text-text-muted">

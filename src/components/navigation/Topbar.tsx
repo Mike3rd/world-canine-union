@@ -3,7 +3,7 @@ import Navbar from './Navbar';
 
 export default function Topbar() {
     return (
-        <header className="border-b border-border bg-header-bg">
+        <header className="sticky top-0 z-50 border-b border-border bg-header-bg">
             <div className="container mx-auto px-4 py-4">
                 <div className="flex items-center justify-between">
                     {/* Logo - EXACTLY matching your current layout */}
