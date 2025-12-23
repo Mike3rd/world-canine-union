@@ -1,88 +1,106 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
+import { createClient } from "@supabase/supabase-js";
 
 const resend = new Resend(process.env.RESEND_API_KEY!);
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
+
+// Helper function (same as before)
+function extractName(from: string): string {
+  if (!from) return "Unknown";
+  const nameMatch = from.match(/^([^<]+)</);
+  return nameMatch ? nameMatch[1].trim() : from;
+}
+
+function extractWcuNumber(subject: string, body: string): string | null {
+  const wcuRegex = /WCU-\d{5}/i;
+  const subjectMatch = subject?.match(wcuRegex);
+  const bodyMatch = body?.match(wcuRegex);
+  return subjectMatch?.[0] || bodyMatch?.[0] || null;
+}
 
 export async function POST(request: NextRequest) {
-  console.log("🔍 [BASIC TEST] Webhook received");
+  console.log("📨 [STAGE 1] Webhook started");
 
   try {
-    // 1. Log the raw request
-    const rawBody = await request.text();
-    console.log("📦 Raw request body:", rawBody);
+    const body = await request.json();
+    const eventType = body.type;
 
-    const body = JSON.parse(rawBody);
-    console.log("✅ Parsed JSON body type:", body.type);
-
-    // 2. Only process email.received events
-    if (body.type === "email.received") {
+    // STAGE 1: ONLY handle email.received
+    if (eventType === "email.received") {
       const emailId = body.data?.email_id;
-      const fromEmail = body.data?.from;
+      console.log("📧 Processing email.received for ID:", emailId);
 
-      console.log("📧 Event details:", {
-        email_id: emailId,
-        from: fromEmail,
-        subject: body.data?.subject,
-        allDataKeys: Object.keys(body.data || {}),
-      });
-
-      // 3. CRITICAL: Try the API call that was 404'ing
-      if (emailId) {
-        console.log(`🔄 Attempting API fetch for: ${emailId}`);
-
-        // Try the documented endpoint
-        const { data: fullEmail, error } =
-          await resend.emails.receiving.get(emailId);
-
-        if (error) {
-          console.error("❌ API Error Details:", {
-            message: error.message,
-            name: error.name,
-            statusCode: "404",
-          });
-
-          // Try the alternative endpoint format
-          console.log("🔄 Trying alternative endpoint...");
-          try {
-            const altResponse = await fetch(
-              `https://api.resend.com/emails/${emailId}`,
-              {
-                headers: {
-                  Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-                  "Content-Type": "application/json",
-                },
-              }
-            );
-            console.log(`📡 Alt Response Status: ${altResponse.status}`);
-            const altText = await altResponse.text();
-            console.log("📡 Alt Response Body:", altText);
-          } catch (altError) {
-            console.error("❌ Alt endpoint failed:", altError);
-          }
-        } else {
-          console.log("✅ API SUCCESS! Email body retrieved:");
-          console.log("Text preview:", fullEmail.text?.substring(0, 200));
-          console.log("HTML preview:", fullEmail.html?.substring(0, 200));
-        }
-      } else {
-        console.warn("⚠️ No email_id found in webhook");
+      if (!emailId) {
+        throw new Error("No email_id in webhook");
       }
-    } else {
-      console.log(`⚠️ Ignoring event type: ${body.type}`);
+
+      // 1. Fetch the full email content (PROVEN WORKING)
+      const { data: fullEmail, error: fetchError } =
+        await resend.emails.receiving.get(emailId);
+
+      if (fetchError) {
+        console.error("❌ Failed to fetch email body:", fetchError);
+        throw fetchError;
+      }
+
+      console.log(
+        "✅ Email body fetched. Text length:",
+        fullEmail.text?.length
+      );
+
+      // 2. Prepare data for database
+      const emailData = {
+        original_message_id: emailId,
+        from_email: body.data?.from || "",
+        from_name: extractName(body.data?.from || ""),
+        subject: body.data?.subject || "(no subject)",
+        message_text: fullEmail.text || "", // ✅ NOW HAS CONTENT
+        message_html: fullEmail.html || "", // ✅ NOW HAS CONTENT
+        received_at: new Date().toISOString(),
+        wcu_number: extractWcuNumber(
+          body.data?.subject || "",
+          fullEmail.text || ""
+        ),
+        status: "unread",
+        raw_payload: body,
+      };
+
+      // 3. Save to support_emails table
+      const { error: dbError } = await supabase
+        .from("support_emails")
+        .insert([emailData]);
+
+      if (dbError) {
+        console.error("❌ Database insert failed:", dbError);
+        throw new Error(`Database error: ${dbError.message}`);
+      }
+
+      console.log("💾 Successfully saved to support_emails table");
+      return NextResponse.json({
+        success: true,
+        stage: 1,
+        saved: true,
+        hasBody: !!fullEmail.text,
+      });
     }
 
-    // Always return 200 to Resend
+    // For now, ignore other event types
+    console.log(`⚠️ Ignoring event type: ${eventType}`);
     return NextResponse.json({
-      received: true,
-      test: "basic",
-      timestamp: new Date().toISOString(),
+      success: true,
+      stage: 1,
+      note: `Ignored event: ${eventType}`,
     });
   } catch (error) {
-    console.error("💥 Top-level error:", error);
+    console.error("💥 [STAGE 1] Webhook failed:", error);
     return NextResponse.json(
       {
-        error: "Processing failed",
-        details: error instanceof Error ? error.message : "Unknown",
+        error: "Stage 1 processing failed",
+        details: error instanceof Error ? error.message : String(error),
       },
       { status: 500 }
     );
