@@ -21,6 +21,7 @@ export default function EmailAdminPage() {
     const [loading, setLoading] = useState(true);
     const [selectedEmail, setSelectedEmail] = useState<SupportEmail | null>(null);
     const [replyText, setReplyText] = useState('');
+    const [replies, setReplies] = useState<any[]>([]);
 
     useEffect(() => {
         loadEmails();
@@ -74,6 +75,10 @@ export default function EmailAdminPage() {
         // 1. Select the email
         setSelectedEmail(email);
 
+        // Load replies for this email thread
+        const replies = await fetchReplies(email.id);
+        // We'll store this in state - you'll need to add a new state variable
+
         // 2. If it's unread, mark it as read
         if (email.status === 'unread') {
             try {
@@ -93,6 +98,23 @@ export default function EmailAdminPage() {
             } catch (error) {
                 console.error('Failed to mark email as read:', error);
             }
+        }
+    };
+
+    // Function to fetch replies for a specific support email
+    const fetchReplies = async (supportEmailId: string) => {
+        try {
+            const { data, error } = await supabase
+                .from('email_logs')
+                .select('id, message_text, created_at, current_status')
+                .eq('support_email_id', supportEmailId)
+                .order('created_at', { ascending: true }); // Oldest first
+
+            if (error) throw error;
+            return data || [];
+        } catch (error) {
+            console.error('Error fetching replies:', error);
+            return [];
         }
     };
 
@@ -119,14 +141,29 @@ export default function EmailAdminPage() {
                 throw new Error(result.error || 'Failed to send reply');
             }
 
-            // Update local state to show "replied" status
+
+
+            // Create a temporary reply for immediate UI update
+            const newReply = {
+                id: 'temp-' + Date.now(), // Temporary ID until real one loads
+                message_text: replyText,
+                created_at: new Date().toISOString(),
+                current_status: 'pending' // Will update to 'sent/delivered' when webhook arrives
+            };
+
+            // Add to replies list for immediate display
+            setReplies(prev => [...prev, newReply]);
+
+            // Clear the reply textarea
+            setReplyText('');
+
+            // Also update email status to 'replied' (your existing code)
             setEmails(prev => prev.map(email =>
                 email.id === selectedEmail.id
                     ? { ...email, status: 'replied' }
                     : email
             ));
 
-            setReplyText('');
             alert('✅ Reply sent successfully!');
 
         } catch (error) {
@@ -259,6 +296,39 @@ export default function EmailAdminPage() {
                             <div className="border-t pt-4">
                                 <p className="whitespace-pre-wrap">{selectedEmail.message_text}</p>
                             </div>
+
+                            {/* REPLIES SECTION - ADD THIS */}
+                            {replies.length > 0 && (
+                                <div className="border-t pt-6">
+                                    <h3 className="font-semibold text-lg mb-3 text-primary">Replies Sent</h3>
+                                    <div className="space-y-4">
+                                        {replies.map((reply) => (
+                                            <div
+                                                key={reply.id}
+                                                className="bg-gray-50 border border-border rounded-lg p-4"
+                                            >
+                                                <div className="flex justify-between items-start mb-2">
+                                                    <div className="text-sm text-text-muted">
+                                                        <span className="font-medium">You replied</span>
+                                                        {' • '}
+                                                        {new Date(reply.created_at).toLocaleString()}
+                                                        {' • '}
+                                                        <span className={`px-2 py-0.5 text-xs rounded-full ${reply.current_status === 'delivered'
+                                                            ? 'bg-success text-white'
+                                                            : 'bg-amber-100 text-amber-800'
+                                                            }`}>
+                                                            {reply.current_status}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <p className="whitespace-pre-wrap text-text">
+                                                    {reply.message_text}
+                                                </p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
 
                             <div className="border-t pt-6">
                                 <h3 className="font-semibold mb-3">Send Reply</h3>

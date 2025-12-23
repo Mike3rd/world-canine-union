@@ -15,15 +15,20 @@ export async function POST(request: NextRequest) {
       from: "World Canine Union <help@worldcanineunion.org>",
       to: [to],
       subject: subject,
-      html: `<div style="font-family: sans-serif; line-height: 1.6;">
-               <p>${message.replace(/\n/g, "<br>")}</p>
-               <br>
-               <p style="color: #78909C; font-size: 12px;">
-                 World Canine Union Support<br>
-                 help@worldcanineunion.org
-               </p>
-             </div>`,
-      text: message,
+      html: ` <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #36454F;">
+      <p style="margin-top: 8px;"><em>Celebrating the worlds best dogs</em></p>
+      <p>${message.replace(/\n/g, "<br>")}</p>
+      <br>
+      <hr style="border: none; border-top: 1px solid #CFD8DC; margin: 24px 0;">
+      <div style="font-size: 12px; color: #78909C; line-height: 1.4;">
+        <p><strong>World Canine Union Support</strong><br>
+        Email: <a href="mailto:help@worldcanineunion.org" style="color: #992400;">help@worldcanineunion.org</a></p>
+        <p style="margin-top: 8px;"><em>Global Registry for all other Dogs</em></p>
+      </div>
+    </div>
+  `,
+      // Plain text fallback (IMPORTANT for deliverability)
+      text: `${message}\n\n--\nWorld Canine Union Support\nhelp@worldcanineunion.org\nGlobal Canine Registry & memorialization`,
     });
 
     if (emailError) {
