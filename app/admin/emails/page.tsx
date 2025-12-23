@@ -27,50 +27,86 @@ export default function EmailAdminPage() {
     }, []);
 
     const loadEmails = async () => {
-        // This will eventually query a new 'support_emails' table
-        // For now, we'll simulate with mock data
-        const mockEmails: SupportEmail[] = [
-            {
-                id: '1',
-                from_email: 'owner@example.com',
-                from_name: 'Jane Doe',
-                subject: 'PDF certificate not received',
-                message: 'Hi, I registered my dog Buddy but never got the PDF...',
-                received_at: new Date('2024-12-15T10:30:00'),
-                wcu_number: 'WCU-00045',
-                status: 'unread'
-            },
-            {
-                id: '2',
-                from_email: 'someone@gmail.com',
-                from_name: 'Robert Smith',
-                subject: 'Change my dog\'s name',
-                message: 'I need to update my dog\'s name from Max to Maximus...',
-                received_at: new Date('2024-12-14T14:20:00'),
-                wcu_number: 'WCU-00092',
-                status: 'replied'
-            }
-        ];
+        setLoading(true);
+        try {
+            // Query the REAL support_emails table
+            const { data, error } = await supabase
+                .from('support_emails')
+                .select('*')
+                .order('received_at', { ascending: false });
 
-        setEmails(mockEmails);
-        setLoading(false);
+            if (error) {
+                console.error('Database error:', error);
+                throw new Error(`Database error: ${error.message}`);
+            }
+
+            console.log('📧 Loaded emails from database:', data?.length || 0);
+
+            // Fix the TypeScript error by typing the parameter
+            const formattedEmails: SupportEmail[] = (data || []).map((email: any) => ({
+                id: email.id,
+                from_email: email.from_email,
+                from_name: email.from_name || email.from_email.split('@')[0],
+                subject: email.subject || '(No subject)',
+                message: email.message_text || email.message_html || '(No message content)',
+                received_at: new Date(email.received_at || email.created_at),
+                wcu_number: email.wcu_number || undefined,
+                status: email.status || 'unread'
+            }));
+
+            setEmails(formattedEmails);
+
+            // Auto-select first email if none selected
+            if (formattedEmails.length > 0 && !selectedEmail) {
+                setSelectedEmail(formattedEmails[0]);
+            }
+
+        } catch (error) {
+            console.error('❌ Error loading emails:', error);
+            alert('Failed to load emails. Check console for error details.');
+            setEmails([]); // Set empty array instead of mock data
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleSendReply = async () => {
-        if (!selectedEmail) return;
+        if (!selectedEmail || !replyText.trim()) return;
 
-        // Call your sendSupportReply function here
-        // await sendSupportReply(selectedEmail.from_email, selectedEmail.subject, replyText);
+        try {
+            // This URL points to your API route at: app/admin/emails/reply/route.ts
+            const response = await fetch('/admin/emails/reply', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    to: selectedEmail.from_email,
+                    subject: `Re: ${selectedEmail.subject}`,
+                    message: replyText,
+                    support_email_id: selectedEmail.id,
+                    wcu_number: selectedEmail.wcu_number
+                })
+            });
 
-        alert('Reply sent!');
-        setReplyText('');
+            const result = await response.json();
 
-        // Update email status
-        setEmails(prev => prev.map(email =>
-            email.id === selectedEmail.id
-                ? { ...email, status: 'replied' }
-                : email
-        ));
+            if (!response.ok) {
+                throw new Error(result.error || 'Failed to send reply');
+            }
+
+            // Update local state to show "replied" status
+            setEmails(prev => prev.map(email =>
+                email.id === selectedEmail.id
+                    ? { ...email, status: 'replied' }
+                    : email
+            ));
+
+            setReplyText('');
+            alert('✅ Reply sent successfully!');
+
+        } catch (error) {
+            console.error('Error:', error);
+            alert(`❌ Failed to send reply: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        }
     };
 
     if (loading) {
@@ -156,8 +192,8 @@ export default function EmailAdminPage() {
                                         <p className="text-sm text-gray-600 truncate">{email.subject}</p>
                                     </div>
                                     <span className={`px-2 py-1 text-xs rounded-full ${email.status === 'unread' ? 'bg-blue-100 text-blue-800' :
-                                            email.status === 'replied' ? 'bg-green-100 text-green-800' :
-                                                'bg-gray-100 text-gray-800'
+                                        email.status === 'replied' ? 'bg-green-100 text-green-800' :
+                                            'bg-gray-100 text-gray-800'
                                         }`}>
                                         {email.status}
                                     </span>
