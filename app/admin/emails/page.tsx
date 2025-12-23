@@ -10,7 +10,7 @@ interface SupportEmail {
     from_email: string;
     from_name: string;
     subject: string;
-    message: string;
+    message_text: string;
     received_at: Date;
     wcu_number?: string;
     status: 'unread' | 'read' | 'replied' | 'archived';
@@ -48,7 +48,7 @@ export default function EmailAdminPage() {
                 from_email: email.from_email,
                 from_name: email.from_name || email.from_email.split('@')[0],
                 subject: email.subject || '(No subject)',
-                message: email.message_text || email.message_html || '(No message content)',
+                message_text: email.message_text || email.message_html || '(No message content)',
                 received_at: new Date(email.received_at || email.created_at),
                 wcu_number: email.wcu_number || undefined,
                 status: email.status || 'unread'
@@ -231,7 +231,7 @@ export default function EmailAdminPage() {
                             </div>
 
                             <div className="border-t pt-4">
-                                <p className="whitespace-pre-wrap">{selectedEmail.message}</p>
+                                <p className="whitespace-pre-wrap">{selectedEmail.message_text}</p>
                             </div>
 
                             <div className="border-t pt-6">
