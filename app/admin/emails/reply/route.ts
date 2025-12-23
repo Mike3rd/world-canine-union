@@ -37,6 +37,7 @@ export async function POST(request: NextRequest) {
       to_email: to,
       from_email: "help@worldcanineunion.org",
       subject: subject,
+      message_text: message,
       resend_message_id: emailData.id,
       wcu_number: wcu_number,
       support_email_id: support_email_id,

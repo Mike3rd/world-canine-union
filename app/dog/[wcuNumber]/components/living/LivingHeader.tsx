@@ -1,5 +1,5 @@
 // app/dog/[wcuNumber]/components/living/LivingHeader.tsx
-import { Heart, Sparkles } from 'lucide-react'
+import { Sparkles, CalendarDays, VenusAndMars } from 'lucide-react'
 import HeartIcon from '../HeartIcon'
 
 interface LivingHeaderProps {
@@ -34,10 +34,13 @@ export default function LivingHeader({
                                 <Sparkles className="w-4 h-4 mr-1" />
                                 {registrationNumber}
                             </span>
+                            <VenusAndMars className="w-4 h-4 mr-1 ml-1" />
                             {gender && (
                                 <span className="capitalize">{gender}</span>
                             )}
+                            <CalendarDays className="w-4 h-4 mr-1 ml-3" />
                             {age && (
+
                                 <span>{age}</span>
                             )}
                         </div>
@@ -50,7 +53,7 @@ export default function LivingHeader({
                             <div className="flex items-center gap-2">
                                 <span className="text-lg font-bold text-dog-accent">✪</span>
                                 <div className="text-sm font-semibold tracking-wider uppercase">
-                                    WCU REGISTERED
+                                    World's Best Dog
                                 </div>
                             </div>
                         </a>

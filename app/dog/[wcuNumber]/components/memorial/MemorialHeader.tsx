@@ -1,5 +1,5 @@
 // app/dog/[wcuNumber]/components/memorial/MemorialHeader.tsx
-import { Sparkles } from 'lucide-react'
+import { Sparkles, CalendarDays, VenusAndMars } from 'lucide-react'
 import HeartIcon from '../HeartIcon'
 
 interface MemorialHeaderProps {
@@ -53,11 +53,12 @@ export default function MemorialHeader({
                         {/* Details */}
                         <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0">
                             {/* First row: WCU Number & Gender */}
-                            <div className="flex items-center space-x-4 text-memorial-border">
+                            <div className="flex items-center space-x-1 text-memorial-border">
                                 <span className="flex items-center">
                                     <Sparkles className="w-4 h-4 mr-1" />
                                     {registrationNumber}
                                 </span>
+                                <VenusAndMars className="w-4 h-4 mr-1 ml-1" />
                                 {gender && (
                                     <span className="capitalize">{gender}</span>
                                 )}
@@ -69,7 +70,7 @@ export default function MemorialHeader({
                                     {/* Show date range if both dates exist */}
                                     {gotchaDate && memorialDate && (
                                         <div className="flex items-center text-memorial-border">
-                                            <span className="mr-2 ml-2">🏠</span>
+                                            <CalendarDays className="w-4 h-4 mr-1 ml-3" />
                                             <span className="font-medium">
                                                 {formatDateRange(gotchaDate, memorialDate)}
                                             </span>
