@@ -42,23 +42,34 @@ export async function POST(request: NextRequest) {
 
 // Handle incoming support emails
 async function handleEmailReceived(body: any) {
+  console.log("📧 Full received email payload:", JSON.stringify(body, null, 2));
+
+  // Resend email.received structure is different
   const emailData = {
     original_message_id: body.data?.id,
     from_email: body.data?.from,
     from_name: extractName(body.data?.from),
     subject: body.data?.subject || "(no subject)",
-    message_text: body.data?.text || "",
+    // Check different possible locations for message content
+    message_text: body.data?.text || body.data?.plain_text || "",
     message_html: body.data?.html || "",
     received_at: new Date().toISOString(),
-    wcu_number: extractWcuNumber(body.data?.subject, body.data?.text),
+    wcu_number: extractWcuNumber(
+      body.data?.subject,
+      body.data?.text || body.data?.plain_text || ""
+    ),
     status: "unread" as const,
     raw_payload: body,
   };
+
+  console.log("📦 Email data to save:", emailData);
 
   const { error } = await supabase.from("support_emails").insert([emailData]);
 
   if (error) {
     console.error("❌ Failed to save support email:", error);
+  } else {
+    console.log("✅ Email saved to database");
   }
 
   return NextResponse.json({
