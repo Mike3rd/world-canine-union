@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
       to: [to],
       subject: subject,
       html: ` <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #36454F;">
-      <p style="margin-top: 8px;"><em>Celebrating the worlds best dogs</em></p>
+      <p style="margin-bottom: 8px; font-size: 12px; color: #78909C; line-height: 1.4;"><em>Celebrating the world's best dogs</em></p>
       <p>${message.replace(/\n/g, "<br>")}</p>
       <br>
       <hr style="border: none; border-top: 1px solid #CFD8DC; margin: 24px 0;">

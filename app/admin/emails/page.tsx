@@ -21,10 +21,41 @@ export default function EmailAdminPage() {
     const [loading, setLoading] = useState(true);
     const [selectedEmail, setSelectedEmail] = useState<SupportEmail | null>(null);
     const [replyText, setReplyText] = useState('');
+    const [replies, setReplies] = useState<any[]>([]);
+
+    const fetchReplies = async (supportEmailId: string) => {
+        try {
+            const { data, error } = await supabase
+                .from('email_logs')
+                .select('id, message_text, created_at, current_status')
+                .eq('support_email_id', supportEmailId)
+                .order('created_at', { ascending: true });
+
+            if (error) throw error;
+            return data || [];
+        } catch (error) {
+            console.error('Error fetching replies:', error);
+            return [];
+        }
+    };
 
     useEffect(() => {
         loadEmails();
     }, []);
+
+    // NEW: Load replies whenever selectedEmail changes
+
+    useEffect(() => {
+        if (selectedEmail) {
+            const loadReplies = async () => {
+                const repliesData = await fetchReplies(selectedEmail.id);
+                setReplies(repliesData);
+            };
+            loadReplies();
+        } else {
+            setReplies([]); // Clear replies if no email selected
+        }
+    }, [selectedEmail]); // This runs every time selectedEmail changes
 
     const loadEmails = async () => {
         setLoading(true);
@@ -259,6 +290,40 @@ export default function EmailAdminPage() {
                             <div className="border-t pt-4">
                                 <p className="whitespace-pre-wrap">{selectedEmail.message_text}</p>
                             </div>
+
+                            {replies.length > 0 && (
+                                <div className="border-t pt-6">
+                                    <h3 className="font-semibold text-lg mb-3 text-primary">Replies Sent</h3>
+                                    <div className="space-y-4">
+                                        {replies.map((reply) => (
+                                            <div
+                                                key={reply.id}
+                                                className="bg-gray-50 border border-border rounded-lg p-4"
+                                            >
+                                                <div className="flex justify-between items-start mb-2">
+                                                    <div className="text-sm text-text-muted">
+                                                        <span className="font-medium">You replied</span>
+                                                        {' • '}
+                                                        {new Date(reply.created_at).toLocaleString()}
+                                                        {' • '}
+                                                        <span className={`px-2 py-0.5 text-xs rounded-full ${reply.current_status === 'delivered'
+                                                            ? 'bg-success text-white'
+                                                            : reply.current_status === 'sent'
+                                                                ? 'bg-amber-100 text-amber-800'
+                                                                : 'bg-gray-100 text-gray-800'
+                                                            }`}>
+                                                            {reply.current_status}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <p className="whitespace-pre-wrap text-text">
+                                                    {reply.message_text}
+                                                </p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
 
                             <div className="border-t pt-6">
                                 <h3 className="font-semibold mb-3">Send Reply</h3>
