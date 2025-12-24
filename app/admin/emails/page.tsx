@@ -240,8 +240,10 @@ export default function EmailAdminPage() {
                                     </p>
                                     {selectedEmail.wcu_number && (
                                         <a
-                                            href={`/admin/dashboard?search=${selectedEmail.wcu_number}`}
-                                            className="text-blue-600 hover:text-blue-800"
+                                            href={`/dog/${selectedEmail.wcu_number}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-accent hover:text-accent/80 hover:underline"
                                         >
                                             View Dog: {selectedEmail.wcu_number}
                                         </a>
