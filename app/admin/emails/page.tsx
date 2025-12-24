@@ -4,26 +4,18 @@
 import { useState, useEffect } from 'react';
 import { Mail, Search, Filter, RefreshCw, Reply } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import EmailStats from './components/EmailStats';
+import { SupportEmail, EmailReply } from './types';
 
-interface SupportEmail {
-    id: string;
-    from_email: string;
-    from_name: string;
-    subject: string;
-    message_text: string;
-    received_at: Date;
-    wcu_number?: string;
-    status: 'unread' | 'read' | 'replied' | 'archived';
-}
 
 export default function EmailAdminPage() {
     const [emails, setEmails] = useState<SupportEmail[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedEmail, setSelectedEmail] = useState<SupportEmail | null>(null);
     const [replyText, setReplyText] = useState('');
-    const [replies, setReplies] = useState<any[]>([]);
+    const [replies, setReplies] = useState<EmailReply[]>([]);
 
-    const fetchReplies = async (supportEmailId: string) => {
+    const fetchReplies = async (supportEmailId: string): Promise<EmailReply[]> => {
         try {
             const { data, error } = await supabase
                 .from('email_logs')
@@ -32,7 +24,7 @@ export default function EmailAdminPage() {
                 .order('created_at', { ascending: true });
 
             if (error) throw error;
-            return data || [];
+            return data as EmailReply[] || [];
         } catch (error) {
             console.error('Error fetching replies:', error);
             return [];
@@ -188,37 +180,10 @@ export default function EmailAdminPage() {
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="bg-blue-50 p-4 rounded-lg">
-                    <div className="flex items-center gap-3">
-                        <Mail className="h-8 w-8 text-blue-600" />
-                        <div>
-                            <p className="text-2xl font-bold">{emails.length}</p>
-                            <p className="text-sm text-gray-600">Total Emails</p>
-                        </div>
-                    </div>
-                </div>
-                <div className="bg-amber-50 p-4 rounded-lg">
-                    <p className="text-2xl font-bold">
-                        {emails.filter(e => e.status === 'unread').length}
-                    </p>
-                    <p className="text-sm text-gray-600">Unread</p>
-                </div>
-                <div className="bg-green-50 p-4 rounded-lg">
-                    <p className="text-2xl font-bold">
-                        {emails.filter(e => e.status === 'replied').length}
-                    </p>
-                    <p className="text-sm text-gray-600">Replied</p>
-                </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                    <p className="text-2xl font-bold">
-                        {emails.filter(e => e.wcu_number).length}
-                    </p>
-                    <p className="text-sm text-gray-600">Linked to WCU#</p>
-                </div>
-            </div>
+            <EmailStats emails={emails} />
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
                 {/* Email List */}
                 <div className="lg:col-span-1 space-y-3">
                     <div className="flex gap-2">
@@ -295,11 +260,8 @@ export default function EmailAdminPage() {
                                 <div className="border-t pt-6">
                                     <h3 className="font-semibold text-lg mb-3 text-primary">Replies Sent</h3>
                                     <div className="space-y-4">
-                                        {replies.map((reply) => (
-                                            <div
-                                                key={reply.id}
-                                                className="bg-gray-50 border border-border rounded-lg p-4"
-                                            >
+                                        {replies.map((reply: EmailReply) => ( // Add type annotation
+                                            <div key={reply.id} className="bg-gray-50 border border-border rounded-lg p-4">
                                                 <div className="flex justify-between items-start mb-2">
                                                     <div className="text-sm text-text-muted">
                                                         <span className="font-medium">You replied</span>
