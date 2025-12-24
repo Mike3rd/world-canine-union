@@ -2,7 +2,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Mail, Search, Filter, RefreshCw, Reply } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Mail, Search, Filter, RefreshCw, ArrowLeft } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import EmailStats from './components/EmailStats';
 import { SupportEmail, EmailReply } from './types';
@@ -12,6 +13,7 @@ import ReplyForm from './components/ReplyForm';
 
 
 export default function EmailAdminPage() {
+    const router = useRouter(); // ADD THIS LINE
     const [emails, setEmails] = useState<SupportEmail[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedEmail, setSelectedEmail] = useState<SupportEmail | null>(null);
@@ -168,20 +170,31 @@ export default function EmailAdminPage() {
     return (
         <div className="p-6 space-y-6">
             {/* Header */}
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold text-gray-900">Support Emails</h1>
-                    <p className="text-gray-600">Manage incoming support requests</p>
-                </div>
+            <div className="space-y-3">
+                {/* Back button row */}
                 <button
-                    onClick={loadEmails}
-                    className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200"
+                    onClick={() => router.push('/admin/dashboard')}
+                    className="flex items-center gap-2 px-4 py-0 text-text hover:bg-gray-100 rounded-lg transition-colors"
                 >
-                    <RefreshCw className="h-4 w-4" />
-                    Refresh
+                    <ArrowLeft className="h-4 w-4" />
+                    Back to Dashboard
                 </button>
-            </div>
 
+                {/* Title row - left aligned */}
+                <div className="flex justify-between items-center">
+                    <div>
+                        <h1 className="text-3xl font-bold text-primary">Support Emails</h1>
+                        <p className="text-text-muted">Manage incoming support requests</p>
+                    </div>
+                    <button
+                        onClick={loadEmails}
+                        className="flex items-center gap-2 px-4 py-2 bg-buttons text-white rounded-lg hover:opacity-90"
+                    >
+                        <RefreshCw className="h-4 w-4" />
+                        Refresh
+                    </button>
+                </div>
+            </div>
             {/* Stats */}
             <EmailStats emails={emails} />
 

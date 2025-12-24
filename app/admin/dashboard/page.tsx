@@ -2,13 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { FileText, RefreshCw, AlertCircle, CheckSquare, Image as ImageIcon, Search, Users } from 'lucide-react';
+import { Mail, RefreshCw, AlertCircle, Image as ImageIcon, Search, Users } from 'lucide-react';
 
 
 export default function AdminDashboard() {
     const [searchTerm, setSearchTerm] = useState('');
     const router = useRouter();
-
+    const [unreadEmailCount, setUnreadEmailCount] = useState(0);
     const [searchResults, setSearchResults] = useState<any[]>([]);
     const [searching, setSearching] = useState(false);
     const [hasSearched, setHasSearched] = useState(false);
@@ -32,8 +32,8 @@ export default function AdminDashboard() {
             const today = new Date();
             const startOfDay = new Date(today.setHours(0, 0, 0, 0)).toISOString();
 
-            // Run all 4 queries at once
-            const [totalRes, paymentIssuesRes, recentRes, pendingUpdatesRes] = await Promise.all([
+            // Run all 5 queries at once (ADDED EMAIL QUERY)
+            const [totalRes, paymentIssuesRes, recentRes, pendingUpdatesRes, unreadEmailsRes] = await Promise.all([
                 supabase.from('registrations').select('*', { count: 'exact', head: true }),
                 supabase.from('registrations').select('*', { count: 'exact', head: true })
                     .eq('status', 'completed')
@@ -41,7 +41,10 @@ export default function AdminDashboard() {
                 supabase.from('registrations').select('*', { count: 'exact', head: true })
                     .gte('created_at', startOfDay),
                 supabase.from('update_requests').select('*', { count: 'exact', head: true })
-                    .eq('status', 'pending')
+                    .eq('status', 'pending'),
+                // NEW QUERY: Get unread support emails count
+                supabase.from('support_emails').select('*', { count: 'exact', head: true })
+                    .eq('status', 'unread')
             ]);
 
             setStats({
@@ -50,6 +53,9 @@ export default function AdminDashboard() {
                 recent: recentRes.count || 0,
                 pendingUpdates: pendingUpdatesRes.count || 0
             });
+
+            // NEW: Set the unread email count state
+            setUnreadEmailCount(unreadEmailsRes.count || 0);
 
         } catch (error) {
             console.error('Failed to load stats:', error);
@@ -144,19 +150,30 @@ export default function AdminDashboard() {
                     </div>
                 </div>
 
-                {/* Search & Edit Card */}
-                <div className="bg-white p-6 rounded-lg shadow border border-gray-200">
+                {/* Email Support Card */}
+                <div
+                    onClick={() => router.push('/admin/emails')}
+                    className="bg-white p-6 rounded-lg shadow border border-gray-200 hover:border-primary hover:shadow-md transition cursor-pointer"
+                >
                     <div className="flex items-center">
                         <div className="p-3 bg-blue-100 rounded-lg">
-                            <Search className="h-6 w-6 text-blue-600" />
+                            <Mail className="h-6 w-6 text-primary" /> {/* Add import */}
                         </div>
                         <div className="ml-4">
-                            <h3 className="text-lg font-semibold text-gray-800">Search & Edit</h3>
-                            <p className="text-sm text-gray-600 mt-1">Find dogs and edit records</p>
+                            <h3 className="text-lg font-semibold text-primary">Email Support</h3>
+                            <p className="text-sm text-text-muted mt-1">Manage incoming support requests</p>
                         </div>
                     </div>
-                    <div className="mt-4">
-                        <p className="text-sm text-gray-500">Use the search below to find dogs</p>
+                    <div className="mt-4 flex justify-between items-center">
+                        <div>
+                            <p className="text-2xl font-bold text-primary">
+                                {unreadEmailCount > 0 ? unreadEmailCount : '✓'}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                                {unreadEmailCount > 0 ? 'Unread emails' : 'All read'}
+                            </p>
+                        </div>
+                        <span className="text-primary text-sm font-medium">View Inbox →</span>
                     </div>
                 </div>
 
