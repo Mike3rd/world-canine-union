@@ -6,6 +6,9 @@ import { Mail, Search, Filter, RefreshCw, Reply } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import EmailStats from './components/EmailStats';
 import { SupportEmail, EmailReply } from './types';
+import ReplyItem from './components/ReplyItem';
+import EmailListItem from './components/EmailListItem';
+import ReplyForm from './components/ReplyForm';
 
 
 export default function EmailAdminPage() {
@@ -119,8 +122,8 @@ export default function EmailAdminPage() {
         }
     };
 
-    const handleSendReply = async () => {
-        if (!selectedEmail || !replyText.trim()) return;
+    const handleSendReply = async (replyText: string) => {
+        if (!selectedEmail) return;
 
         try {
             // This URL points to your API route at: app/admin/emails/reply/route.ts
@@ -132,7 +135,7 @@ export default function EmailAdminPage() {
                     subject: `Re: ${selectedEmail.subject}`,
                     message: replyText,
                     support_email_id: selectedEmail.id,
-                    wcu_number: selectedEmail.wcu_number
+                    wcu_number: selectedEmail.wcu_number,
                 })
             });
 
@@ -202,31 +205,12 @@ export default function EmailAdminPage() {
 
                     <div className="space-y-2 max-h-[500px] overflow-y-auto">
                         {emails.map(email => (
-                            <div
+                            <EmailListItem
                                 key={email.id}
+                                email={email}
+                                isSelected={selectedEmail?.id === email.id}
                                 onClick={() => handleEmailClick(email)}
-                                className={`p-4 border rounded-lg cursor-pointer hover:bg-gray-50 ${selectedEmail?.id === email.id ? 'bg-blue-50 border-blue-200' : ''
-                                    } ${email.status === 'unread' ? 'border-l-4 border-l-blue-500' : ''}`}
-                            >
-                                <div className="flex justify-between items-start">
-                                    <div>
-                                        <p className="font-semibold truncate">{email.from_name}</p>
-                                        <p className="text-sm text-gray-600 truncate">{email.subject}</p>
-                                    </div>
-                                    <span className={`px-2 py-1 text-xs rounded-full ${email.status === 'unread' ? 'bg-blue-100 text-blue-800' : email.status === 'read' ? 'bg-gray-100 text-gray-800' :
-                                        email.status === 'replied' ? 'bg-green-100 text-green-800' :
-                                            'bg-gray-100 text-gray-800'
-                                        }`}>
-                                        {email.status}
-                                    </span>
-                                </div>
-                                <p className="text-sm text-gray-500 mt-1">
-                                    {email.wcu_number || 'No WCU# linked'}
-                                </p>
-                                <p className="text-xs text-gray-400 mt-2">
-                                    {email.received_at.toLocaleDateString()}
-                                </p>
-                            </div>
+                            />
                         ))}
                     </div>
                 </div>
@@ -261,58 +245,16 @@ export default function EmailAdminPage() {
                                     <h3 className="font-semibold text-lg mb-3 text-primary">Replies Sent</h3>
                                     <div className="space-y-4">
                                         {replies.map((reply: EmailReply) => ( // Add type annotation
-                                            <div key={reply.id} className="bg-gray-50 border border-border rounded-lg p-4">
-                                                <div className="flex justify-between items-start mb-2">
-                                                    <div className="text-sm text-text-muted">
-                                                        <span className="font-medium">You replied</span>
-                                                        {' • '}
-                                                        {new Date(reply.created_at).toLocaleString()}
-                                                        {' • '}
-                                                        <span className={`px-2 py-0.5 text-xs rounded-full ${reply.current_status === 'delivered'
-                                                            ? 'bg-success text-white'
-                                                            : reply.current_status === 'sent'
-                                                                ? 'bg-amber-100 text-amber-800'
-                                                                : 'bg-gray-100 text-gray-800'
-                                                            }`}>
-                                                            {reply.current_status}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <p className="whitespace-pre-wrap text-text">
-                                                    {reply.message_text}
-                                                </p>
-                                            </div>
+                                            <ReplyItem key={reply.id} reply={reply} />
                                         ))}
                                     </div>
                                 </div>
                             )}
 
-                            <div className="border-t pt-6">
-                                <h3 className="font-semibold mb-3">Send Reply</h3>
-                                <textarea
-                                    value={replyText}
-                                    onChange={(e) => setReplyText(e.target.value)}
-                                    rows={6}
-                                    className="w-full border rounded-lg p-3"
-                                    placeholder="Type your reply here..."
-                                />
-                                <div className="flex justify-end gap-3 mt-4">
-                                    <button
-                                        onClick={() => setReplyText('')}
-                                        className="px-4 py-2 border rounded-lg"
-                                    >
-                                        Clear
-                                    </button>
-                                    <button
-                                        onClick={handleSendReply}
-                                        disabled={!replyText.trim()}
-                                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
-                                    >
-                                        <Reply className="h-4 w-4" />
-                                        Send Reply
-                                    </button>
-                                </div>
-                            </div>
+                            <ReplyForm
+                                onSubmit={handleSendReply}
+                                disabled={!selectedEmail}
+                            />
                         </div>
                     ) : (
                         <div className="bg-gray-50 border rounded-lg p-12 text-center">
