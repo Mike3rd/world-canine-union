@@ -19,7 +19,7 @@ interface ShelterListProps {
 export default function ShelterList({ shelters }: ShelterListProps) {
     return (
         <div className="bg-surface p-8 rounded-2xl border border-border hover:shadow-lg transition-all">
-            <h3 className="font-heading text-2xl font-semibold text-primary mb-6">
+            <h3 className="font-heading text-2xl font-semibold text-primary mb-3">
                 Top Rescue Partners
             </h3>
             <div className="space-y-4">
@@ -55,10 +55,10 @@ export default function ShelterList({ shelters }: ShelterListProps) {
 // Internal ShelterCard component
 function ShelterCard({ shelter, index }: { shelter: ShelterStats; index: number }) {
     return (
-        <div className="group p-4 hover:bg-primary/5 rounded-lg transition-colors border-b border-border last:border-0">
+        <div className="group p-4 pt-2 m-0 hover:bg-primary/5 rounded-lg transition-colors border-b border-border last:border-0">
             <div className="flex items-center justify-between mb-0">
                 <div className="flex items-center gap-2">
-                    <span className="text-lg font-bold text-primary">#{index + 1}</span>
+                    {/*  <span className="text-lg font-bold text-primary">#{index + 1}</span>*/}
                     <span className="font-medium text-text">{shelter.shelter_name}</span>
                 </div>
                 <div className="text-right">
