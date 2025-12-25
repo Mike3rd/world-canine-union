@@ -1,10 +1,10 @@
-// src/components/CommunityStats.tsx - WITH FIXED TYPE ANNOTATIONS
+// src/components/CommunityStats.tsx - SIMPLIFIED
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import { supabase } from "@/lib/supabase";
-import { Users, Heart, Home } from "lucide-react";
+import StatsDashboard from "./StatsDashboard";
+import ShelterList from "./ShelterList";
 
 interface ImpactStats {
     total_dogs: number;
@@ -18,12 +18,20 @@ interface ShelterStats {
     shelter_name: string;
     shelter_city: string | null;
     shelter_state: string | null;
+    shelter_website: string | null;
     dog_count: number;
 }
 
 interface Registration {
     shelter_name?: string | null;
     shelter_state?: string | null;
+}
+
+interface ShelterRegistration {
+    shelter_name?: string | null;
+    shelter_city?: string | null;
+    shelter_state?: string | null;
+    shelter_website?: string | null;
 }
 
 export default function CommunityStats() {
@@ -62,7 +70,7 @@ export default function CommunityStats() {
                     .select("shelter_state")
                     .not("shelter_state", "is", null);
 
-                // Type-safe filtering with explicit types
+                // Type-safe filtering
                 const shelterNames = shelterRegistrations?.map((r: Registration) => r.shelter_name?.trim().toLowerCase()) || [];
                 const uniqueShelters = new Set(shelterNames.filter((name: string | undefined) => name && name !== ""));
 
@@ -80,31 +88,59 @@ export default function CommunityStats() {
                 setStats(statsData);
             }
 
-            // Fetch top shelters
-            const { data: shelterData, error: shelterError } = await supabase
-                .from("shelter_stats")
-                .select("*")
-                .order("dog_count", { ascending: false })
-                .limit(5);
+            // Fetch FEATURED shelters with website and count dogs
+            const { data: featuredShelters, error: featuredError } = await supabase
+                .from("registrations")
+                .select("shelter_name, shelter_city, shelter_state, shelter_website")
+                .eq("shelter_featured", true)
+                .not("shelter_name", "is", null)
+                .order("shelter_featured_order", { ascending: true });
 
-            if (!shelterError && shelterData && shelterData.length > 0) {
-                setTopShelters(shelterData);
+            if (!featuredError && featuredShelters && featuredShelters.length > 0) {
+                // Count ACTUAL dogs per featured shelter
+                const shelterCounts: Record<string, ShelterStats> = {};
+
+                for (const shelter of featuredShelters) {
+                    const key = shelter.shelter_name || 'unknown';
+                    if (!shelterCounts[key]) {
+                        // Get count for this shelter
+                        const { count } = await supabase
+                            .from("registrations")
+                            .select("*", { count: "exact", head: true })
+                            .eq("shelter_name", shelter.shelter_name)
+                            .eq("status", "completed");
+
+                        shelterCounts[key] = {
+                            shelter_name: shelter.shelter_name || 'Unknown Shelter',
+                            shelter_city: shelter.shelter_city || null,
+                            shelter_state: shelter.shelter_state || null,
+                            shelter_website: shelter.shelter_website || null,
+                            dog_count: count || 0
+                        };
+                    }
+                }
+
+                // Convert to array and limit to 5
+                const featuredResults = Object.values(shelterCounts).slice(0, 5);
+                setTopShelters(featuredResults);
             } else {
-                // Calculate manually
-                const { data: manualShelters } = await supabase
+                // Fallback: Calculate top shelters manually
+                const { data: allShelters } = await supabase
                     .from("registrations")
-                    .select("shelter_name, shelter_city, shelter_state")
+                    .select("shelter_name, shelter_city, shelter_state, shelter_website")
                     .not("shelter_name", "is", null);
 
-                if (manualShelters && manualShelters.length > 0) {
+                if (allShelters && allShelters.length > 0) {
                     const shelterCounts: Record<string, ShelterStats> = {};
-                    manualShelters.forEach((reg: { shelter_name?: string | null; shelter_city?: string | null; shelter_state?: string | null }) => {
+
+                    allShelters.forEach((reg: ShelterRegistration) => {
                         const key = reg.shelter_name?.trim().toLowerCase() || 'unknown';
                         if (!shelterCounts[key]) {
                             shelterCounts[key] = {
                                 shelter_name: reg.shelter_name || 'Unknown Shelter',
                                 shelter_city: reg.shelter_city || null,
                                 shelter_state: reg.shelter_state || null,
+                                shelter_website: reg.shelter_website || null,
                                 dog_count: 0
                             };
                         }
@@ -146,101 +182,10 @@ export default function CommunityStats() {
 
     return (
         <section className="pt-3 mb-26">
-            <div className="max-w-7xl mx-auto px-4 ">
+            <div className="max-w-7xl mx-auto px-4">
                 <div className="grid lg:grid-cols-2 gap-8">
-                    {/* Left Column: Community Stats */}
-                    <div className="bg-surface p-8 rounded-2xl border border-border hover:shadow-lg transition-all">
-                        <h3 className="font-heading text-2xl font-semibold text-primary mb-6">
-                            Our Community by the Numbers
-                        </h3>
-                        <div className="space-y-6">
-                            <div className="flex items-center justify-between p-4 bg-primary/5 rounded-lg">
-                                <div className="flex items-center gap-3">
-                                    <Users className="w-8 h-8 text-primary" />
-                                    <span className="font-medium text-text">Dogs Registered</span>
-                                </div>
-                                <span className="text-2xl font-bold text-primary">
-                                    {stats?.total_dogs?.toLocaleString() || "0"}
-                                </span>
-                            </div>
-
-                            <div className="flex items-center justify-between p-4 bg-accent/5 rounded-lg">
-                                <div className="flex items-center gap-3">
-                                    <Heart className="w-8 h-8 text-accent" />
-                                    <span className="font-medium text-text">Total Donated</span>
-                                </div>
-                                <span className="text-2xl font-bold text-accent">
-                                    ${stats?.total_donations?.toLocaleString() || "0"}
-                                </span>
-                            </div>
-
-                            <div className="flex items-center justify-between p-4 bg-green-500/5 rounded-lg">
-                                <div className="flex items-center gap-3">
-                                    <Home className="w-8 h-8 text-green-600" />
-                                    <span className="font-medium text-text">Rescue Partners</span>
-                                </div>
-                                <span className="text-2xl font-bold text-green-600">
-                                    {stats?.rescue_partners || "0"}
-                                </span>
-                            </div>
-
-                            <div className="flex items-center justify-between p-4 bg-purple-500/5 rounded-lg">
-                                <div className="flex items-center gap-3">
-                                    <Home className="w-8 h-8 text-purple-600" />
-                                    <span className="font-medium text-text">States Represented</span>
-                                </div>
-                                <span className="text-2xl font-bold text-purple-600">
-                                    {stats?.states_represented || "0"}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Right Column: Top Rescue Organizations */}
-                    <div className="bg-surface p-8 rounded-2xl border border-border hover:shadow-lg transition-all">
-                        <h3 className="font-heading text-2xl font-semibold text-primary mb-6">
-                            Top Rescue Partners
-                        </h3>
-                        <div className="space-y-4">
-                            {topShelters.length > 0 ? (
-                                topShelters.map((shelter, index) => (
-                                    <div
-                                        key={`${shelter.shelter_name}-${index}`}
-                                        className="flex items-center justify-between p-4 hover:bg-primary/5 rounded-lg transition-colors border-b border-border last:border-0"
-                                    >
-                                        <div>
-                                            <div className="flex items-center gap-2">
-                                                <span className="text-lg font-bold text-primary">#{index + 1}</span>
-                                                <span className="font-medium text-text">{shelter.shelter_name}</span>
-                                            </div>
-                                            <p className="text-sm text-text-muted">
-                                                {shelter.shelter_city && `${shelter.shelter_city}, `}{shelter.shelter_state}
-                                            </p>
-                                        </div>
-                                        <div className="text-right">
-                                            <span className="text-lg font-bold text-accent">{shelter.dog_count}</span>
-                                            <p className="text-xs text-text-muted">dogs registered</p>
-                                        </div>
-                                    </div>
-                                ))
-                            ) : (
-                                <div className="text-center py-8 text-text-muted">
-                                    <p>No shelter data available yet</p>
-                                    <p className="text-sm mt-2">Rescue partners will appear here as dogs are registered</p>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Search Rescues Link */}
-                        <div className="mt-6 text-center">
-                            <Link
-                                href="/rescues"
-                                className="text-accent hover:underline font-medium"
-                            >
-                                Search All Rescue Partners →
-                            </Link>
-                        </div>
-                    </div>
+                    <StatsDashboard stats={stats} />
+                    <ShelterList shelters={topShelters} />
                 </div>
             </div>
         </section>

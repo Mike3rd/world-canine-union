@@ -202,8 +202,8 @@ export default function DogShowcase() {
     );
 }
 
-// Updated DogCard Component with spotlight reason support
-// Updated DogCard component - Replace the existing one
+
+// Updated DogCard Component with responsive design
 function DogCard({
     dog,
     isSpotlight,
@@ -218,10 +218,11 @@ function DogCard({
             href={`/dog/${dog.registration_number}`}
             className="block p-4 hover:bg-primary/5 rounded-lg transition-colors border-b border-border last:border-0 group"
         >
-            <div className="flex items-start gap-4">
-                {/* Image container */}
-                <div className="flex-shrink-0">
-                    <div className="relative bg-gradient-to-br from-gray-200 to-gray-300 rounded-lg border border-border overflow-hidden w-16 h-16">
+            {/* Responsive flex: column on mobile, row on desktop */}
+            <div className="flex flex-col sm:flex-row sm:items-start gap-4">
+                {/* Image container - Centered on mobile */}
+                <div className="flex-shrink-0 mx-auto sm:mx-0">
+                    <div className="relative bg-gradient-to-br from-gray-200 to-gray-300 rounded-lg border border-border overflow-hidden w-20 h-[106px] sm:w-16 sm:h-[85px]">
                         {dog.photo_url ? (
                             <img
                                 src={dog.photo_url}
@@ -237,21 +238,21 @@ function DogCard({
                     </div>
                 </div>
 
-                {/* Text info */}
-                <div className="flex-1 min-w-0">
+                {/* Text container - Responsive text alignment */}
+                <div className="flex-1 min-w-0 text-center sm:text-left">
                     {/* Line 1: Dog ID + Name + Featured badge */}
-                    <div className="flex items-center justify-between mb-1">
-                        <div className="flex items-center gap-2 min-w-0">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-1 gap-2">
+                        <div className="flex items-center justify-center sm:justify-start gap-2 min-w-0">
                             <span className="text-primary font-bold text-sm whitespace-nowrap">
                                 {dog.registration_number}
                             </span>
-                            <span className="text-text">•</span>
+                            <span className="text-text hidden sm:inline">•</span>
                             <h4 className="font-medium text-text truncate">
                                 {dog.dog_name}
                             </h4>
                         </div>
                         {isSpotlight && (
-                            <span className="text-xs font-medium bg-accent/20 text-accent px-2 py-0.5 rounded whitespace-nowrap ml-2">
+                            <span className="text-xs font-medium bg-purple-500/10 text-purple-700 px-2 py-0.5 rounded whitespace-nowrap mx-auto sm:mx-0 border border-purple-200">
                                 ★ Featured
                             </span>
                         )}
@@ -264,8 +265,8 @@ function DogCard({
 
                     {/* Line 3: Spotlight reason (if exists) */}
                     {isSpotlight && spotlightReason && (
-                        <div className="mt-2">
-                            <span className="text-xs font-medium bg-accent/10 text-accent px-2 py-1 rounded">
+                        <div className="mt-1">
+                            <span className="text-sm text-text-muted leading-snug">
                                 {spotlightReason}
                             </span>
                         </div>
