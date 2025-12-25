@@ -1,9 +1,10 @@
-// app/components/home/DogShowcase.tsx (or rename as needed)
+// app/components/home/DogShowcase.tsx
 "use client";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import { useSpotlightDogs } from "@/hooks/useSpotlightDogs";
 
 interface DogRegistration {
     registration_number: string;
@@ -12,57 +13,70 @@ interface DogRegistration {
     shelter_name: string | null;
     created_at: string;
     photo_url: string | null;
+    // Add optional spotlight fields for type compatibility
+    spotlight_reason?: string | null;
+    is_spotlight_active?: boolean;
 }
 
 export default function DogShowcase() {
     const [recentDogs, setRecentDogs] = useState<DogRegistration[]>([]);
-    const [spotlightDogs, setSpotlightDogs] = useState<DogRegistration[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [loadingRecent, setLoadingRecent] = useState(true);
+
+    // Use the hook for spotlight dogs
+    const {
+        dogs: spotlightDogsFromHook,
+        loading: loadingSpotlight,
+        error: spotlightError
+    } = useSpotlightDogs(3);
+
+    // Convert spotlight dogs from hook to match DogRegistration interface
+    const spotlightDogs: DogRegistration[] = spotlightDogsFromHook.map(dog => ({
+        registration_number: dog.registration_number,
+        dog_name: dog.dog_name,
+        breed_description: dog.breed_description,
+        shelter_name: dog.shelter_name,
+        created_at: dog.created_at,
+        photo_url: dog.photo_url,
+        spotlight_reason: dog.spotlight_reason,
+        is_spotlight_active: dog.is_spotlight_active
+    }));
 
     useEffect(() => {
-        fetchDogData();
+        fetchRecentDogs();
     }, []);
 
-    async function fetchDogData() {
+    async function fetchRecentDogs() {
         try {
-            setLoading(true);
+            setLoadingRecent(true);
 
             // Fetch recent registrations (capped at 3)
-            const recentPromise = supabase
+            const { data, error } = await supabase
                 .from("registrations")
                 .select("registration_number, dog_name, breed_description, shelter_name, created_at, photo_url")
                 .eq("status", "completed")
                 .order("created_at", { ascending: false })
                 .limit(3);
 
-            // Fetch spotlight dogs (capped at 3)
-            const spotlightPromise = supabase
-                .from("registrations")
-                .select("registration_number, dog_name, breed_description, shelter_name, created_at, photo_url")
-                .eq("is_spotlight", true)
-                .order("created_at", { ascending: false })
-                .limit(3);
+            if (error) {
+                console.error("Error fetching recent dogs:", error);
+            }
 
-            // Fetch both in parallel
-            const [recentResult, spotlightResult] = await Promise.all([recentPromise, spotlightPromise]);
-
-            if (recentResult.error) console.error("Error fetching recent dogs:", recentResult.error);
-            if (spotlightResult.error) console.error("Error fetching spotlight dogs:", spotlightResult.error);
-
-            setRecentDogs(recentResult.data || []);
-            setSpotlightDogs(spotlightResult.data || []);
+            setRecentDogs(data || []);
 
         } catch (error) {
-            console.error("Error fetching dog data:", error);
+            console.error("Error fetching recent dogs:", error);
+            setRecentDogs([]);
         } finally {
-            setLoading(false);
+            setLoadingRecent(false);
         }
     }
 
+    const loading = loadingRecent || loadingSpotlight;
+
     if (loading) {
         return (
-            <section className="py-16">
-                <div className="container max-w-7xl mx-auto px-4">
+            <section className="py-16 bg-surface">
+                <div className="max-w-7xl mx-auto px-4">
                     <div className="grid lg:grid-cols-2 gap-8 mb-16">
                         {[1, 2].map((col) => (
                             <div key={col} className="bg-surface rounded-2xl border border-border p-8">
@@ -82,7 +96,7 @@ export default function DogShowcase() {
 
     return (
         <section className="py-16 bg-surface">
-            <div className="container max-w-7xl mx-auto px-4">
+            <div className="max-w-7xl mx-auto px-4">
 
                 {/* HEADER SECTION */}
                 <h2 className="text-4xl font-heading font-bold text-primary text-center mb-6">
@@ -93,17 +107,23 @@ export default function DogShowcase() {
                     Every WCU registration includes a <strong>20% donation</strong> that directly supports rescue animals.
                     Here&apos;s how your support helps and what our community has accomplished together.
                 </p>
+
                 {/* Two-Column Layout: Spotlight Dogs + Recent Members */}
                 <div className="grid lg:grid-cols-2 gap-8 mb-16">
                     {/* Left Column: Spotlight Dogs */}
-                    <div className="bg-re p-8 rounded-2xl border border-border hover:shadow-lg transition-all">
+                    <div className="bg-surface p-8 rounded-2xl border border-border hover:shadow-lg transition-all">
                         <h3 className="font-heading text-2xl font-semibold text-primary mb-6">
                             Spotlight Dogs
                         </h3>
                         <div className="space-y-4">
                             {spotlightDogs.length > 0 ? (
                                 spotlightDogs.map((dog) => (
-                                    <DogCard key={dog.registration_number} dog={dog} isSpotlight={true} />
+                                    <DogCard
+                                        key={dog.registration_number}
+                                        dog={dog}
+                                        isSpotlight={true}
+                                        spotlightReason={dog.spotlight_reason}
+                                    />
                                 ))
                             ) : (
                                 <div className="text-center py-8 text-text-muted">
@@ -122,7 +142,11 @@ export default function DogShowcase() {
                         <div className="space-y-4">
                             {recentDogs.length > 0 ? (
                                 recentDogs.map((dog) => (
-                                    <DogCard key={dog.registration_number} dog={dog} isSpotlight={false} />
+                                    <DogCard
+                                        key={dog.registration_number}
+                                        dog={dog}
+                                        isSpotlight={false}
+                                    />
                                 ))
                             ) : (
                                 <div className="text-center py-8 text-text-muted">
@@ -132,9 +156,18 @@ export default function DogShowcase() {
                             )}
                         </div>
 
-
+                        {/* Search Rescues Link */}
+                        <div className="mt-6 text-center">
+                            <Link
+                                href="/rescues"
+                                className="text-accent hover:underline font-medium"
+                            >
+                                Browse dogs by breed →
+                            </Link>
+                        </div>
                     </div>
                 </div>
+
                 {/* CTA Section */}
                 <div className="text-center">
                     <p className="text-xl font-body2 text-text-muted mb-6 max-w-2xl mx-auto">
@@ -169,17 +202,26 @@ export default function DogShowcase() {
     );
 }
 
-// Reusable DogCard Component
-function DogCard({ dog, isSpotlight }: { dog: DogRegistration; isSpotlight: boolean }) {
+// Updated DogCard Component with spotlight reason support
+// Updated DogCard component - Replace the existing one
+function DogCard({
+    dog,
+    isSpotlight,
+    spotlightReason
+}: {
+    dog: DogRegistration;
+    isSpotlight: boolean;
+    spotlightReason?: string | null;
+}) {
     return (
         <Link
             href={`/dog/${dog.registration_number}`}
-            className="block sm:flex sm:items-center justify-between p-4 hover:bg-primary/5 rounded-lg transition-colors border-b border-border last:border-0 group"
+            className="block p-4 hover:bg-primary/5 rounded-lg transition-colors border-b border-border last:border-0 group"
         >
-            <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+            <div className="flex items-start gap-4">
                 {/* Image container */}
-                <div className="flex-shrink-0 mx-auto sm:mx-0">
-                    <div className="relative bg-gradient-to-br from-gray-200 to-gray-300 rounded-lg border border-border overflow-hidden w-16 h-[85px] sm:w-12 sm:h-16">
+                <div className="flex-shrink-0">
+                    <div className="relative bg-gradient-to-br from-gray-200 to-gray-300 rounded-lg border border-border overflow-hidden w-16 h-16">
                         {dog.photo_url ? (
                             <img
                                 src={dog.photo_url}
@@ -197,20 +239,48 @@ function DogCard({ dog, isSpotlight }: { dog: DogRegistration; isSpotlight: bool
 
                 {/* Text info */}
                 <div className="flex-1 min-w-0">
-                    <p className="font-medium text-text text-center sm:text-left truncate">
-                        <span className="text-primary font-bold">{dog.registration_number}</span>
-                        {" "}• {dog.dog_name}
-                    </p>
-                    <p className="text-sm text-text-muted text-center sm:text-left line-clamp-2">
-                        {dog.breed_description || "Mixed Breed"}
-                        {dog.shelter_name && ` • Rescued from ${dog.shelter_name}`}
-                    </p>
-                </div>
-            </div>
+                    {/* Line 1: Dog ID + Name + Featured badge */}
+                    <div className="flex items-center justify-between mb-1">
+                        <div className="flex items-center gap-2 min-w-0">
+                            <span className="text-primary font-bold text-sm whitespace-nowrap">
+                                {dog.registration_number}
+                            </span>
+                            <span className="text-text">•</span>
+                            <h4 className="font-medium text-text truncate">
+                                {dog.dog_name}
+                            </h4>
+                        </div>
+                        {isSpotlight && (
+                            <span className="text-xs font-medium bg-accent/20 text-accent px-2 py-0.5 rounded whitespace-nowrap ml-2">
+                                ★ Featured
+                            </span>
+                        )}
+                    </div>
 
-            {/* Date/Spotlight label */}
-            <div className="text-sm text-text-muted mt-3 sm:mt-0 text-center sm:text-right sm:ml-6 whitespace-nowrap">
-                {isSpotlight ? "Spotlight" : new Date(dog.created_at).toLocaleDateString()}
+                    {/* Line 2: Breed */}
+                    <p className="text-sm text-text-muted">
+                        {dog.breed_description || "Mixed Breed"}
+                    </p>
+
+                    {/* Line 3: Spotlight reason (if exists) */}
+                    {isSpotlight && spotlightReason && (
+                        <div className="mt-2">
+                            <span className="text-xs font-medium bg-accent/10 text-accent px-2 py-1 rounded">
+                                {spotlightReason}
+                            </span>
+                        </div>
+                    )}
+
+                    {/* Date for non-spotlight dogs */}
+                    {!isSpotlight && (
+                        <div className="mt-2 text-xs text-text-muted">
+                            {new Date(dog.created_at).toLocaleDateString('en-US', {
+                                month: 'short',
+                                day: 'numeric'
+                            })}
+                        </div>
+                    )}
+                </div>
             </div>
         </Link>
     );
