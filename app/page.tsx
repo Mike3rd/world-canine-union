@@ -1,8 +1,9 @@
 import HeroSection from "@/components/HeroSection";
 import DogShowSection from "@/components/DogShowSection";
 import ValuePropsSection from "@/components/ValuePropsSection";
+import DogShowcase from "@/components/DogShowcase";
+import CommunityStats from "@/components/CommunityStats";
 import ImpactDashboard from "@/components/ImpactDashboard";
-import TopShelters from "@/components/TopShelters";
 import DetailsSection from "@/components/DetailsSection";
 
 
@@ -13,8 +14,11 @@ export default function Home() {
       <ValuePropsSection />
       <DetailsSection />
       <ImpactDashboard />
+      <CommunityStats />
+      <DogShowcase />
+
+
       {/* <DogShowSection /> */}
-      <TopShelters />
 
     </div>
   );
