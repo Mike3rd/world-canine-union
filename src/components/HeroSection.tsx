@@ -16,12 +16,6 @@ export default function HeroSection() {
           <p className="text-xl md:text-2xl text-text-muted font-body2 max-w-3xl mx-auto mb-8 leading-relaxed">
             The official global registry celebrating one-of-a-kind dogs. Join our community today!
           </p>
-          <Link
-            href="/request-update"
-            className="text-blue-600 hover:text-blue-800 font-medium"
-          >
-            Update Info
-          </Link>
         </div>
       </div>
     </section>
