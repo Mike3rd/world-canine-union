@@ -26,4 +26,7 @@ export interface Registration {
   gender: string | null;
   is_memorial?: boolean;
   memorial_date?: string | null;
+  is_spotlight?: boolean;
+  spotlight_reason?: string | null;
+  spotlight_expires_at?: string | null;
 }

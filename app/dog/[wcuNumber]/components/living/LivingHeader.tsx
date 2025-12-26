@@ -1,5 +1,5 @@
 // app/dog/[wcuNumber]/components/living/LivingHeader.tsx
-import { Sparkles, CalendarDays, VenusAndMars } from 'lucide-react'
+import { Sparkles, CalendarDays, VenusAndMars, Award, Star } from 'lucide-react'
 import HeartIcon from '../HeartIcon'
 
 interface LivingHeaderProps {
@@ -7,44 +7,71 @@ interface LivingHeaderProps {
     registrationNumber: string
     gender: string | null
     age: string | null
+    isSpotlight?: boolean
+    spotlightReason?: string | null
 }
 
 export default function LivingHeader({
     dogName,
     registrationNumber,
     gender,
-    age
+    age,
+    isSpotlight = false,
+    spotlightReason = null
 }: LivingHeaderProps) {
     return (
         <div className="bg-dog-header-bg text-dog-header-text">
+            {/* SPOTLIGHT BANNER - Above header */}
+            {isSpotlight && (
+                <div className="bg-gradient-to-r from-purple-600 to-pink-600 py-3">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="flex items-center justify-center gap-2">
+                            <Award className="w-4 h-4 text-white flex-shrink-0" />
+                            <span className="text-sm font-bold text-white text-center">
+                                WCU Spotlight Dog • {spotlightReason || 'Featured'}
+                            </span>
+                            <Star className="w-4 h-4 text-yellow-300 flex-shrink-0" />
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="flex flex-col md:flex-row items-center justify-between">
-                    <div>
-                        {/* Heart + Name on same line */}
-                        <div className="flex items-center mb-2"> {/* ← Flex row for heart + name */}
-                            <HeartIcon className="w-15 h-15 mr-3" /> {/* Adjust size as needed */}
-                            <h1 className="text-4xl md:text-5xl font-bold">
+                    <div className="w-full md:w-auto">
+                        {/* Heart + Name - Stack on mobile */}
+                        <div className="flex flex-col sm:flex-row items-center mb-3 gap-3">
+                            <HeartIcon className="w-12 h-12 sm:w-15 sm:h-15" />
+                            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center sm:text-left">
                                 {dogName}
                             </h1>
                         </div>
 
-                        {/* WCU number, gender, age on next line */}
-                        <div className="flex items-center justify-center md:justify-start space-x-4 text-dog-border">
-                            <span className="flex items-center">
-                                <Sparkles className="w-4 h-4 mr-1" />
-                                {registrationNumber}
-                            </span>
-                            <VenusAndMars className="w-4 h-4 mr-1 ml-1" />
-                            {gender && (
-                                <span className="capitalize">{gender}</span>
-                            )}
-                            <CalendarDays className="w-4 h-4 mr-1 ml-3" />
-                            {age && (
+                        {/* WCU details - Stack on mobile */}
+                        <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 text-dog-border">
+                            {/* First row: WCU Number & Gender */}
+                            <div className="flex items-center space-x-1 text-memorial-border">
+                                <span className="flex items-center">
+                                    <Sparkles className="w-4 h-4 mr-1" />
+                                    {registrationNumber}
+                                </span>
+                                <VenusAndMars className="w-4 h-4 mr-1 ml-1" />
+                                {gender && (
+                                    <span className="capitalize">{gender}</span>
+                                )}
+                            </div>
 
-                                <span>{age}</span>
+                            {/* Age - Only show if exists */}
+                            {age && (
+                                <div className="flex items-center">
+                                    <CalendarDays className="w-4 h-4 mr-1" />
+                                    <span>{age}</span>
+                                </div>
                             )}
                         </div>
                     </div>
+
+                    {/* Right side badge */}
                     <div className="mt-4 md:mt-0">
                         <a
                             href="/"

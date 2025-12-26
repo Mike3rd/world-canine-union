@@ -1,5 +1,5 @@
 // app/dog/[wcuNumber]/components/memorial/MemorialHeader.tsx
-import { Sparkles, CalendarDays, VenusAndMars } from 'lucide-react'
+import { Sparkles, CalendarDays, VenusAndMars, Award, Star } from 'lucide-react'
 import HeartIcon from '../HeartIcon'
 
 interface MemorialHeaderProps {
@@ -8,6 +8,8 @@ interface MemorialHeaderProps {
     gender: string | null
     gotchaDate: string | null
     memorialDate: string | null
+    isSpotlight?: boolean
+    spotlightReason?: string | null
 }
 
 export default function MemorialHeader({
@@ -15,7 +17,9 @@ export default function MemorialHeader({
     registrationNumber,
     gender,
     gotchaDate,
-    memorialDate
+    memorialDate,
+    isSpotlight = false,
+    spotlightReason = null
 }: MemorialHeaderProps) {
 
     const formatDate = (dateString: string | null) => {
@@ -29,11 +33,26 @@ export default function MemorialHeader({
 
     return (
         <div className="bg-memorial-header-bg text-memorial-header-text">
+            {/* SPOTLIGHT BANNER - Same as living */}
+            {isSpotlight && (
+                <div className="bg-gradient-to-r from-purple-600 to-pink-600 py-3">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="flex items-center justify-center gap-2">
+                            <Award className="w-4 h-4 text-white flex-shrink-0" />
+                            <span className="text-sm font-bold text-white text-center">
+                                WCU Spotlight Dog • {spotlightReason || 'Featured'}
+                            </span>
+                            <Star className="w-4 h-4 text-yellow-300 flex-shrink-0" />
+                        </div>
+                    </div>
+                </div>
+            )}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="flex flex-col md:flex-row items-center justify-between">
+
                     <div>
                         {/* Memorial Banner */}
-                        <div className="mb-4">
+                        <div className="mb-0 text-center md:text-left lg:text-left xl:text-left 2xl:text-left">
                             <div className="inline-flex items-center px-4 py-2 rounded-full mb-2 memorial-rainbow-gradient">
                                 <span className="text-lg mr-2">🌈</span>
                                 <span className="text-sm font-semibold uppercase tracking-wider text-memorial-header-bg">
@@ -43,15 +62,15 @@ export default function MemorialHeader({
                         </div>
 
                         {/* Heart + Name on same line */}
-                        <div className="flex items-center mb-2">
-                            <HeartIcon className="w-15 h-15 mr-3" />
-                            <h1 className="text-4xl md:text-5xl font-bold">
+                        <div className="flex flex-col sm:flex-row items-center mb-3 gap-3">
+                            <HeartIcon className="w-12 h-12 sm:w-15 sm:h-15" />
+                            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center sm:text-left">
                                 {dogName}
                             </h1>
                         </div>
 
                         {/* Details */}
-                        <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0">
+                        <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 text-dog-border">
                             {/* First row: WCU Number & Gender */}
                             <div className="flex items-center space-x-1 text-memorial-border">
                                 <span className="flex items-center">

@@ -14,6 +14,8 @@ interface LivingProfileProps {
     registration: Registration
 }
 
+
+
 export default function LivingProfile({ registration }: LivingProfileProps) {
     // Calculate age if birth date exists
     const calculateAge = () => {
@@ -34,6 +36,11 @@ export default function LivingProfile({ registration }: LivingProfileProps) {
 
     const age = calculateAge()
 
+    // Calculate if spotlight is active
+    const isSpotlightActive = registration.is_spotlight &&
+        (!registration.spotlight_expires_at ||
+            new Date(registration.spotlight_expires_at) > new Date());
+
     return (
         <div className="min-h-screen bg-dog-background">
             <LivingHeader
@@ -41,6 +48,8 @@ export default function LivingProfile({ registration }: LivingProfileProps) {
                 registrationNumber={registration.registration_number}
                 gender={registration.gender}
                 age={age}
+                isSpotlight={isSpotlightActive}
+                spotlightReason={registration.spotlight_reason}
             />
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

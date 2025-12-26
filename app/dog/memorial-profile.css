@@ -45,44 +45,65 @@
   background: orange;
   animation: flicker 0.3s infinite alternate;
 }
+/* Add these animations */
 @keyframes flicker {
-  0%, 100% { 
-    transform: scale(1) translateY(0); 
-    opacity: 1;
-  }
-  25% { 
-    transform: scale(1.05) translateY(-2px); 
-    opacity: 0.9;
-  }
-  50% { 
-    transform: scale(0.95) translateY(1px); 
-    opacity: 1;
-  }
-  75% { 
-    transform: scale(1.02) translateY(-1px); 
-    opacity: 0.95;
-  }
+    0%, 100% { 
+        transform: scale(1);
+        opacity: 0.9;
+    }
+    25% { 
+        transform: scale(1.05) translateY(-2px);
+        opacity: 1;
+    }
+    50% { 
+        transform: scale(0.95) translateY(1px);
+        opacity: 0.8;
+    }
+    75% { 
+        transform: scale(1.02) translateY(-1px);
+        opacity: 0.95;
+    }
 }
 
 @keyframes flicker-slow {
-  0%, 100% { 
-    transform: scale(1); 
-    opacity: 0.8;
-  }
-  50% { 
-    transform: scale(1.1); 
-    opacity: 1;
-  }
+    0%, 100% { 
+        transform: scale(1);
+        opacity: 0.8;
+    }
+    50% { 
+        transform: scale(1.1);
+        opacity: 1;
+    }
 }
 
-.animate-flicker {
-  animation: flicker 0.3s infinite alternate;
-  transform-origin: center bottom;
+@keyframes flicker {
+    0%, 100% { 
+        transform: scale(1);
+        opacity: 0.9;
+    }
+    25% { 
+        transform: scale(1.05) translateY(-2px);
+        opacity: 1;
+    }
+    50% { 
+        transform: scale(0.95) translateY(1px);
+        opacity: 0.8;
+    }
+    75% { 
+        transform: scale(1.02) translateY(-1px);
+        opacity: 0.95;
+    }
 }
 
-.animate-flicker-slow {
-  animation: flicker-slow 0.5s infinite alternate;
-  transform-origin: center bottom;
+@keyframes flicker-slow {
+    0%, 100% { 
+        transform: scale(1);
+        opacity: 0.8;
+    }
+    50% { 
+        transform: scale(1.1);
+        opacity: 1;
+    }
 }
 
 .candle-flame {

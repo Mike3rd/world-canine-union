@@ -55,12 +55,8 @@ export default function CandleSVG({ isLit, size = 80, className = '' }: CandleSV
 
             {/* Wax drips - made more visible with darker color */}
             <path
-                d="M 28 18 
-                   C 30 10, 50 10, 52 18
-                   L 52 25
-                   C 50 22, 30 22, 28 25
-                   Z"
-                fill="#d46b08"  /* Darker orange-brown wax */
+                d="M 28 18 C 30 10, 50 10, 52 18 L 52 25 C 50 22, 30 22, 28 25 Z"
+                fill="#d46b08"
                 opacity="0.8"
             />
 
@@ -79,26 +75,22 @@ export default function CandleSVG({ isLit, size = 80, className = '' }: CandleSV
                 <g className="candle-flame">
                     {/* Outer flame - red/orange/yellow gradient */}
                     <path
-                        d="M 30 -10 
-                           Q 40 -35, 50 -10
-                           Q 40 -25, 30 -10"
+                        d="M 30 -10 Q 40 -35, 50 -10 Q 40 -25, 30 -10"
                         fill="url(#flame-gradient)"
-                        className="animate-flicker"
                         style={{
                             filter: 'drop-shadow(0 0 15px rgba(255, 69, 0, 0.5))',
-                            transformOrigin: 'center -20px'
+                            transformOrigin: 'center -20px',
+                            animation: 'flicker 0.5s infinite alternate'
                         }}
                     />
 
                     {/* Inner flame - bright yellow core */}
                     <path
-                        d="M 35 -15 
-                           Q 40 -28, 45 -15
-                           Q 40 -22, 35 -15"
+                        d="M 35 -15 Q 40 -28, 45 -15 Q 40 -22, 35 -15"
                         fill="url(#inner-flame-gradient)"
-                        className="animate-flicker-slow"
                         style={{
-                            transformOrigin: 'center -20px'
+                            transformOrigin: 'center -20px',
+                            animation: 'flicker-slow 1s infinite alternate'
                         }}
                     />
 
@@ -109,9 +101,9 @@ export default function CandleSVG({ isLit, size = 80, className = '' }: CandleSV
                         rx="3"
                         ry="4"
                         fill="#ffff00"
-                        className="animate-flicker"
                         style={{
-                            filter: 'drop-shadow(0 0 8px yellow)'
+                            filter: 'drop-shadow(0 0 8px yellow)',
+                            animation: 'flicker 0.5s infinite alternate'
                         }}
                     />
 
@@ -123,7 +115,7 @@ export default function CandleSVG({ isLit, size = 80, className = '' }: CandleSV
                         ry="8"
                         fill="url(#flame-gradient)"
                         opacity="0.3"
-                        className="blur-lg"
+                        style={{ filter: 'blur(8px)' }}
                     />
                 </g>
             )}

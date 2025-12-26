@@ -20,12 +20,11 @@ interface MemorialProfileProps {
 }
 
 export default function MemorialProfile({ registration }: MemorialProfileProps) {
-    console.log('=== MEMORIAL PROFILE DEBUG ===');
-    console.log('memorial_message value:', registration.memorial_message);
-    console.log('memorial_message type:', typeof registration.memorial_message);
-    console.log('memorial_message exists?', !!registration.memorial_message);
-    console.log('memorial_message length:', registration.memorial_message?.length);
-    console.log('================================');
+
+
+    const isSpotlightActive = registration.is_spotlight &&
+        (!registration.spotlight_expires_at ||
+            new Date(registration.spotlight_expires_at) > new Date());
     return (
         <div className="min-h-screen bg-memorial-background">
             <MemorialHeader
@@ -34,6 +33,8 @@ export default function MemorialProfile({ registration }: MemorialProfileProps) 
                 gender={registration.gender}
                 memorialDate={registration.memorial_date ?? null}
                 gotchaDate={registration.gotcha_date ?? null}
+                isSpotlight={isSpotlightActive}
+                spotlightReason={registration.spotlight_reason}
             />
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

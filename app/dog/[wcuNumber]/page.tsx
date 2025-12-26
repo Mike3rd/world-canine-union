@@ -45,7 +45,12 @@ export default async function DogProfilePage({
       is_memorial,
       memorial_date,
       memorial_message,
-      memorial_favorite_memories
+      memorial_favorite_memories,
+       is_spotlight,
+        spotlight_reason,
+        spotlight_expires_at
+      
+      
     `)
         .eq('registration_number', searchNumber)
         .single()
