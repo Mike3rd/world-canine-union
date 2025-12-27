@@ -139,8 +139,8 @@ export default function MemorialTributes({ dogId, dogName }: MemorialTributesPro
 
                     {/* Candle Count - Stacks under title on mobile */}
                     <div className="flex items-center justify-start sm:justify-end rounded-lg  bg-white pr-2 pl-1 text-memorial-background2">
-                        <Flame className="w-5 h-5 mr-2" />
-                        <span className="font-bold">{candleCount.toLocaleString()} candles lit</span>
+                        <Flame className="w-5 h-5 mr-1" />
+                        <span className="font-bold">{candleCount.toLocaleString()}candles lit</span>
                     </div>
                 </div>
             </div>
