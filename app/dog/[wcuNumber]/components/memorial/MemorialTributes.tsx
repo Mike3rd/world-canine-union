@@ -126,19 +126,19 @@ export default function MemorialTributes({ dogId, dogName }: MemorialTributesPro
     return (
         <div className="rounded-2xl shadow-xl overflow-hidden border bg-memorial-surface border-memorial-border">
             {/* memorial Tribute Header */}
-            <div className="p-6 memorial-rainbow-gradient text-memorial">
+            <div className="p-6 memorial-rainbow-gradient">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
                     {/* Title area */}
-                    <div className="flex items-center mb-4 sm:mb-0">
-                        <Flame className="w-6 h-6 mr-3" />
+                    <div className="flex items-center mb-4 sm:mb-0 memorial-primary">
+
                         <div>
-                            <h2 className="text-2xl font-bold">Virtual Candle Tribute</h2>
+                            <h2 className="text-2xl font-bold">🔥Virtual Candle Tribute</h2>
                             <p className="opacity-90">Light a candle in memory of {dogName}</p>
                         </div>
                     </div>
 
                     {/* Candle Count - Stacks under title on mobile */}
-                    <div className="flex items-center justify-start sm:justify-end">
+                    <div className="flex items-center justify-start sm:justify-end rounded-lg  bg-white pr-2 pl-1 text-memorial-background2">
                         <Flame className="w-5 h-5 mr-2" />
                         <span className="font-bold">{candleCount.toLocaleString()} candles lit</span>
                     </div>
@@ -150,12 +150,12 @@ export default function MemorialTributes({ dogId, dogName }: MemorialTributesPro
                 {/* ROW 2: Candle + Form */}
                 <div className="grid lg:grid-cols-2 gap-8 mb-8">
                     {/* LEFT: Candle Image */}
-                    <div className="flex flex-col items-center justify-center p-4">
+                    <div className="flex flex-col items-center justify-center p-4 rounded-lg border border-amber-200">
                         <div className="relative mb-4">
                             <CandleSVG isLit={isLit} size={80} />
                         </div>
-                        <p className="text-center text-sm text-memorial-text-muted">
-                            {isLit ? 'Your candle is burning brightly' : 'Light a candle for ' + dogName}
+                        <p className="text-center text-sm text-memorial-text p-2 rounded-sm border-top">
+                            {isLit ? 'Your candle is lit' : 'Light a candle for ' + dogName}
                         </p>
                     </div>
 

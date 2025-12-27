@@ -36,10 +36,10 @@ export default function CandleSVG({ isLit, size = 80, className = '' }: CandleSV
             {/* Candle base */}
             <ellipse
                 cx="40"
-                cy="195"
+                cy="190"
                 rx="30"
                 ry="5"
-                className="fill-memorial-primary-dark"
+                className="fill-memorial-text-muted"
             />
 
             {/* Candle stick */}
