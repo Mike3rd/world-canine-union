@@ -1,20 +1,119 @@
 // app/dog/[wcuNumber]/components/memorial/MemorialTributes.tsx
 'use client'
-import { MessageCircle, Heart, User } from 'lucide-react'
+
+import { useState, useEffect } from 'react'
+import { MessageCircle, Flame, Heart, User } from 'lucide-react'
+import CandleSVG from './CandleSVG'
+import { supabase } from '@/lib/supabase'
 
 interface MemorialTributesProps {
     dogId: string
     dogName: string
 }
 
-// Mock data - will come from database
-const mockTributes = [
-    { id: 1, name: "Sarah M.", message: "Forever in our hearts. Such a beautiful soul.", date: "2024-01-15" },
-    { id: 2, name: "The Johnson Family", message: "We'll always remember your happy tail wags.", date: "2024-01-10" },
-    { id: 3, name: "Friend from the park", message: "Miss seeing you on our morning walks.", date: "2024-01-05" },
-]
-
 export default function MemorialTributes({ dogId, dogName }: MemorialTributesProps) {
+    const [isLit, setIsLit] = useState(false)
+    const [message, setMessage] = useState('')
+    const [contributorName, setContributorName] = useState('')
+    const [isSubmitting, setIsSubmitting] = useState(false)
+    const [candleCount, setCandleCount] = useState(0)
+    const [tributes, setTributes] = useState<any[]>([])
+    const [submittedMessage, setSubmittedMessage] = useState('')
+
+    // Fetch initial data
+    useEffect(() => {
+        fetchCandleCount()
+        fetchTributes()
+        checkIfUserHasLit()
+    }, [dogId])
+
+    async function fetchCandleCount() {
+        try {
+            const { data, error } = await supabase
+                .from('registrations')
+                .select('candle_count')
+                .eq('id', dogId)
+                .single()
+
+            if (error) throw error
+            setCandleCount(data?.candle_count || 0)
+        } catch (error) {
+            console.error('Error fetching candle count:', error)
+        }
+    }
+
+    async function fetchTributes() {
+        try {
+            const { data, error } = await supabase
+                .from('memorial_tributes')
+                .select('*')
+                .eq('dog_id', dogId)
+                .order('created_at', { ascending: false })
+
+            if (error) throw error
+            setTributes(data || [])
+        } catch (error) {
+            console.error('Error fetching tributes:', error)
+        }
+    }
+
+    function checkIfUserHasLit() {
+        const hasLit = localStorage.getItem(`candle_lit_${dogId}`)
+        if (hasLit) {
+            setIsLit(true)
+        }
+    }
+
+    const handleLightCandle = async () => {
+        if (!message.trim() || isLit) return
+
+        setIsSubmitting(true)
+        // Save the message before clearing
+        const currentMessage = message
+        const currentContributor = contributorName.trim() || 'Anonymous Friend'
+
+        try {
+            // 1. Save tribute to memorial_tributes table
+            const { error: tributeError } = await supabase
+                .from('memorial_tributes')
+                .insert({
+                    dog_id: dogId,
+                    dog_name: dogName,
+                    tribute_message: currentMessage,
+                    contributor_name: currentContributor
+                })
+
+            if (tributeError) throw tributeError
+
+            // 2. Update candle count in registrations table
+            const { error: updateError } = await supabase
+                .from('registrations')
+                .update({
+                    candle_count: candleCount + 1
+                })
+                .eq('id', dogId)
+
+            if (updateError) throw updateError
+
+            // 3. Update local state
+            setIsLit(true)
+            setSubmittedMessage(currentMessage) // Save for display
+            setCandleCount(prev => prev + 1)
+            localStorage.setItem(`candle_lit_${dogId}`, 'true')
+
+            // 4. Clear form fields
+            setMessage('')
+            setContributorName('')
+
+            // 5. Refresh tributes list
+            await fetchTributes()
+
+        } catch (error) {
+            console.error('Error lighting candle:', error)
+        } finally {
+            setIsSubmitting(false)
+        }
+    }
 
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString('en-US', {
@@ -26,76 +125,159 @@ export default function MemorialTributes({ dogId, dogName }: MemorialTributesPro
 
     return (
         <div className="rounded-2xl shadow-xl overflow-hidden border bg-memorial-surface border-memorial-border">
-            <div className="p-6">
-                <div className="flex items-center justify-between mb-6">
-                    <div>
-                        <h3 className="text-xl font-bold flex items-center text-memorial-text">
-                            <MessageCircle className="w-5 h-5 mr-2 text-memorial-accent" />
-                            Tributes & Memories
-                        </h3>
-                        <p className="font-body mt-1 text-memorial-text-muted">
-                            Messages from friends and family
-                        </p>
-                    </div>
-
-                    <div className="flex items-center text-memorial-accent">
-                        <Heart className="w-4 h-4 mr-1" />
-                        <span className="font-semibold">{mockTributes.length} tributes</span>
-                    </div>
-                </div>
-
-                {/* Tribute Messages */}
-                <div className="space-y-6">
-                    {mockTributes.map((tribute) => (
-                        <div
-                            key={tribute.id}
-                            className="p-5 rounded-xl border bg-memorial-background border-memorial-border"
-                        >
-                            <div className="flex items-start mb-3">
-                                <div className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center mr-3 bg-memorial-surface text-memorial-accent">
-                                    <User className="w-5 h-5" />
-                                </div>
-                                <div className="flex-1">
-                                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-                                        <h4 className="font-semibold text-memorial-text">
-                                            {tribute.name}
-                                        </h4>
-                                        <span className="text-sm mt-1 sm:mt-0 text-memorial-text-muted">
-                                            {formatDate(tribute.date)}
-                                        </span>
-                                    </div>
-                                    <p className="font-body mt-2 text-memorial-text-muted">
-                                        {tribute.message}
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div className="flex items-center justify-end mt-4 pt-4 border-t border-memorial-border">
-                                <button className="flex items-center text-sm text-memorial-accent hover:text-memorial-accent-light">
-                                    <Heart className="w-3 h-3 mr-1" />
-                                    <span>Send love</span>
-                                </button>
-                            </div>
+            {/* memorial Tribute Header */}
+            <div className="p-6 memorial-rainbow-gradient text-memorial">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                    {/* Title area */}
+                    <div className="flex items-center mb-4 sm:mb-0">
+                        <Flame className="w-6 h-6 mr-3" />
+                        <div>
+                            <h2 className="text-2xl font-bold">Virtual Candle Tribute</h2>
+                            <p className="opacity-90">Light a candle in memory of {dogName}</p>
                         </div>
-                    ))}
+                    </div>
+
+                    {/* Candle Count - Stacks under title on mobile */}
+                    <div className="flex items-center justify-start sm:justify-end">
+                        <Flame className="w-5 h-5 mr-2" />
+                        <span className="font-bold">{candleCount.toLocaleString()} candles lit</span>
+                    </div>
+                </div>
+            </div>
+
+            {/* White Content Section - YOUR EXISTING CONTENT GOES HERE */}
+            <div className="p-6">
+                {/* ROW 2: Candle + Form */}
+                <div className="grid lg:grid-cols-2 gap-8 mb-8">
+                    {/* LEFT: Candle Image */}
+                    <div className="flex flex-col items-center justify-center p-4">
+                        <div className="relative mb-4">
+                            <CandleSVG isLit={isLit} size={80} />
+                        </div>
+                        <p className="text-center text-sm text-memorial-text-muted">
+                            {isLit ? 'Your candle is burning brightly' : 'Light a candle for ' + dogName}
+                        </p>
+                    </div>
+
+                    {/* RIGHT: Message Form */}
+                    <div>
+                        {!isLit ? (
+                            // ACTIVE FORM
+                            <>
+                                <div className="mb-4">
+                                    <label className="block text-sm font-medium mb-2 text-memorial-text">
+                                        Leave a tribute for {dogName}
+                                    </label>
+                                    <textarea
+                                        value={message}
+                                        onChange={(e) => setMessage(e.target.value)}
+                                        placeholder="Share a memory or kind words..."
+                                        className="w-full p-3 rounded-lg border font-body resize-none bg-memorial-background border-memorial-border text-memorial-text"
+                                        rows={3}
+                                    />
+                                </div>
+
+                                <div className="mb-4">
+                                    <label className="block text-sm font-medium mb-2 text-memorial-text">
+                                        Your name (optional)
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={contributorName}
+                                        onChange={(e) => setContributorName(e.target.value)}
+                                        placeholder="Your name"
+                                        className="w-full p-3 rounded-lg border font-body bg-memorial-background border-memorial-border text-memorial-text"
+                                    />
+                                </div>
+
+                                <button
+                                    onClick={handleLightCandle}
+                                    disabled={!message.trim() || isSubmitting}
+                                    className={`w-full py-3 px-6 rounded-lg font-semibold flex items-center justify-center 
+                                    ${!message.trim() || isSubmitting
+                                            ? 'bg-gray-300 cursor-not-allowed'
+                                            : 'bg-amber-600 hover:bg-amber-700 text-white'
+                                        }`}
+                                >
+                                    {isSubmitting ? (
+                                        <>
+                                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                                            Lighting Candle...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Flame className="w-4 h-4 mr-2" />
+                                            Light Candle & Leave Tribute
+                                        </>
+                                    )}
+                                </button>
+                            </>
+                        ) : (
+                            // THANK YOU MESSAGE
+                            <div className="p-6 rounded-lg bg-amber-50 border border-amber-200">
+                                <Heart className="w-10 h-10 mx-auto mb-3 text-amber-600" />
+                                <h4 className="font-bold mb-2 text-center text-amber-800">
+                                    Thank You for Your Tribute
+                                </h4>
+                                {message ? (
+                                    <p className="text-center text-amber-700 italic mb-2">
+                                        "{message}"
+                                    </p>
+                                ) : null}
+                                <p className="text-center text-sm text-amber-600">
+                                    Your candle burns brightly for {dogName}
+                                </p>
+                            </div>
+                        )}
+                    </div>
                 </div>
 
-                {/* Add Tribute Form (Simplified) */}
-                <div className="mt-8 pt-6 border-t border-memorial-border">
-                    <div className="text-center">
-                        <p className="font-body mb-4 text-memorial-text-muted">
-                            Share your own memory of {dogName}
-                        </p>
-                        <button
-                            className="inline-flex items-center py-2 px-6 rounded-lg font-medium transition bg-memorial-buttons text-white hover:opacity-90"
-                            onClick={() => alert('Tribute submission will be available soon')}
-                        >
-                            <MessageCircle className="w-4 h-4 mr-2" />
-                            Share a Memory
-                        </button>
-                        <p className="text-xs mt-3 font-body text-memorial-text-muted">
-                            Tributes are moderated before appearing
-                        </p>
+                {/* ROW 3: Messages - Full width */}
+                <div className="border-t border-memorial-border pt-8">
+                    <div className="flex items-center justify-between mb-6">
+                        <div>
+                            <h4 className="text-lg font-bold flex items-center text-memorial-text">
+                                <MessageCircle className="w-5 h-5 mr-2 text-memorial-accent" />
+                                Recent Tributes
+                            </h4>
+                            <p className="font-body mt-1 text-sm text-memorial-text-muted">
+                                Messages in memory of {dogName}
+                            </p>
+                        </div>
+
+                        <div className="flex items-center text-memorial-accent">
+                            <Heart className="w-4 h-4 mr-1" />
+                            <span className="font-semibold">{tributes.length}</span>
+                        </div>
+                    </div>
+
+                    {/* Messages List */}
+                    <div className="space-y-4">
+                        {tributes.map((tribute) => (
+                            <div
+                                key={tribute.id}
+                                className="p-4 rounded-lg border bg-memorial-background border-memorial-border"
+                            >
+                                <div className="flex items-start">
+                                    <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mr-3 bg-memorial-surface text-memorial-accent">
+                                        <User className="w-4 h-4" />
+                                    </div>
+                                    <div className="flex-1">
+                                        <div className="flex justify-between items-start">
+                                            <h5 className="font-semibold text-memorial-text">
+                                                {tribute.contributor_name}
+                                            </h5>
+                                            <span className="text-xs text-memorial-text-muted">
+                                                {formatDate(tribute.created_at)}
+                                            </span>
+                                        </div>
+                                        <p className="font-body mt-1 text-memorial-text-muted">
+                                            {tribute.tribute_message}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>

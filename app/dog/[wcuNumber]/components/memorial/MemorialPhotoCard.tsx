@@ -16,11 +16,11 @@ export default function MemorialPhotoCard({ photoUrl, dogName }: MemorialPhotoCa
             <div className="absolute top-4 left-4 z-10">
                 <div className="flex items-center px-3 py-1 rounded-full bg-memorial-accent text-white">
                     <Ribbon className="w-4 h-4 mr-1" />
-                    <span className="text-sm font-semibold">In Memory</span>
+                    <span className="text-md font-semibold">In Memory</span>
                 </div>
             </div>
 
-            <div className="relative bg-gradient-to-br from-memorial-gradient-end to-memorial-gradient-end">
+            <div className="relative memorial-rainbow-gradient">
                 {photoUrl ? (
                     <div className="relative w-full pt-[133.5%]">
                         <Image

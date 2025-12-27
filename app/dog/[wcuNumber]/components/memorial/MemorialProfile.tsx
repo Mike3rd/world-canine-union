@@ -3,7 +3,6 @@ import { Registration } from '../../../../../types/database'
 import MemorialHeader from './MemorialHeader'
 import MemorialPhotoCard from './MemorialPhotoCard'
 import MemorialRainbowBridge from './MemorialRainbowBridge'
-import MemorialVirtualCandle from './MemorialVirtualCandle'
 import MemorialTributes from './MemorialTributes'
 import MemorialQuickFacts from './MemorialQuickFacts'
 import MemorialShelterRecognition from './MemorialShelterRecognition'
@@ -57,10 +56,6 @@ export default function MemorialProfile({ registration }: MemorialProfileProps) 
                             shelterState={registration.shelter_state}
                         />
 
-                        <MemorialVirtualCandle
-                            dogId={registration.id}
-                            dogName={registration.dog_name}
-                        />
 
                         <MemorialTributes
                             dogId={registration.id}

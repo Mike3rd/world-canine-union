@@ -72,16 +72,16 @@ export default function MemorialRainbowBridge({
     return (
         <div className="rounded-2xl shadow-xl overflow-hidden border bg-memorial-surface border-memorial-border">
             {/* Rainbow Bridge Header */}
-            <div className="p-6 memorial-rainbow-gradient text-white">
+            <div className="p-6 memorial-rainbow-gradient text-memorial">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center">
-                        <Cloud className="w-6 h-6 mr-3" />
+
                         <div>
-                            <h2 className="text-2xl font-bold">Rainbow Bridge</h2>
+                            <h2 className="text-2xl font-bold">🌈 Rainbow Bridge</h2>
                             <p className="opacity-90">A place of peace and beauty</p>
                         </div>
                     </div>
-                    <div className="text-3xl">🌈</div>
+
                 </div>
             </div>
 
