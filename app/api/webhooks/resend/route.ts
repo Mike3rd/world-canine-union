@@ -61,7 +61,6 @@ export async function POST(request: NextRequest) {
         message_text: fullEmail.text || "", // ✅ NOW HAS CONTENT
         message_html: fullEmail.html || "", // ✅ NOW HAS CONTENT
         received_at: new Date().toISOString(),
-        source: "direct_email",
         wcu_number: extractWcuNumber(
           body.data?.subject || "",
           fullEmail.text || ""
