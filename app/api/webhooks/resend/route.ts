@@ -70,33 +70,9 @@ export async function POST(request: NextRequest) {
         fullEmail.text?.length
       );
 
-      // ADD THREAD TRACKING
-      let originalThreadId = null;
-      const headers = body.data?.headers || [];
-      const inReplyTo = headers.find(
-        (h: any) => h.name === "In-Reply-To"
-      )?.value;
-
-      if (inReplyTo) {
-        console.log("🔗 Found In-Reply-To header:", inReplyTo);
-
-        // Find the original email in email_logs
-        const { data: originalEmail } = await supabase
-          .from("email_logs")
-          .select("original_message_id")
-          .eq("resend_message_id", inReplyTo)
-          .single();
-
-        if (originalEmail && originalEmail.original_message_id) {
-          originalThreadId = originalEmail.original_message_id;
-          console.log("✅ Linked to thread ID:", originalThreadId);
-        }
-      }
-      //END THREAD TRACKING
-
       // 2. Prepare data for database
       const emailData = {
-        original_message_id: originalThreadId || emailId,
+        original_message_id: emailId,
         from_email: body.data?.from || "",
         from_name: extractName(body.data?.from || ""),
         subject: body.data?.subject || "(no subject)",
