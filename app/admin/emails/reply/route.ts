@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
 
     // 1. Send email via Resend
     const { data: emailData, error: emailError } = await resend.emails.send({
-      from: "World Canine Union <help@worldcanineunion.org>",
+      from: "Mike at WCU <mike@worldcanineunion.org>",
       to: [to],
       subject: subject,
       html: ` <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #36454F;">
@@ -20,14 +20,14 @@ export async function POST(request: NextRequest) {
       <p>${message.replace(/\n/g, "<br>")}</p>
       <br>
       <div style="font-size: 12px; color: #78909C; line-height: 1.4;">
-        <p><strong>World Canine Union Support</strong><br>
-        Email: <a href="mailto:help@worldcanineunion.org" style="color: #992400;">help@worldcanineunion.org</a></p>
+        <p><strong>Mike at World Canine Union</strong><br>
+        Email: <a href="mailto:mike@worldcanineunion.org" style="color: #992400;">mike@worldcanineunion.org</a></p>
         <p style="margin-top: 8px;"><em>Global Registry for all other Dogs</em></p>
       </div>
     </div>
   `,
       // Plain text fallback (IMPORTANT for deliverability)
-      text: `${message}\n\n--\nWorld Canine Union Support\nhelp@worldcanineunion.org\nGlobal Canine Registry & memorialization`,
+      text: `${message}\n\n--\nMike at World Canine Union\nmike@worldcanineunion.org\nGlobal Canine Registry & memorialization`,
     });
 
     if (emailError) {
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
     const { error: logError } = await supabase.from("email_logs").insert({
       email_type: "support_reply",
       to_email: to,
-      from_email: "help@worldcanineunion.org",
+      from_email: "mike@worldcanineunion.org",
       subject: subject,
       message_text: message,
       resend_message_id: emailData.id,
