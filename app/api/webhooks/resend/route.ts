@@ -34,18 +34,6 @@ export async function POST(request: NextRequest) {
       const emailId = body.data?.email_id;
       console.log("📧 Processing email.received for ID:", emailId);
 
-      //ADD THIS CHECK
-      const toEmail = body.data?.to || "";
-      if (!toEmail.includes("mike@worldcanineunion.org")) {
-        console.log("❌ Skipping - not sent to mike@");
-        return NextResponse.json({
-          success: true,
-          skipped: true,
-          reason: "Not sent to mike@",
-        });
-      }
-      // END OF ADDITION
-
       if (!emailId) {
         throw new Error("No email_id in webhook");
       }

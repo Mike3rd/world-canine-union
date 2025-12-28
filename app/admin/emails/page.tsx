@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Mail, Search, Filter, RefreshCw, ArrowLeft, Plus } from 'lucide-react';
+import { Mail, Search, Filter, RefreshCw, ArrowLeft } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import EmailStats from './components/EmailStats';
 import { SupportEmail, EmailReply } from './types';
@@ -186,13 +186,6 @@ export default function EmailAdminPage() {
                         <h1 className="text-3xl font-bold text-primary">Support Emails</h1>
                         <p className="text-text-muted">Manage incoming support requests</p>
                     </div>
-                    <button
-                        onClick={() => router.push('/admin/emails/compose')}
-                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                    >
-                        <Plus className="h-4 w-4" />
-                        Compose New
-                    </button>
                     <button
                         onClick={loadEmails}
                         className="flex items-center gap-2 px-4 py-2 bg-buttons text-white rounded-lg hover:opacity-90"
