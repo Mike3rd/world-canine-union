@@ -34,6 +34,24 @@ export async function POST(request: NextRequest) {
       const emailId = body.data?.email_id;
       console.log("📧 Processing email.received for ID:", emailId);
 
+      // ⭐⭐⭐ ADD RECIPIENT CHECK ⭐⭐⭐
+      const toEmail = body.data?.to || "";
+      console.log("📧 Email sent to:", toEmail);
+
+      // Only process emails sent to our addresses
+      if (
+        !toEmail.includes("help@worldcanineunion.org") &&
+        !toEmail.includes("mike@worldcanineunion.org")
+      ) {
+        console.log("❌ Skipping - not sent to our addresses");
+        return NextResponse.json({
+          success: true,
+          skipped: true,
+          reason: "Not sent to our addresses",
+        });
+      }
+      // ⭐⭐⭐ END RECIPIENT CHECK ⭐⭐⭐
+
       if (!emailId) {
         throw new Error("No email_id in webhook");
       }
@@ -52,9 +70,33 @@ export async function POST(request: NextRequest) {
         fullEmail.text?.length
       );
 
+      // ADD THREAD TRACKING
+      let originalThreadId = null;
+      const headers = body.data?.headers || [];
+      const inReplyTo = headers.find(
+        (h: any) => h.name === "In-Reply-To"
+      )?.value;
+
+      if (inReplyTo) {
+        console.log("🔗 Found In-Reply-To header:", inReplyTo);
+
+        // Find the original email in email_logs
+        const { data: originalEmail } = await supabase
+          .from("email_logs")
+          .select("original_message_id")
+          .eq("resend_message_id", inReplyTo)
+          .single();
+
+        if (originalEmail && originalEmail.original_message_id) {
+          originalThreadId = originalEmail.original_message_id;
+          console.log("✅ Linked to thread ID:", originalThreadId);
+        }
+      }
+      //END THREAD TRACKING
+
       // 2. Prepare data for database
       const emailData = {
-        original_message_id: emailId,
+        original_message_id: originalThreadId || emailId,
         from_email: body.data?.from || "",
         from_name: extractName(body.data?.from || ""),
         subject: body.data?.subject || "(no subject)",
