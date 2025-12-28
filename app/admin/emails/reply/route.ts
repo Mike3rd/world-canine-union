@@ -12,22 +12,27 @@ export async function POST(request: NextRequest) {
 
     // 1. Send email via Resend
     const { data: emailData, error: emailError } = await resend.emails.send({
-      from: "Mike at WCU <mike@worldcanineunion.org>",
+      from: "World Canine Union <mike@worldcanineunion.org>",
       to: [to],
       subject: subject,
       html: ` <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #36454F;">
 
       <p>${message.replace(/\n/g, "<br>")}</p>
       <br>
-      <div style="font-size: 12px; color: #78909C; line-height: 1.4;">
-        <p><strong>Mike at World Canine Union</strong><br>
-        Email: <a href="mailto:mike@worldcanineunion.org" style="color: #992400;">mike@worldcanineunion.org</a></p>
-        <p style="margin-top: 8px;"><em>Global Registry for all other Dogs</em></p>
-      </div>
+      <div style="font-size: 12px; color: #78909C; line-height: 1.4; margin-top: 20px;">
+  <p><strong>Mike at World Canine Union</strong><br>
+  Email: <a href="mailto:mike@worldcanineunion.org" style="color: #992400;">
+    mike@worldcanineunion.org
+  </a><br>
+  Website: <a href="https://worldcanineunion.org" style="color: #992400;">
+    worldcanineunion.org
+  </a></p>
+  <p style="margin-top: 8px;"><em>Global Registry for all other Dogs</em></p>
+</div>
     </div>
   `,
       // Plain text fallback (IMPORTANT for deliverability)
-      text: `${message}\n\n--\nMike at World Canine Union\nmike@worldcanineunion.org\nGlobal Canine Registry & memorialization`,
+      text: `${message}\n\n--\nMike at World Canine Union\nmike@worldcanineunion.org\nhttps://worldcanineunion.org\nGlobal Registry for all other Dogs`,
     });
 
     if (emailError) {
