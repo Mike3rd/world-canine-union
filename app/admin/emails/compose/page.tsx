@@ -12,6 +12,7 @@ export default function ComposePage() {
         subject: '',
         message: '',
         wcuNumber: '',
+        category: 'outreach',
     });
 
     const handleSend = async () => {
@@ -97,6 +98,21 @@ export default function ComposePage() {
                         required
                         disabled={isSending}
                     />
+                </div>
+
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Email Type <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                        value={formData.category}
+                        onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                        className="w-full border border-gray-300 rounded-lg p-3"
+                        disabled={isSending}
+                    >
+                        <option value="support">Support (to/from customers)</option>
+                        <option value="outreach">Outreach/Partnership (to vendors/partners)</option>
+                    </select>
                 </div>
 
                 {/* WCU Number (Optional) */}
