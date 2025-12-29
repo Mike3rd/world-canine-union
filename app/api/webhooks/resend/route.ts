@@ -39,15 +39,12 @@ export async function POST(request: NextRequest) {
       console.log("📧 Email sent to:", toEmail);
 
       // Only process emails sent to our addresses
-      if (
-        !toEmail.includes("help@worldcanineunion.org") &&
-        !toEmail.includes("mike@worldcanineunion.org")
-      ) {
-        console.log("❌ Skipping - not sent to our addresses");
+      if (!toEmail.includes("mike@worldcanineunion.org")) {
+        console.log("❌ Skipping - not sent to mike@");
         return NextResponse.json({
           success: true,
           skipped: true,
-          reason: "Not sent to our addresses",
+          reason: "Not sent to mike@",
         });
       }
       // ⭐⭐⭐ END RECIPIENT CHECK ⭐⭐⭐

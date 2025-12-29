@@ -195,7 +195,7 @@ export const UpdateRequestEmail: React.FC<UpdateRequestEmailProps> = ({
                 color: '#78909C',
                 textAlign: 'center'
             }}>
-                Need help? Email support@worldcanineunion.org<br />
+                Need help? Email mike@worldcanineunion.org<br />
                 © {new Date().getFullYear()} World Canine Union. All rights reserved.
             </p>
         </div>
