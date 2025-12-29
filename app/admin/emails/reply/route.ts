@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
       resend_message_id: emailData.id,
       wcu_number: wcu_number,
       support_email_id: support_email_id || null,
-      original_message_id: emailData.id,
+      //original_message_id: emailData.id,
       current_status: "sent",
       sent_at: new Date().toISOString(),
       created_at: new Date().toISOString(),
