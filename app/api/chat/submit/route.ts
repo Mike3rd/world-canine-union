@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
     // 1. Send email notification via Resend
     const { data: emailData, error: emailError } = await resend.emails.send({
       from: "WCU Website Chat <mike@worldcanineunion.org>",
-      to: ["worldcanineunion@outlook.com"],
+      to: ["mike@worldcanineunion.org"],
       subject: `Website Chat from ${email}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #36454F;">
