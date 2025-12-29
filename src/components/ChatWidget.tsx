@@ -1,49 +1,33 @@
-// app/components/ChatWidget.tsx
+// app/components/chat/ChatWidget.tsx
 'use client';
+
 import { useState } from 'react';
+import FloatingButton from './chat/FloatingButton';
+import ChatPanel from './chat/ChatPanel';
 
 export default function ChatWidget() {
     const [isOpen, setIsOpen] = useState(false);
-    const [step, setStep] = useState<'welcome' | 'message' | 'email' | 'complete'>('welcome');
-    const [message, setMessage] = useState('');
-    const [email, setEmail] = useState('');
 
-    const handleSubmit = async () => {
-        // Send to your API
-        await fetch('/api/chat/submit', {
-            method: 'POST',
-            body: JSON.stringify({ message, email })
-        });
+    const handleOpen = () => {
+        setIsOpen(true);
 
-        setStep('complete');
+    };
+
+    const handleClose = () => {
+        setIsOpen(false);
+        // Optional: Small delay before resetting to avoid flicker
+        setTimeout(() => {
+            // Reset handled by ChatPanel's internal state
+        }, 300);
     };
 
     return (
         <>
-            {/* Floating button */}
-            <button onClick={() => setIsOpen(true)} className="chat-button">
-                💬
-            </button>
-
-            {/* Chat panel */}
-            {isOpen && (
-                <div className="chat-panel">
-                    <div className="chat-messages">
-                        {step === 'welcome' && (
-                            <div className="bot-message">
-                                👋 Hi! How can we help?
-                            </div>
-                        )}
-                        {/* ... more steps */}
-                    </div>
-
-                    <input
-                        value={step === 'message' ? message : email}
-                        onChange={/* ... */}
-                        placeholder={step === 'message' ? 'Type your message...' : 'Your email...'}
-                    />
-                </div>
-            )}
+            <FloatingButton
+                isOpen={isOpen}
+                onClick={isOpen ? handleClose : handleOpen}
+            />
+            {isOpen && <ChatPanel onClose={handleClose} />}
         </>
     );
 }

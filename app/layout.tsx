@@ -5,6 +5,7 @@ import "./globals.css";
 import StructuredData from "@/components/StructuredData";
 import Topbar from "@/components/navigation/Topbar";
 import Footer from "@/components/navigation/Footer";
+import ChatWidget from "@/components/ChatWidget";
 
 
 export const metadata: Metadata = {
@@ -68,6 +69,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main className="flex-1">{children}</main>
           <Footer />
         </div>
+        <ChatWidget />
       </body>
     </html>
   );
