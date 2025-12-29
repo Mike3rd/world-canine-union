@@ -67,11 +67,29 @@ export async function POST(request: NextRequest) {
         fullEmail.text?.length
       );
 
+      // Add logic to extract real sender for chat emails:
+      let actualFromEmail = body.data?.from || "";
+      let actualFromName = extractName(actualFromEmail);
+
+      // SAFE CHECK: Only fix chat emails
+      const isChatEmail =
+        actualFromEmail.includes("mike@worldcanineunion.org") &&
+        body.data?.subject?.includes("Website Chat from");
+
+      if (isChatEmail) {
+        console.log("🔧 Fixing chat email sender...");
+        const emailMatch = body.data.subject.match(/Website Chat from (.+)/);
+        if (emailMatch && emailMatch[1]) {
+          actualFromEmail = emailMatch[1].trim();
+          actualFromName = extractName(actualFromEmail); // Re-extract name
+        }
+      }
+
       // 2. Prepare data for database
       const emailData = {
         original_message_id: emailId,
-        from_email: body.data?.from || "",
-        from_name: extractName(body.data?.from || ""),
+        from_email: actualFromEmail, // Fixed for chats, unchanged for others
+        from_name: actualFromName, // Fixed for chats, unchanged for others
         subject: body.data?.subject || "(no subject)",
         message_text: fullEmail.text || "", // ✅ NOW HAS CONTENT
         message_html: fullEmail.html || "", // ✅ NOW HAS CONTENT
