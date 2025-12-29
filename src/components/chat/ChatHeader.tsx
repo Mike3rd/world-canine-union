@@ -7,8 +7,7 @@ interface ChatHeaderProps {
 }
 
 export default function ChatHeader({ onClose }: ChatHeaderProps) {
-    // DEBUG: Check if onClose is valid
-    console.log('ChatHeader render, onClose:', typeof onClose, onClose);
+
 
     const handleClose = (e: React.MouseEvent) => {
         e.stopPropagation();

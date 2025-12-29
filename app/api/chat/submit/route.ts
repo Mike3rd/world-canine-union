@@ -9,6 +9,10 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { email, message } = body;
+    console.log("📨 Chat submit received:", {
+      email,
+      messageLength: message?.length,
+    });
 
     // Validate required fields
     if (!email || !message) {
@@ -53,8 +57,10 @@ export async function POST(request: NextRequest) {
     }
 
     // 2. Optional: Save to database for analytics
-    try {
-      await supabase.from("support_emails").insert([
+    // Save to database (with proper logging)
+    const { data: dbResult, error: dbError } = await supabase
+      .from("support_emails")
+      .insert([
         {
           original_message_id: emailData.id,
           from_email: email,
@@ -66,10 +72,18 @@ export async function POST(request: NextRequest) {
           source: "chat_form",
           status: "unread",
         },
-      ]);
-    } catch (dbError) {
-      console.error("Database save error (non-critical):", dbError);
-      // Don't fail the request if database save fails
+      ])
+      .select();
+
+    console.log("💾 Database insert:", {
+      success: !dbError,
+      error: dbError?.message,
+      insertedId: dbResult?.[0]?.id,
+    });
+
+    if (dbError) {
+      console.error("Database save failed:", dbError);
+      // Continue anyway - don't show error to user
     }
 
     return NextResponse.json({
