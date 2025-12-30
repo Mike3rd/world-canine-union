@@ -8,6 +8,7 @@ import MemorialQuickFacts from './MemorialQuickFacts'
 import MemorialShelterRecognition from './MemorialShelterRecognition'
 import MemorialCertificateCard from './MemorialCertificateCard'
 import MemorialShareCard from './MemorialShareCard'
+import MemorialPersonalityTraits from './MemorialPersonalityTraits'
 
 interface MemorialProfileProps {
     registration: Registration & {
@@ -61,6 +62,11 @@ export default function MemorialProfile({ registration }: MemorialProfileProps) 
                             dogId={registration.id}
                             dogName={registration.dog_name}
                         />
+                        <MemorialPersonalityTraits
+                            specialAttributes={registration.special_attributes ?? null}
+                            favoriteActivities={registration.favorite_activities ?? null}
+                            uniqueTraits={registration.unique_traits ?? null}
+                        />
                     </div>
 
                     {/* Right Column */}
@@ -104,6 +110,7 @@ export default function MemorialProfile({ registration }: MemorialProfileProps) 
                         )}
 
                         <MemorialShareCard dogName={registration.dog_name} />
+
                     </div>
                 </div>
             </div>

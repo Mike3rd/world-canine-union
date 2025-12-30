@@ -7,7 +7,10 @@ export default function HeroSection() {
       <div className="container mx-auto px-4">
         {/* Hero Header */}
         <div className="text-center mb-12">
-          <h1 className="text-5xl md:text-6xl font-heading font-bold text-primary mb-6">
+          <p className="text-2xl font-heading text-primary mb-6 bg-yellow-300 p-1 font-bold m-0">
+            Registry opens February 1, 2026
+          </p>
+          <h1 className="text-5xl md:text-6xl font-heading font-bold text-primary mb-0">
             Soul over Pedigree
           </h1>
           <h1 className="text-5xl md:text-6xl font-heading font-bold text-primary mb-6">
