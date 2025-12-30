@@ -19,7 +19,7 @@ export default function LivingPersonalityTraits({
                 Personality & Traits
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
                 {specialAttributes && (
                     <div className="bg-dog-background p-4 rounded-xl border border-dog-border">
                         <h3 className="font-semibold text-dog-text mb-2">Special Attributes</h3>
