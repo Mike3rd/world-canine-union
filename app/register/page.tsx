@@ -20,7 +20,7 @@ export default function RegistrationPage() {
             <span className="text-accent text-lg mt-0.5">⚠️</span>
             <div>
               <p className="font-body2 text-text-muted">
-                <span className="text-accent font-bold">Type carefully—your answers appear on your dog's certificate and webpage exactly as entered on this form.</span> Your email is for WCU records only (never displayed online). Your name is displayed on your canine's official WCU certificate only (never displayed online).  <span className="text-accent font-bold"> Check spelling before submitting.</span>
+                <span className="text-accent font-bold">Type carefully &#8212; your answers appear on your dog's certificate and profile page exactly as entered on this form.</span> Your email is for WCU records only (never displayed online). <span className="text-accent font-bold"> Check spelling before submitting.</span>
               </p>
             </div>
           </div>

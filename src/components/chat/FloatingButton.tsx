@@ -1,6 +1,6 @@
 // app/components/chat/FloatingButton.tsx
 'use client';
-import { MessageCircle, X } from 'lucide-react';
+import { MessageCircle, Mail, X } from 'lucide-react';
 
 interface FloatingButtonProps {
     isOpen: boolean;
