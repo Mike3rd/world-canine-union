@@ -100,12 +100,13 @@ export default function DogShowcase() {
 
                 {/* HEADER SECTION */}
                 <h2 className="text-4xl font-heading font-bold text-primary text-center mb-6">
-                    Your Registration Makes a Difference
+                    Celebrating Our Canine Community
                 </h2>
 
                 <p className="text-xl font-body2 text-text-muted text-center mb-12 max-w-3xl mx-auto">
-                    Every WCU registration includes a <strong>20% donation</strong> that directly supports rescue animals.
-                    Here&apos;s how your support helps and what our community has accomplished together.
+                    We love seeing all the wonderful dogs that join the WCU family!
+                    Browse recent registrations and meet some of our spotlight dogs
+                    who make our community special.
                 </p>
 
                 {/* Two-Column Layout: Spotlight Dogs + Recent Members */}

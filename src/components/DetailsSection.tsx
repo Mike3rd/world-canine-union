@@ -40,9 +40,8 @@ export default function DetailsSection() {
           {/* Combined Digital Legacy & Memorial Card */}
           <div className="bg-surface p-8 rounded-2xl border border-border hover:shadow-lg transition-all group">
             <div className="relative w-12 h-12 bg-gradient-to-br from-secondary to-accent text-surface rounded-lg flex items-center justify-center mb-4">
-              <div className="absolute inset-0 bg-gradient-to-br from-secondary to-accent rounded-lg opacity-70 group-hover:opacity-100 transition-opacity"></div>
+              <div className="absolute inset-0 bg-accent rounded-lg opacity-70 group-hover:opacity-100 transition-opacity"></div>
               <Globe className="w-6 h-6 relative z-10" />
-              <Rainbow className="w-4 h-4 absolute -bottom-1 -right-1 text-accent" />
             </div>
             <h3 className="font-heading text-2xl font-semibold text-primary mb-3">
               Digital Legacy & Memorial
@@ -120,7 +119,7 @@ export default function DetailsSection() {
         {/* Bonus CTA */}
         <div className="text-center mt-12 p-8 bg-primary/5 rounded-2xl border border-primary/20">
           <p className="text-3xl font-semibold text-primary mb-2">
-            Plus: <span className="text-accent">$5 from every registration</span> directly supports shelter animals!
+            Plus: <span className="text-accent">A portion of every registration</span> directly supports shelter animals!
           </p>
           <p className="text-text-muted">
             Your celebration helps feed, vaccinate, and care for rescue animals in need

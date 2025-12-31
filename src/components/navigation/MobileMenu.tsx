@@ -37,7 +37,7 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
         { label: 'Browse Dogs by Breed', href: '/dogs' },
         { label: 'Find Shelters', href: '/shelters' },
         { label: 'About Us', href: '/about' },
-        { label: 'How We Give Back', href: '/giving' },
+        { label: 'How We Give Back', href: '/how-we-give-back' },
         {
             label: 'Admin Login',
             href: '/admin',

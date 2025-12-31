@@ -38,18 +38,19 @@ export default function FAQPage() {
 
     return (
         <div className="min-h-screen bg-gray-50">
-            {/* Hero Header */}
-            <div className="bg-gradient-to-r from-primary to-accent text-white">
-                <div className="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
-                    <div className="text-center">
-                        <h1 className="text-4xl font-bold mb-4">Frequently Asked Questions</h1>
-                        <p className="text-xl opacity-90 max-w-3xl mx-auto">
+            {/* Hero Section */}
+            <div className="bg-gradient-to-r from-primary to-secondary text-header-text">
+                <div className="max-w-7xl mx-auto px-4 py-16">
+                    <div className="max-w-3xl">
+                        <h1 className="text-5xl font-heading font-bold mb-6">
+                            Frequently Asked Questions
+                        </h1>
+                        <p className="text-xl opacity-90 mb-8">
                             Everything you need to know about updating your dog's profile, memorial conversions, and our platform.
                         </p>
                     </div>
                 </div>
             </div>
-
             {/* Main Content */}
             <div className="max-w-4xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
                 {/* Quick Links */}
