@@ -66,6 +66,7 @@ export function useChatState() {
         body: JSON.stringify({
           message: messages.find((m) => !m.isBot)?.text || message,
           email,
+          source: "chat-widget",
         }),
       });
 
