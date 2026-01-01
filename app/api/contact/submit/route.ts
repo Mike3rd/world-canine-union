@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
     const { data: emailData, error: emailError } = await resend.emails.send({
       from: "WCU Contact Form: <mike@worldcanineunion.org>",
       to: ["mike@worldcanineunion.org"],
-      subject: `Website Chat from ${email}`,
+      subject: `Website Contact from ${email}`,
       html: `<div>From: ${email}<br>Message: ${message}</div>`,
       text: `From: ${email}\nMessage: ${message}`,
       replyTo: email,
