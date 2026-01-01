@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
 
     // ONLY send email (webhook will save)
     const { data: emailData, error: emailError } = await resend.emails.send({
-      from: "WCU Website Chat <mike@worldcanineunion.org>",
+      from: "WCU Contact Form: <mike@worldcanineunion.org>",
       to: ["mike@worldcanineunion.org"],
       subject: `Website Chat from ${email}`,
       html: `<div>From: ${email}<br>Message: ${message}</div>`,
