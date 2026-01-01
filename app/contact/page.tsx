@@ -16,7 +16,7 @@ export default function ContactPage() {
 
         // This uses your existing chat submission endpoint
         try {
-            const response = await fetch('/api/chat/submit', {
+            const response = await fetch('/api/contact/submit', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, message }),
