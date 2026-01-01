@@ -60,30 +60,34 @@ export default function ChatPanel({ onClose }: ChatPanelProps) {
         {/* FIXED: Pass handleClose directly */}
         <ChatHeader onClose={handleClose} />
 
-        <div className="h-96 overflow-y-auto bg-gray-50">
-          <ChatMessages messages={state.messages} />
-        </div>
+        <div className="flex max-h-[70vh] flex-col bg-gray-50">
+          {/* Chat messages - This section will now scroll if needed */}
+          <div className="flex-1 overflow-y-auto">
+            <ChatMessages messages={state.messages} />
+          </div>
 
-        {state.step === 'complete' ? (
-          <ChatComplete
-            onNewChat={() => {
-              resetChat();
-              handlers.setStep('message');
-            }}
-          />
-        ) : (
-          <ChatInput
-            step={state.step}
-            message={state.message}
-            email={state.email}
-            isSubmitting={state.isSubmitting}
-            onMessageChange={handlers.setMessage}
-            onEmailChange={handlers.setEmail}
-            onMessageSubmit={handlers.handleMessageSubmit}
-            onEmailSubmit={handlers.handleEmailSubmit}
-            onStartChat={() => handlers.setStep('message')}
-          />
-        )}
+          {/* The input or success component stays fixed at the bottom */}
+          {state.step === 'complete' ? (
+            <ChatComplete
+              onNewChat={() => {
+                resetChat();
+                handlers.setStep('message');
+              }}
+            />
+          ) : (
+            <ChatInput
+              step={state.step}
+              message={state.message}
+              email={state.email}
+              isSubmitting={state.isSubmitting}
+              onMessageChange={handlers.setMessage}
+              onEmailChange={handlers.setEmail}
+              onMessageSubmit={handlers.handleMessageSubmit}
+              onEmailSubmit={handlers.handleEmailSubmit}
+              onStartChat={() => handlers.setStep('message')}
+            />
+          )}
+        </div>
       </div>
     </div>
   );
