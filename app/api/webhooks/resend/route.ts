@@ -67,51 +67,32 @@ export async function POST(request: NextRequest) {
         fullEmail.text?.length
       );
 
-      // Extract sender information
+      // Add logic to extract real sender for chat emails:
       let actualFromEmail = body.data?.from || "";
       let actualFromName = extractName(actualFromEmail);
-      let visitorEmail = null;
 
-      // Chat emails: from is mike@, visitor is in subject
-      if (
+      // SAFE CHECK: Only fix chat emails
+      const isChatEmail =
         actualFromEmail.includes("mike@worldcanineunion.org") &&
-        body.data?.subject?.includes("Website Chat from")
-      ) {
-        console.log("🔧 Chat email - extracting visitor from subject");
+        body.data?.subject?.includes("Website Chat from");
+
+      if (isChatEmail) {
+        console.log("🔧 Fixing chat email sender...");
         const emailMatch = body.data.subject.match(/Website Chat from (.+)/);
         if (emailMatch && emailMatch[1]) {
-          visitorEmail = emailMatch[1].trim();
+          actualFromEmail = emailMatch[1].trim();
+          actualFromName = extractName(actualFromEmail); // Re-extract name
         }
       }
-
-      // Contact forms: from is mike@, visitor is in subject
-      if (
-        actualFromEmail.includes("mike@worldcanineunion.org") &&
-        body.data?.subject?.includes("Contact Form:")
-      ) {
-        console.log("📋 Contact form - extracting visitor from subject");
-        const emailMatch = body.data.subject.match(/Contact Form: (.+)/);
-        if (emailMatch && emailMatch[1]) {
-          visitorEmail = emailMatch[1].trim();
-        }
-      }
-
-      // Direct emails: visitor is the sender
-      if (!visitorEmail) {
-        visitorEmail = actualFromEmail;
-      }
-
-      console.log("👤 Visitor email:", visitorEmail);
 
       // 2. Prepare data for database
       const emailData = {
         original_message_id: emailId,
-        from_email: actualFromEmail,
-        from_name: actualFromName,
-        visitor_email: visitorEmail, // NEW: Person contacting you
+        from_email: actualFromEmail, // Fixed for chats, unchanged for others
+        from_name: actualFromName, // Fixed for chats, unchanged for others
         subject: body.data?.subject || "(no subject)",
-        message_text: fullEmail.text || "",
-        message_html: fullEmail.html || "",
+        message_text: fullEmail.text || "", // ✅ NOW HAS CONTENT
+        message_html: fullEmail.html || "", // ✅ NOW HAS CONTENT
         received_at: new Date().toISOString(),
         wcu_number: extractWcuNumber(
           body.data?.subject || "",
