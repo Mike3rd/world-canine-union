@@ -18,7 +18,6 @@ export default function ChatMessages({ messages }: ChatMessagesProps) {
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
-
     return (
         <div className="p-4 space-y-4">
             {messages.map((msg, index) => (
@@ -28,11 +27,14 @@ export default function ChatMessages({ messages }: ChatMessagesProps) {
                 >
                     <div
                         className={`max-w-[80%] rounded-2xl px-4 py-3 ${msg.isBot
-                                ? 'rounded-tl-none bg-white border border-gray-200 text-gray-800'
-                                : 'rounded-tr-none bg-blue-600 text-white'
+                            ? 'rounded-tl-none bg-white border border-gray-200 text-gray-800'
+                            : 'rounded-tr-none bg-blue-600 text-white'
                             }`}
                     >
-                        {msg.text}
+                        {/* Add a <span> with break-words here */}
+                        <span className="break-words whitespace-pre-wrap">
+                            {msg.text}
+                        </span>
                     </div>
                 </div>
             ))}
