@@ -7,7 +7,7 @@ const resend = new Resend(process.env.RESEND_API_KEY!);
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { email, message, source = "chat-widget" } = body;
+    const { email, message } = body;
 
     // Validate
     if (!email || !message) {
@@ -25,17 +25,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Determine subject based on source - ONLY CHANGE HERE
-    const subject =
-      source === "contact-form"
-        ? `Contact Form: ${email}` // New subject for contact form
-        : `Website Chat from ${email}`; // Keep original for chat
-
     // ONLY send email (webhook will save)
     const { data: emailData, error: emailError } = await resend.emails.send({
       from: "WCU Website Chat <mike@worldcanineunion.org>",
       to: ["mike@worldcanineunion.org"],
-      subject: subject,
+      subject: `Website Chat from ${email}`,
       html: `<div>From: ${email}<br>Message: ${message}</div>`,
       text: `From: ${email}\nMessage: ${message}`,
       replyTo: email,
