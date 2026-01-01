@@ -1,4 +1,4 @@
-// app/api/chat/submit/route.ts - UPDATED
+// app/api/chat/submit/route.ts (FINAL)
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 
@@ -7,7 +7,7 @@ const resend = new Resend(process.env.RESEND_API_KEY!);
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { email, message, source = "chat-widget" } = body; // ← ADD source
+    const { email, message } = body;
 
     // Validate
     if (!email || !message) {
@@ -25,17 +25,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Use source to determine subject
-    const subject =
-      source === "contact-form"
-        ? `📋 Contact Form: ${email}` // ← CONTACT FORM
-        : `💬 Website Chat: ${email}`; // ← CHAT
-
-    // Send email
+    // ONLY send email (webhook will save)
     const { data: emailData, error: emailError } = await resend.emails.send({
       from: "WCU Website Chat <mike@worldcanineunion.org>",
       to: ["mike@worldcanineunion.org"],
-      subject: subject, // ← Use variable, not hardcoded
+      subject: `Website Chat from ${email}`,
       html: `<div>From: ${email}<br>Message: ${message}</div>`,
       text: `From: ${email}\nMessage: ${message}`,
       replyTo: email,
