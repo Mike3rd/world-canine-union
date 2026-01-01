@@ -68,20 +68,30 @@ export async function POST(request: NextRequest) {
       );
 
       // Add logic to extract real sender for chat emails:
+      // Extract sender information
       let actualFromEmail = body.data?.from || "";
       let actualFromName = extractName(actualFromEmail);
 
-      // SAFE CHECK: Only fix chat emails
-      const isChatEmail =
-        actualFromEmail.includes("mike@worldcanineunion.org") &&
-        body.data?.subject?.includes("Website Chat from");
+      // Fix BOTH chat AND contact form emails
+      if (actualFromEmail.includes("mike@worldcanineunion.org")) {
+        // Chat emails
+        if (body.data?.subject?.includes("Website Chat from")) {
+          console.log("🔧 Fixing chat email sender...");
+          const emailMatch = body.data.subject.match(/Website Chat from (.+)/);
+          if (emailMatch && emailMatch[1]) {
+            actualFromEmail = emailMatch[1].trim();
+            actualFromName = extractName(actualFromEmail);
+          }
+        }
 
-      if (isChatEmail) {
-        console.log("🔧 Fixing chat email sender...");
-        const emailMatch = body.data.subject.match(/Website Chat from (.+)/);
-        if (emailMatch && emailMatch[1]) {
-          actualFromEmail = emailMatch[1].trim();
-          actualFromName = extractName(actualFromEmail); // Re-extract name
+        // Contact form emails
+        if (body.data?.subject?.includes("Contact Form:")) {
+          console.log("📋 Fixing contact form sender...");
+          const emailMatch = body.data.subject.match(/Contact Form: (.+)/);
+          if (emailMatch && emailMatch[1]) {
+            actualFromEmail = emailMatch[1].trim();
+            actualFromName = extractName(actualFromEmail);
+          }
         }
       }
 
