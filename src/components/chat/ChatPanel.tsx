@@ -23,8 +23,6 @@ export default function ChatPanel({ onClose }: ChatPanelProps) {
     }
   };
 
-
-
   // Smooth close with animation
   const handleClose = useCallback(() => {
     setIsClosing(true);

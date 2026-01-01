@@ -19,7 +19,7 @@ export default function ContactPage() {
             const response = await fetch('/api/chat/submit', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, message }),
+                body: JSON.stringify({ email, message, source: 'contact-form' }),
             });
 
             if (response.ok) {
