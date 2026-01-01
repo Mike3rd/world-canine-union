@@ -68,59 +68,28 @@ export async function POST(request: NextRequest) {
       );
 
       // Add logic to extract real sender for chat emails:
-      // REPLACE lines 48-62 (the block you showed) with this:
-
-      // Add logic to extract real sender for chat emails:
       let actualFromEmail = body.data?.from || "";
       let actualFromName = extractName(actualFromEmail);
 
-      // Extract visitor email for website-generated messages
-      let visitorEmail = null;
-      let visitorName = null;
+      // SAFE CHECK: Only fix chat emails
+      const isChatEmail =
+        actualFromEmail.includes("mike@worldcanineunion.org") &&
+        body.data?.subject?.includes("Website Chat from");
 
-      // Check if this is a website-generated email (from our domain)
-      if (
-        actualFromEmail.includes("mike@worldcanineunion.org") ||
-        actualFromEmail.includes("noreply@worldcanineunion.org")
-      ) {
-        // Try to extract visitor email from subject patterns
-        const chatMatch = body.data.subject?.match(/Website Chat from (.+)/);
-        const contactMatch = body.data.subject?.match(/Contact Form: (.+)/);
-
-        if (chatMatch && chatMatch[1]) {
-          visitorEmail = chatMatch[1].trim();
-        } else if (contactMatch && contactMatch[1]) {
-          visitorEmail = contactMatch[1].trim();
-        }
-
-        // If not found in subject, try to extract from message body
-        if (!visitorEmail && fullEmail.text) {
-          const fromLineMatch = fullEmail.text.match(/From:\s*([^\n]+)/);
-          if (fromLineMatch && fromLineMatch[1]) {
-            visitorEmail = fromLineMatch[1].trim();
-          }
-        }
-
-        if (visitorEmail) {
-          visitorName = extractName(visitorEmail);
+      if (isChatEmail) {
+        console.log("🔧 Fixing chat email sender...");
+        const emailMatch = body.data.subject.match(/Website Chat from (.+)/);
+        if (emailMatch && emailMatch[1]) {
+          actualFromEmail = emailMatch[1].trim();
+          actualFromName = extractName(actualFromEmail); // Re-extract name
         }
       }
-
-      // For direct emails, visitor is the sender
-      if (!visitorEmail && actualFromEmail) {
-        visitorEmail = actualFromEmail;
-        visitorName = actualFromName;
-      }
-
-      console.log("👤 Visitor info:", { visitorEmail, visitorName });
 
       // 2. Prepare data for database
       const emailData = {
         original_message_id: emailId,
         from_email: actualFromEmail, // Fixed for chats, unchanged for others
         from_name: actualFromName, // Fixed for chats, unchanged for others
-        visitor_email: visitorEmail, // ALWAYS the person contacting you
-        visitor_name: visitorName,
         subject: body.data?.subject || "(no subject)",
         message_text: fullEmail.text || "", // ✅ NOW HAS CONTENT
         message_html: fullEmail.html || "", // ✅ NOW HAS CONTENT
