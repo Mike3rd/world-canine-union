@@ -30,3 +30,16 @@ export interface Registration {
   spotlight_reason?: string | null;
   spotlight_expires_at?: string | null;
 }
+
+export interface DogRegistration {
+  registration_number: string;
+  dog_name: string;
+  breed_description: string;
+  shelter_name: string | null;
+  created_at: string;
+  photo_url: string | null;
+  is_memorial?: boolean;
+  // Add any other fields your DogCard uses
+  gender?: string | null;
+  dog_color?: string | null;
+}
