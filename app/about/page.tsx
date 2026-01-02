@@ -39,8 +39,8 @@ export default function AboutPage() {
                                 mixed breeds, the 'super mutts' whose unique combinations
                                 create the most amazing dogs we've ever met."
                             </p>
-                            <div className="flex items-center">
-                                <Star className="w-5 h-5 text-accent mr-2" />
+                            <div className="flex items-center justify-end">
+                                <Star className="w-5 h-5 text-accent mr-2" /> {/* Star stays! */}
                                 <span className="text-primary font-medium">Mike &amp; Elayne, Founders</span>
                             </div>
                         </div>

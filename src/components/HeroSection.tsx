@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Star } from 'lucide-react';
 
 export default function HeroSection() {
   return (
@@ -26,15 +27,13 @@ export default function HeroSection() {
           {/* Essential "About Page" Blurb */}
           <div className="max-w-3xl mx-auto">
             <div className="bg-primary/5 border-l-4 border-accent pl-6 pr-8 py-5 rounded-r-xl mb-8">
-              <p className="text-xl text-primary italic leading-relaxed">
+              <p className="text-xl text-primary italic leading-relaxed mb-2">
                 "We love all dogs — but celebrate the incredible mixed breeds and 'super mutts'
                 whose unique stories deserve to be told."
               </p>
-              <div className="flex items-center justify-center mt-4">
-                <div className="w-8 h-8 bg-primary/20 rounded-full mr-3"></div>
-                <span className="text-primary font-medium">Mike & Elayne</span>
-                <span className="text-text-muted mx-2">•</span>
-                <span className="text-text-muted text-sm">Founders</span>
+              <div className="flex items-center justify-end">
+                <Star className="w-5 h-5 text-accent mr-2" />
+                <span className="text-primary font-medium">Mike &amp; Elayne, Founders</span>
               </div>
             </div>
 
