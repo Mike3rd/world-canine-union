@@ -25,7 +25,7 @@ export const faqSections: FAQSection[] = [
       {
         id: "charter-2",
         q: "Who is WCU-00001?",
-        a: "That prestigious honor belongs to our dog, Toby Z. Longfellow, the real founder and inspiration for the entire World Canine Union. Toby holds the #1 spot permanently as the #1 World's Best Dog.",
+        a: "That prestigious honor belongs to our dog Toby Z. Longfellow (long legs and he sure loves to get his ZZZZ's), the real founder and inspiration for the entire World Canine Union. Toby holds the #1 spot permanently as the #1 World's Best Dog.",
       },
       {
         id: "charter-3",
