@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import DogCard from './DogCard';
-import { DogRegistration } from '@/types/database';
+import { DogRegistration } from '../../../types/database';
 
 interface ResultsSectionProps {
     loading: boolean;
