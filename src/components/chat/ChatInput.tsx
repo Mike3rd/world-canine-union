@@ -2,6 +2,7 @@
 'use client';
 import { Send } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
 
 type ChatStep = 'welcome' | 'message' | 'email' | 'complete';
 
@@ -84,7 +85,11 @@ export default function ChatInput({
                     Start Conversation
                 </button>
                 <p className="mt-2 text-center text-xs text-gray-500">
-                    By chatting, you agree to our privacy policy
+                    By chatting, you agree to our{' '}
+                    <Link href="/privacy" className="text-accent hover:underline font-medium">
+                        Privacy Policy
+                    </Link>
+                    .
                 </p>
             </div>
         );

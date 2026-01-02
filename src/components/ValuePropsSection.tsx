@@ -1,5 +1,6 @@
+// src/components/ValuePropsSection.tsx
 import Link from "next/link";
-import { Star, Globe, Heart, Zap } from "lucide-react";
+import { Globe, Heart, Users } from "lucide-react";
 
 export default function ValuePropsSection() {
   return (
@@ -8,78 +9,68 @@ export default function ValuePropsSection() {
         <h2 className="text-4xl font-heading font-bold text-primary text-center mb-12">
           Why Join the World Canine Union?
         </h2>
+
         <div className="grid md:grid-cols-3 gap-8">
+          {/* Card 1: Focus on INCLUSION */}
           <div className="bg-surface p-8 rounded-2xl border border-border hover:shadow-lg transition-all">
             <div className="w-12 h-12 bg-primary text-surface rounded-lg flex items-center justify-center mb-4">
               <Globe className="w-6 h-6" />
             </div>
             <h3 className="font-heading text-2xl font-semibold text-primary mb-4">
-              Global Certification
+              A Registry for All Dogs
             </h3>
             <p className="text-text-muted font-body leading-relaxed">
-              Official international recognition for your mixed breed's unique
-              heritage and story.
+              We celebrate purebreds, mixed breeds, rescues, and every unique combination in between. No dog needs "perfect" papers.
             </p>
           </div>
+
+          {/* Card 2: Focus on STORY */}
           <div className="bg-surface p-8 rounded-2xl border border-border hover:shadow-lg transition-all">
             <div className="w-12 h-12 bg-secondary text-surface rounded-lg flex items-center justify-center mb-4">
               <Heart className="w-6 h-6" />
             </div>
             <h3 className="font-heading text-2xl font-semibold text-primary mb-4">
-              Community Impact
+              Celebrate Their Story
             </h3>
             <p className="text-text-muted font-body leading-relaxed">
-              Supporting rescue organizations and canine welfare initiatives
-              worldwide.
+              From joyful living profiles to beautiful memorial tributes—honor your dog's complete journey.
             </p>
           </div>
+
+          {/* Card 3: Focus on COMMUNITY */}
           <div className="bg-surface p-8 rounded-2xl border border-border hover:shadow-lg transition-all">
             <div className="w-12 h-12 bg-accent text-surface rounded-lg flex items-center justify-center mb-4">
-              <Star className="w-6 h-6" />
+              <Users className="w-6 h-6" />
             </div>
             <h3 className="font-heading text-2xl font-semibold text-primary mb-4">
-              Exclusive Benefits
+              Join a Movement
             </h3>
             <p className="text-text-muted font-body leading-relaxed">
-              Access to online dog shows, member events, and partner discounts for
-              WCU registered dogs.
+              Be part of a global community redefining what makes a dog special.
             </p>
           </div>
         </div>
 
-        {/* ADD THIS: Bridge CTA */}
+        {/* CTA to Next Section */}
         <div className="text-center pt-12">
           <p className="text-xl font-body2 text-text-muted mb-6 max-w-2xl mx-auto">
-            Ready to give your dog the recognition they deserve?
-            <span className="font-semibold text-accent block mt-2">
-              Choose how you'd like to proceed:
-            </span>
+            Ready to see exactly what your registration includes?
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            {/* Primary CTA - Direct to Registration */}
-            <Link
-              href="/register"
+            <a
+              href="#details"
               className="bg-buttons text-surface px-8 py-4 rounded-xl font-heading font-semibold hover:opacity-90 transition-all shadow-lg hover:shadow-xl min-w-[200px] text-center"
             >
-              Register Now
-            </Link>
-
-            {/* Secondary CTA - Learn More First */}
-            <Link
-              href="/membership"
-              className="border border-primary text-primary px-8 py-4 rounded-xl font-heading font-semibold hover:bg-primary hover:text-surface transition-all min-w-[200px] text-center"
-            >
-              Learn About Membership
-            </Link>
+              See What's Included
+            </a>
           </div>
 
           <p className="mt-6 text-sm font-body text-text-muted">
-            Or explore our <Link href="/faq" className="text-accent hover:underline">FAQ</Link> for common questions
+            Scroll down to learn about membership details
           </p>
         </div>
       </div>
     </section>
-
   );
 }

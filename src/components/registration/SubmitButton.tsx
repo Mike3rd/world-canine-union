@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 interface SubmitButtonProps {
     isSubmitting: boolean;
 }
@@ -5,6 +7,14 @@ interface SubmitButtonProps {
 export default function SubmitButton({ isSubmitting }: SubmitButtonProps) {
     return (
         <div className="pt-6">
+            <p className="mb-2 text-sm text-text-muted mx-auto text-center">
+                By submitting this form, you agree to our{' '}
+                <Link href="/privacy" className="text-accent hover:underline font-medium">
+                    Privacy Policy
+                </Link>
+                .
+            </p>
+
             <button
                 type="submit"
                 disabled={isSubmitting}

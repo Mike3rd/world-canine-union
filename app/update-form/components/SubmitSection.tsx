@@ -1,4 +1,6 @@
 // /app/update-form/components/SubmitSection.tsx
+import Link from 'next/link';
+
 interface SubmitSectionProps {
     submitting: boolean;
 }
@@ -15,18 +17,24 @@ export default function SubmitSection({ submitting }: SubmitSectionProps) {
                             <li>• Only fill fields you want to update - blank fields will keep current values</li>
                             <li>• Updates are reviewed by WCU admins within 24-48 hours</li>
                             <li>• Memorial reports require date of passing</li>
-                            <li>• You'll receive email confirmation when updates are approved</li>
+                            <li>• Your changes will be visible within 24-48 hours after approval.</li>
                         </ul>
                     </div>
                 </div>
             </div>
-
+            <p className="mb-2 text-sm text-text-muted mx-auto text-center">
+                By submitting this form, you agree to our{' '}
+                <Link href="/privacy" className="text-accent hover:underline font-medium">
+                    Privacy Policy
+                </Link>
+                .
+            </p>
             <button
                 type="submit"
                 disabled={submitting}
                 className={`w-full py-4 px-6 rounded-xl font-heading font-semibold text-lg transition-all ${submitting
-                        ? 'bg-gray-400 cursor-not-allowed'
-                        : 'bg-buttons hover:bg-buttons-hover active:scale-[0.98]'
+                    ? 'bg-gray-400 cursor-not-allowed'
+                    : 'bg-buttons hover:bg-buttons-hover active:scale-[0.98]'
                     } text-white shadow-lg`}
             >
                 {submitting ? (
@@ -39,10 +47,6 @@ export default function SubmitSection({ submitting }: SubmitSectionProps) {
                     </span>
                 ) : 'Submit Update Request'}
             </button>
-
-            <p className="text-center text-sm text-text-muted mt-4">
-                All updates are reviewed by WCU admins before being applied to your dog's profile
-            </p>
         </div>
     );
 }

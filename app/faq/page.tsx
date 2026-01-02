@@ -1,3 +1,4 @@
+// app/faq/page.tsx
 'use client';
 
 import { useState } from 'react';
@@ -37,12 +38,12 @@ export default function FAQPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            {/* Hero Section */}
+        <div className="min-h-screen bg-gradient-to-b from-background to-primary/5">
+            {/* Hero Section - Matches width of About and How We Give Back */}
             <div className="bg-gradient-to-r from-primary to-secondary text-header-text">
                 <div className="max-w-7xl mx-auto px-4 py-16">
                     <div className="max-w-3xl">
-                        <h1 className="text-5xl font-heading font-bold mb-6">
+                        <h1 className="text-4xl md:text-5xl font-heading font-bold mb-6">
                             Frequently Asked Questions
                         </h1>
                         <p className="text-xl opacity-90 mb-8">
@@ -51,11 +52,12 @@ export default function FAQPage() {
                     </div>
                 </div>
             </div>
-            {/* Main Content */}
-            <div className="max-w-4xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+
+            {/* Main Content - Updated to max-w-7xl */}
+            <div className="max-w-7xl mx-auto px-4 py-16">
                 {/* Quick Links */}
                 <div className="mb-12">
-                    <h2 className="text-2xl font-bold text-primary mb-6">Quick Sections</h2>
+                    <h2 className="text-2xl font-heading font-bold text-primary mb-6">Quick Sections</h2>
                     <div className="flex flex-wrap gap-3">
                         {faqSections.map(section => (
                             <button
@@ -63,7 +65,7 @@ export default function FAQPage() {
                                 onClick={() => handleSectionClick(section.id)}
                                 className={`px-4 py-2 rounded-full border transition ${openSection === section.id
                                     ? 'bg-accent text-white border-accent'
-                                    : 'bg-white text-primary border-border hover:border-accent'
+                                    : 'bg-surface text-primary border-border hover:border-accent hover:bg-gray-50'
                                     }`}
                             >
                                 {section.title}
@@ -78,18 +80,18 @@ export default function FAQPage() {
                         <div
                             key={section.id}
                             id={`section-${section.id}`}
-                            className="bg-white rounded-xl shadow-lg border border-border overflow-hidden scroll-mt-20"
+                            className="bg-surface rounded-2xl border border-border shadow-sm overflow-hidden scroll-mt-20"
                         >
                             {/* Section Header */}
                             <button
                                 onClick={() => handleSectionClick(section.id)}
-                                className="w-full px-6 py-4 flex items-center justify-between bg-surface hover:bg-gray-50 transition"
+                                className="w-full px-8 py-6 flex items-center justify-between hover:bg-gray-50 transition"
                             >
                                 <div className="flex items-center">
-                                    <div className="p-2 bg-amber-100 rounded-lg mr-4">
+                                    <div className="p-2 bg-primary/10 rounded-lg mr-4">
                                         {getIconComponent(section.icon as string)}
                                     </div>
-                                    <h2 className="text-xl font-bold text-primary">{section.title}</h2>
+                                    <h2 className="text-xl font-heading font-bold text-primary">{section.title}</h2>
                                 </div>
                                 {openSection === section.id ? (
                                     <ChevronUp className="h-5 w-5 text-text-muted" />
@@ -100,18 +102,18 @@ export default function FAQPage() {
 
                             {/* Section Content */}
                             {openSection === section.id && (
-                                <div className="px-6 py-4 border-t border-border">
+                                <div className="px-8 py-6 border-t border-border">
                                     <div className="space-y-4">
                                         {section.questions.map(question => (
                                             <div
                                                 key={question.id}
-                                                className="border border-gray-200 rounded-lg overflow-hidden"
+                                                className="border border-border rounded-xl overflow-hidden hover:border-primary/30 transition-colors"
                                             >
                                                 <button
                                                     onClick={() => toggleQuestion(question.id)}
-                                                    className="w-full px-4 py-3 flex items-center justify-between bg-gray-50 hover:bg-gray-100 transition text-left"
+                                                    className="w-full px-6 py-4 flex items-center justify-between bg-gray-50 hover:bg-gray-100 transition text-left"
                                                 >
-                                                    <span className="font-medium text-text">{question.q}</span>
+                                                    <span className="font-medium text-primary">{question.q}</span>
                                                     {openQuestions[question.id] ? (
                                                         <ChevronUp className="h-4 w-4 text-text-muted flex-shrink-0 ml-2" />
                                                     ) : (
@@ -120,8 +122,8 @@ export default function FAQPage() {
                                                 </button>
 
                                                 {openQuestions[question.id] && (
-                                                    <div className="px-4 py-3 bg-white">
-                                                        <p className="text-text whitespace-pre-line">{question.a}</p>
+                                                    <div className="px-6 py-4 bg-white">
+                                                        <p className="text-text-muted whitespace-pre-line leading-relaxed">{question.a}</p>
                                                     </div>
                                                 )}
                                             </div>
@@ -134,19 +136,43 @@ export default function FAQPage() {
                 </div>
 
                 {/* Contact CTA */}
-                <div className="mt-16 text-center">
-                    <div className="bg-gradient-to-r from-blue-50 to-amber-50 border border-blue-200 rounded-2xl p-8">
-                        <h2 className="text-2xl font-bold text-primary mb-3">Still have questions?</h2>
-                        <p className="text-text-muted mb-6 max-w-2xl mx-auto">
+                <div className="mt-16">
+                    <div className="bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20 rounded-2xl p-12 text-center">
+                        <h2 className="text-2xl font-heading font-bold text-primary mb-4">Still have questions?</h2>
+                        <p className="text-text-muted mb-8 max-w-2xl mx-auto text-lg">
                             Can't find the answer you're looking for? Our support team is here to help.
                         </p>
-                        <a
-                            href="/contact"
-                            className="inline-flex items-center px-6 py-3 bg-accent text-white rounded-lg hover:bg-opacity-90 transition font-medium"
-                        >
-                            Contact Support
-                        </a>
+                        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                            <a
+                                href="/contact"
+                                className="inline-flex items-center px-8 py-3 bg-accent text-white rounded-lg hover:bg-accent/90 transition font-medium"
+                            >
+                                Contact Support
+                            </a>
+                            <a
+                                href="/register"
+                                className="inline-flex items-center px-8 py-3 bg-transparent border-2 border-primary text-primary rounded-lg hover:bg-primary/5 transition font-medium"
+                            >
+                                Register Your Dog
+                            </a>
+                        </div>
                     </div>
+                </div>
+
+                {/* Navigation */}
+                <div className="flex flex-col sm:flex-row gap-4 justify-between mt-12 pt-8 border-t border-border">
+                    <a
+                        href="/"
+                        className="text-accent hover:text-accent/80 font-medium text-center"
+                    >
+                        ← Return to Homepage
+                    </a>
+                    <a
+                        href="/about"
+                        className="text-accent hover:text-accent/80 font-medium text-center"
+                    >
+                        Learn More About WCU →
+                    </a>
                 </div>
             </div>
         </div>

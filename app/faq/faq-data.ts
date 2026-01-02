@@ -13,6 +13,48 @@ export interface FAQSection {
 
 export const faqSections: FAQSection[] = [
   {
+    id: "charter",
+    title: "Charter Members & Registration",
+    icon: "Crown",
+    questions: [
+      {
+        id: "charter-1",
+        q: "What are Charter Members?",
+        a: "Charter Members are the first 500 dogs registered with World Canine Union. They receive Founding Member status, special charter pricing, and the coveted low registration numbers (WCU-00002 through WCU-00501). Your dog becomes a permanent part of WCU history.",
+      },
+      {
+        id: "charter-2",
+        q: "Who is WCU-00001?",
+        a: "That prestigious honor belongs to our dog, Toby Z. Longfellow, the real founder and inspiration for the entire World Canine Union. Toby holds the #1 spot permanently as the #1 World's Best Dog.",
+      },
+      {
+        id: "charter-3",
+        q: "What are the benefits of Charter Member status?",
+        a: "Charter Members receive: 1) Founding Member status badge on their profile, 2) Special charter pricing with discount codes, 3) Coveted low registration numbers (002-501), 4) Recognition as pioneers of the WCU community, and 5) Priority support.",
+      },
+      {
+        id: "charter-4",
+        q: "When does charter registration open?",
+        a: "Charter registration opens in early 2026. The first 500 registrations (starting at WCU-00002) will receive Charter Member status. Registration will remain open afterward at regular pricing.",
+      },
+      {
+        id: "charter-5",
+        q: "How do I become a Charter Member?",
+        a: "Contact us to be notified when charter registration opens in early 2026. We'll add you to our notification list so you'll be among the first to know when you can secure a low-numbered registration for your dog.",
+      },
+      {
+        id: "charter-6",
+        q: "What is the charter pricing?",
+        a: "Charter Members receive special discounted pricing using unique discount codes. The exact pricing will be announced closer to our early 2026 launch date. Regular pricing will apply after the first 500 charter registrations.",
+      },
+      {
+        id: "charter-7",
+        q: "Can I register multiple dogs as Charter Members?",
+        a: "Yes! Each of the first 500 registered dogs (starting at WCU-00002) receives Charter Member status. If you register multiple dogs early, each will receive their own unique low-numbered registration and charter benefits.",
+      },
+    ],
+  },
+  {
     id: "general",
     title: "General Questions",
     icon: "HelpCircle",

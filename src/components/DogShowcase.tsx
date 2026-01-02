@@ -160,7 +160,7 @@ export default function DogShowcase() {
                         {/* Search Rescues Link */}
                         <div className="mt-6 text-center">
                             <Link
-                                href="/rescues"
+                                href="/dogs"
                                 className="text-accent hover:underline font-medium"
                             >
                                 Browse dogs by breed →
