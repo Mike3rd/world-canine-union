@@ -109,7 +109,7 @@ async function handleCheckoutSessionCompleted(
         stripe_payment_id: paymentIntentId,
         stripe_customer_id: customerId, // ← SAVE CUSTOMER ID
         stripe_checkout_session_id: session.id,
-        amount_paid: 25.0,
+        amount_paid: finalAmountPaid,
         payment_date: new Date().toISOString(),
         status: "completed",
       })
@@ -120,7 +120,10 @@ async function handleCheckoutSessionCompleted(
       return;
     }
 
-    console.log("✅ Registration updated to paid:", registrationId);
+    console.log(
+      `✅ Registration updated to paid ($${finalAmountPaid}):`,
+      registrationId
+    );
     console.log("👤 Customer linked:", customerId);
 
     // 2. Get registration details

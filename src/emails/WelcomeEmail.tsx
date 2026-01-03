@@ -60,7 +60,7 @@ export const WelcomeEmail: React.FC<WelcomeEmailProps> = ({
             <hr />
 
             <p style={{ fontSize: '12px', color: '#666' }}>
-                Need help? Email support@worldcanineunion.org
+                Need help? Email mike@worldcanineunion.org
             </p>
         </div>
     );
