@@ -72,11 +72,32 @@ async function handleCheckoutSessionCompleted(
     return;
   }
 
+  // 🔄 NEW: Safely fetch the dynamic payment amount from Stripe
+  let finalAmountPaid = 25.0; // Keep hardcoded value as default/fallback
+  try {
+    if (paymentIntentId) {
+      const paymentIntent =
+        await stripe.paymentIntents.retrieve(paymentIntentId);
+      // Stripe stores amounts in cents. Convert to dollars.
+      finalAmountPaid = paymentIntent.amount_received / 100;
+      console.log(`✅ Dynamic amount fetched from Stripe: $${finalAmountPaid}`);
+    } else {
+      console.warn("⚠️ No payment_intent found, using default amount ($25.0).");
+    }
+  } catch (stripeError) {
+    // If ANYTHING goes wrong with Stripe, we log it but continue with the fallback.
+    console.error(
+      "⚠️ Failed to fetch payment amount from Stripe, using default ($25.0). Error:",
+      stripeError
+    );
+  }
+
   console.log("🔗 Linking:", {
     registrationId,
     customerId,
     sessionId: session.id,
     paymentIntentId,
+    finalAmountPaid, // 🔄 NEW: Log the amount we will save
   });
 
   try {
