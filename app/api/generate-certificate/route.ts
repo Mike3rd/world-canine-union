@@ -511,7 +511,7 @@ async function generateCertificatePDF(dogData: any) {
       x: signature1X + 15,
       y: signaturesY,
       size: 17,
-      font: timesRoman,
+      font: timesRomanItalic,
       color: wcuColors.primary,
     });
 
@@ -537,7 +537,7 @@ async function generateCertificatePDF(dogData: any) {
       x: signature2X + 25,
       y: signaturesY,
       size: 17,
-      font: timesRoman,
+      font: timesRomanItalic,
       color: wcuColors.primary,
     });
 

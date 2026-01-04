@@ -56,7 +56,7 @@ export default function StructuredData() {
                     "@type": "Organization",
                     name: "World Canine Union",
                     url: "https://worldcanineunion.org",
-                    logo: "https://worldcanineunion.org/images/wcu-logo-nav-1200.png",
+                    logo: "https://worldcanineunion.org/images/wcu-logo-1200.png",
                     sameAs: [
                         "https://www.facebook.com/worldcanineunion",
                         "https://www.instagram.com/worldcanineunion"

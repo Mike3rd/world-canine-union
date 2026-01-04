@@ -41,6 +41,7 @@ export async function createStripeCheckoutSession({
       success_url: `${baseUrl}/register/success?session_id={CHECKOUT_SESSION_ID}`, // ← USE baseUrl
       cancel_url: `${baseUrl}/`, // ← USE baseUrl
       client_reference_id: registrationId,
+      allow_promotion_codes: true, // ← USE Allow coupon
       metadata: {
         registration_id: registrationId,
         dog_name: dogName,
