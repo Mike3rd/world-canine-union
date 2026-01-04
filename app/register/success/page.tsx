@@ -73,10 +73,11 @@ export default function SuccessPage() {
                     {/* Help */}
                     <div className="mt-8 pt-6 border-t border-gray-200">
                         <p className="text-sm text-gray-500 text-center">
-                            Need help? Email{' '}
-                            <a href="mailto:support@worldcanineunion.org" className="text-primary hover:underline font-medium">
-                                support@worldcanineunion.org
+                            Need help? Please use our{' '}
+                            <a href="/contact" className="text-primary hover:underline font-medium">
+                                contact form
                             </a>
+                            {' '}or click the blue chat icon &#8212; bottom right.
                         </p>
                     </div>
 

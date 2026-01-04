@@ -33,8 +33,12 @@ export default function CancelPage() {
                     </a>
                 </div>
 
-                <p className="text-sm text-gray-500 mt-6">
-                    Questions? Email support@worldcanineunion.org
+                <p className="text-sm text-gray-500 text-center">
+                    Need help? Please use our{' '}
+                    <a href="/contact" className="text-primary hover:underline font-medium">
+                        contact form
+                    </a>
+                    {' '}or click the blue chat icon &#8212; bottom right.
                 </p>
             </div>
         </div>

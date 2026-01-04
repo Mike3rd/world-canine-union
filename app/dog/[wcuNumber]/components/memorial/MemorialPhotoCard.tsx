@@ -7,45 +7,53 @@ interface MemorialPhotoCardProps {
     dogName: string
 }
 
-
-
 export default function MemorialPhotoCard({ photoUrl, dogName }: MemorialPhotoCardProps) {
+    const IMAGE_WIDTH = 412;
+    const IMAGE_HEIGHT = 550;
+    const PADDING = 16; // p-4 = 16px
+
     return (
-        <div className="rounded-2xl shadow-xl overflow-hidden border relative bg-memorial-surface border-memorial-border">
+        <div
+            className="rounded-2xl shadow-xl overflow-hidden border relative bg-memorial-surface border-memorial-border mx-auto"
+            style={{
+                width: IMAGE_WIDTH + (PADDING * 2),
+                maxWidth: '100%'
+            }}
+        >
             {/* Memorial Ribbon */}
-            <div className="absolute top-4 left-4 z-10">
+            <div className="absolute top-6 left-6 z-10">
                 <div className="flex items-center px-3 py-1 rounded-full bg-memorial-accent text-white">
                     <Ribbon className="w-4 h-4 mr-1" />
                     <span className="text-md font-semibold">In Memory</span>
                 </div>
             </div>
 
-            <div className="relative memorial-rainbow-gradient">
+            <div className="relative memorial-rainbow-gradient p-4">
                 {photoUrl ? (
-                    <div className="relative w-full pt-[133.5%]">
-                        <Image
-                            src={photoUrl}
-                            alt={`In memory of ${dogName}`}
-                            fill
-                            className="object-contain p-4 opacity-90"
-                            sizes="(max-width: 768px) 100vw, 412px"
-                            priority
-                        />
-                        {/* Overlay */}
-                        <div className="absolute inset-0 bg-black/10"></div>
-                    </div>
+                    <Image
+                        src={photoUrl}
+                        alt={`In memory of ${dogName}`}
+                        width={IMAGE_WIDTH}
+                        height={IMAGE_HEIGHT}
+                        className="w-full h-auto opacity-90"
+                        priority
+                    />
                 ) : (
-                    <div className="relative pt-[133.5%]">
-                        <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="text-center">
-                                <div className="text-8xl mb-4">🐕‍🦺</div>
-                                <p className="font-semibold text-memorial-text">
-                                    In Loving Memory
-                                </p>
-                            </div>
+                    <div
+                        style={{ width: IMAGE_WIDTH, height: IMAGE_HEIGHT }}
+                        className="flex items-center justify-center"
+                    >
+                        <div className="text-center">
+                            <div className="text-8xl mb-4">🐕‍🦺</div>
+                            <p className="font-semibold text-memorial-text">
+                                In Loving Memory
+                            </p>
                         </div>
                     </div>
                 )}
+
+                {/* Overlay */}
+                <div className="absolute inset-4 bg-black/10 pointer-events-none"></div>
             </div>
         </div>
     )
