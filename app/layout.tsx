@@ -6,6 +6,22 @@ import StructuredData from "@/components/StructuredData";
 import Topbar from "@/components/navigation/Topbar";
 import Footer from "@/components/navigation/Footer";
 import ChatWidget from "@/components/ChatWidget";
+import localFont from 'next/font/local';
+
+const inter = localFont({
+  src: '/fonts/Inter/Inter-VariableFont_opsz,wght.ttf',
+  variable: '--font-inter',
+  weight: '100 900', // Specify the supported weight range
+  display: 'swap',
+});
+
+// Configure your IBM Plex Sans font
+const ibmPlexSans = localFont({
+  src: '/fonts/IBM-Plex-Sans/IBMPlexSans-VariableFont_wdth,wght.ttf',
+  variable: '--font-ibm-plex-sans',
+  weight: '100 700',
+  display: 'swap',
+});
 
 
 export const metadata: Metadata = {
@@ -61,7 +77,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${inter.variable} ${ibmPlexSans.variable}`}>
       <body className="min-h-screen bg-background text-text font-body">
         <StructuredData />
         <div className="flex flex-col min-h-screen">
