@@ -17,9 +17,9 @@ export default function Topbar() {
                             <Image
                                 src="/images/wcu-logo-nav.webp"
                                 alt="WCU Logo"
-                                width={120} // Original image width in pixels
-                                height={60}  // Original image height in pixels
-                                className="h-14 w-auto" // This sets display height to 3.5rem (56px)
+                                width={100}  // ACTUAL image width (from the error: "100x111")
+                                height={111} // ACTUAL image height
+                                className="h-14 w-auto" // This will scale it down to 56px height
                                 priority
                             />
 
