@@ -14,7 +14,7 @@ export default function Topbar() {
                         <div className="flex items-center gap-1">
                             {/* Logo Image with your exact dimensions */}
                             <img
-                                src="\images\wcu-logo-nav.png"
+                                src="\images\wcu-logo-nav.webp"
                                 alt="WCU Logo"
                                 className="h-14 w-auto"
                                 style={{
