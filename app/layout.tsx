@@ -8,6 +8,24 @@ import Footer from "@/components/navigation/Footer";
 import ChatWidget from "@/components/ChatWidget";
 import localFont from 'next/font/local';
 
+// Configure fonts
+
+const merriweather = localFont({
+  // Update the path and filename to match your actual file
+  src: './fonts/Merriweather/merriweather-regular-webfont.ttf',
+  variable: '--font-merriweather',
+  weight: '400 700', // Adjust if you have a variable font file
+  display: 'swap',
+});
+
+const oxanium = localFont({
+  src: './fonts/Oxanium/Oxanium-VariableFont_wght.ttf', // <-- Confirm exact filename
+  variable: '--font-oxanium',
+  weight: '100 900',
+  display: 'swap',
+});
+
+
 const inter = localFont({
   src: '/fonts/Inter/Inter-VariableFont_opsz,wght.ttf',
   variable: '--font-inter',
@@ -15,7 +33,7 @@ const inter = localFont({
   display: 'swap',
 });
 
-// Configure your IBM Plex Sans font
+
 const ibmPlexSans = localFont({
   src: '/fonts/IBM-Plex-Sans/IBMPlexSans-VariableFont_wdth,wght.ttf',
   variable: '--font-ibm-plex-sans',
@@ -77,7 +95,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${ibmPlexSans.variable}`}>
+    <html lang="en" className={`${inter.variable} ${ibmPlexSans.variable} ${oxanium.variable} ${merriweather.variable} `}>
       <body className="min-h-screen bg-background text-text font-body">
         <StructuredData />
         <div className="flex flex-col min-h-screen">
