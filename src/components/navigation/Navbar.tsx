@@ -11,7 +11,8 @@ export default function Navbar() {
 
     // Desktop navigation items (shown in navbar)
     const desktopNavItems = [
-        { label: 'Update Form', href: '/request-update' },
+        { label: 'About Us', href: '/about' },
+        { label: 'Register', href: '/register' },
         { label: 'Contact', href: '/contact' },
     ];
 

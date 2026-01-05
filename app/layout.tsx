@@ -12,22 +12,22 @@ import localFont from 'next/font/local';
 
 const merriweather = localFont({
   // Update the path and filename to match your actual file
-  src: './fonts/Merriweather/merriweather-regular-webfont.ttf',
+  src: './fonts/Merriweather/merriweather-light.woff',
   variable: '--font-merriweather',
   weight: '400 700', // Adjust if you have a variable font file
   display: 'swap',
 });
 
 const oxanium = localFont({
-  src: './fonts/Oxanium/Oxanium-VariableFont_wght.ttf', // <-- Confirm exact filename
+  src: './fonts/Oxanium/oxanium-variablefont_wght-webfont.woff', // <-- Confirm exact filename
   variable: '--font-oxanium',
-  weight: '100 900',
+  weight: '400',
   display: 'swap',
 });
 
 
 const inter = localFont({
-  src: '/fonts/Inter/Inter-VariableFont_opsz,wght.ttf',
+  src: '/fonts/Inter/Inter-Regular.woff',
   variable: '--font-inter',
   weight: '100 900', // Specify the supported weight range
   display: 'swap',
@@ -35,7 +35,7 @@ const inter = localFont({
 
 
 const ibmPlexSans = localFont({
-  src: '/fonts/IBM-Plex-Sans/IBMPlexSans-VariableFont_wdth,wght.ttf',
+  src: '/fonts/IBM-Plex-Sans/ibmplexsans-variablefont_wdthwght-webfont.woff',
   variable: '--font-ibm-plex-sans',
   weight: '100 700',
   display: 'swap',
