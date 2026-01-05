@@ -12,14 +12,14 @@ import localFont from 'next/font/local';
 
 const merriweather = localFont({
   // Update the path and filename to match your actual file
-  src: './fonts/Merriweather/merriweather-light.woff',
+  src: '/fonts/Merriweather/Merriweather-Light.woff',
   variable: '--font-merriweather',
   weight: '400 700', // Adjust if you have a variable font file
   display: 'swap',
 });
 
 const oxanium = localFont({
-  src: './fonts/Oxanium/oxanium-variablefont_wght-webfont.woff', // <-- Confirm exact filename
+  src: '/fonts/Oxanium/oxanium-variablefont_wght-webfont.woff', // <-- Confirm exact filename
   variable: '--font-oxanium',
   weight: '400',
   display: 'swap',
