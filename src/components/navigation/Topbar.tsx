@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Navbar from './Navbar';
+import Image from 'next/image';
 
 export default function Topbar() {
     return (
@@ -13,14 +14,13 @@ export default function Topbar() {
                     >
                         <div className="flex items-center gap-1">
                             {/* Logo Image with your exact dimensions */}
-                            <img
-                                src="\images\wcu-logo-nav.webp"
+                            <Image
+                                src="/images/wcu-logo-nav.webp"
                                 alt="WCU Logo"
-                                className="h-14 w-auto"
-                                style={{
-                                    height: '56px', // 256x285 ratio means width will be ~50px
-                                    width: 'auto'
-                                }}
+                                width={120} // Original image width in pixels
+                                height={60}  // Original image height in pixels
+                                className="h-14 w-auto" // This sets display height to 3.5rem (56px)
+                                priority
                             />
 
                             {/* Title with your exact styling */}
