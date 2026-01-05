@@ -15,7 +15,7 @@ export default function Topbar() {
                         <div className="flex items-center gap-1">
                             {/* Logo Image with your exact dimensions */}
                             <Image
-                                src="/images/wcu-logo-nav.webp"
+                                src="/images/wcu-logo-nav.png"
                                 alt="WCU Logo"
                                 width={100}  // ACTUAL image width (from the error: "100x111")
                                 height={111} // ACTUAL image height
