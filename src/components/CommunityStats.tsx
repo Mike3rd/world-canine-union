@@ -183,7 +183,7 @@ export default function CommunityStats() {
     return (
         <section className="pt-3 mb-26">
             <div className="max-w-7xl mx-auto px-4">
-                <div className="grid lg:grid-cols-2 gap-8">
+                <div className="grid lg:grid-cols-2 gap-8 min-h-[300px] ">
                     <StatsDashboard stats={stats} />
                     <ShelterList shelters={topShelters} />
                 </div>
