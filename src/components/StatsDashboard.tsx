@@ -27,7 +27,7 @@ export default function StatsDashboard({ stats }: StatsDashboardProps) {
                         <Users className="w-8 h-8 text-primary" />
                         <span className="font-medium text-text">Dogs Registered</span>
                     </div>
-                    <span className="text-2xl font-bold text-primary">
+                    <span className="text-2xl font-bold text-primary min-w-[80px] text-right">
                         {stats?.total_dogs?.toLocaleString() || "0"}
                     </span>
                 </div>
@@ -37,7 +37,7 @@ export default function StatsDashboard({ stats }: StatsDashboardProps) {
                         <Heart className="w-8 h-8 text-accent" />
                         <span className="font-medium text-text">Total Donated</span>
                     </div>
-                    <span className="text-2xl font-bold text-accent">
+                    <span className="text-2xl font-bold text-accent min-w-[80px] text-right">
                         ${stats?.total_donations?.toLocaleString() || "0"}
                     </span>
                 </div>
@@ -47,14 +47,14 @@ export default function StatsDashboard({ stats }: StatsDashboardProps) {
                         <Home className="w-8 h-8 text-green-600" />
                         <span className="font-medium text-text">Rescue Partners</span>
                     </div>
-                    <span className="text-2xl font-bold text-green-600">
+                    <span className="text-2xl font-bold text-green-600 min-w-[80px] text-right">
                         {stats?.rescue_partners || "0"}
                     </span>
                 </div>
 
                 <div className="flex items-center justify-between p-4 bg-purple-500/5 rounded-lg">
                     <div className="flex items-center gap-3">
-                        <Home className="w-8 h-8 text-purple-600" />
+                        <Home className="w-8 h-8 text-purple-600 min-w-[80px] text-right" />
                         <span className="font-medium text-text">States Represented</span>
                     </div>
                     <span className="text-2xl font-bold text-purple-600">
