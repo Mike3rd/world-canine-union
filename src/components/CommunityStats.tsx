@@ -3,8 +3,9 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
-import StatsDashboard from "./StatsDashboard";
-import ShelterList from "./ShelterList";
+import StatsDashboard from "@/components/StatsDashboard";
+import ShelterList from "@/components/ShelterList";
+
 
 interface ImpactStats {
     total_dogs: number;
@@ -184,8 +185,9 @@ export default function CommunityStats() {
         <section className="pt-3 mb-26">
             <div className="max-w-7xl mx-auto px-4">
                 <div className="grid lg:grid-cols-2 gap-8">
-                    <StatsDashboard stats={stats} />
-                    <ShelterList shelters={topShelters} />
+                    {/* Add loading={loading} to both */}
+                    <StatsDashboard stats={stats} loading={loading} />
+                    <ShelterList shelters={topShelters} loading={loading} />
                 </div>
             </div>
         </section>
