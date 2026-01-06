@@ -13,28 +13,9 @@ interface ImpactStats {
 
 interface StatsDashboardProps {
     stats: ImpactStats | null;
-    loading?: boolean;
 }
 
-export default function StatsDashboard({ stats, loading = false }: StatsDashboardProps) {
-    if (loading) {
-        return (
-            <div className="bg-surface p-8 rounded-2xl border border-border">
-                <div className="h-8 bg-gray-200 rounded w-2/3 mb-6 animate-pulse"></div>
-                <div className="space-y-6">
-                    {[1, 2, 3, 4].map((i) => (
-                        <div key={i} className="flex items-center justify-between p-4 bg-gray-100 rounded-lg">
-                            <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 bg-gray-300 rounded"></div>
-                                <div className="h-6 bg-gray-300 rounded w-32"></div>
-                            </div>
-                            <div className="h-8 bg-gray-300 rounded w-20"></div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        );
-    }
+export default function StatsDashboard({ stats }: StatsDashboardProps) {
     return (
         <div className="bg-surface p-8 rounded-2xl border border-border hover:shadow-lg transition-all">
             <h3 className="font-heading text-2xl font-semibold text-primary mb-6">
