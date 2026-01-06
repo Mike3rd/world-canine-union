@@ -185,7 +185,7 @@ export default function CommunityStats() {
             <div className="max-w-7xl mx-auto px-4">
                 <div className="grid lg:grid-cols-2 gap-8 min-h-[300px] ">
                     <StatsDashboard stats={stats} />
-                    <ShelterList shelters={topShelters} />
+                    {/* <ShelterList shelters={topShelters} /> */}
                 </div>
             </div>
         </section>
