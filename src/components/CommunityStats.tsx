@@ -1,4 +1,4 @@
-// src/components/CommunityStatsCombined.tsx - FIXED VERSION
+// src/components/CommunityStatsCombined.tsx - COMPLETE
 "use client";
 
 import { useState, useEffect } from "react";
@@ -70,7 +70,7 @@ export default function CommunityStatsCombined() {
             if (!sheltersError && sheltersData) {
                 // Count dogs per shelter
                 const sheltersWithCounts = await Promise.all(
-                    sheltersData.map(async (shelter) => {
+                    sheltersData.map(async (shelter: { shelter_name: string; shelter_city: string | null; shelter_state: string | null; shelter_website: string | null }) => {
                         const { count } = await supabase
                             .from("registrations")
                             .select("*", { count: "exact", head: true })
@@ -98,13 +98,13 @@ export default function CommunityStatsCombined() {
     // ========== LOADING STATE ==========
     if (loading) {
         return (
-            <section className="py-8 md:py-12 mb-16">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 md:gap-8">
+            <section className="pt-3 mb-26">
+                <div className="max-w-7xl mx-auto px-4">
+                    <div className="grid lg:grid-cols-2 gap-8">
                         {/* LEFT COLUMN SKELETON - STATS */}
-                        <div className="w-full lg:w-1/2 bg-surface p-6 md:p-8 rounded-2xl border border-border">
-                            <div className="h-8 bg-gray-200 rounded w-2/3 mb-6 animate-pulse mx-auto lg:mx-0"></div>
-                            <div className="space-y-4 md:space-y-6">
+                        <div className="bg-surface p-8 rounded-2xl border border-border">
+                            <div className="h-8 bg-gray-200 rounded w-2/3 mb-6 animate-pulse"></div>
+                            <div className="space-y-6">
                                 {[1, 2, 3, 4].map((i) => (
                                     <div key={i} className="flex items-center justify-between p-4 bg-gray-100 rounded-lg">
                                         <div className="flex items-center gap-3">
@@ -118,8 +118,8 @@ export default function CommunityStatsCombined() {
                         </div>
 
                         {/* RIGHT COLUMN SKELETON - SHELTERS */}
-                        <div className="w-full lg:w-1/2 bg-surface p-6 md:p-8 rounded-2xl border border-border">
-                            <div className="h-8 bg-gray-200 rounded w-2/3 mb-6 animate-pulse mx-auto lg:mx-0"></div>
+                        <div className="bg-surface p-8 rounded-2xl border border-border">
+                            <div className="h-8 bg-gray-200 rounded w-2/3 mb-6 animate-pulse"></div>
                             <div className="space-y-4">
                                 {[1, 2, 3, 4, 5].map((i) => (
                                     <div key={i} className="h-20 bg-gray-100 rounded-lg animate-pulse"></div>
@@ -134,64 +134,56 @@ export default function CommunityStatsCombined() {
 
     // ========== LOADED STATE ==========
     return (
-        <section className="py-8 md:py-12 mb-16">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex flex-col lg:flex-row lg:items-stretch lg:justify-between gap-6 md:gap-8">
+        <section className="pt-3 mb-26">
+            <div className="max-w-7xl mx-auto px-4">
+                <div className="grid lg:grid-cols-2 gap-8">
                     {/* ===== LEFT COLUMN: STATS ===== */}
-                    <div className="w-full lg:w-1/2 bg-surface p-6 md:p-8 rounded-2xl border border-border hover:shadow-lg transition-all flex flex-col">
-                        <h3 className="font-heading text-xl md:text-2xl font-semibold text-primary mb-6 text-center lg:text-left">
+                    <div className="bg-surface p-8 rounded-2xl border border-border hover:shadow-lg transition-all">
+                        <h3 className="font-heading text-2xl font-semibold text-primary mb-6">
                             Our Community by the Numbers
                         </h3>
 
-                        <div className="space-y-4 md:space-y-6 flex-1">
+                        <div className="space-y-6">
                             {/* 1. Dogs Registered */}
-                            <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-primary/5 rounded-lg gap-3 sm:gap-0">
-                                <div className="flex items-center gap-3 justify-center sm:justify-start">
-                                    <Users className="w-6 h-6 md:w-8 md:h-8 text-primary flex-shrink-0" />
-                                    <span className="font-medium text-text text-sm md:text-base text-center sm:text-left">
-                                        Dogs Registered
-                                    </span>
+                            <div className="flex items-center justify-between p-4 bg-primary/5 rounded-lg">
+                                <div className="flex items-center gap-3">
+                                    <Users className="w-8 h-8 text-primary" />
+                                    <span className="font-medium text-text">Dogs Registered</span>
                                 </div>
-                                <span className="text-xl md:text-2xl font-bold text-primary text-center sm:text-right">
+                                <span className="text-2xl font-bold text-primary">
                                     {stats?.total_dogs?.toLocaleString() || "0"}
                                 </span>
                             </div>
 
                             {/* 2. Total Donated */}
-                            <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-accent/5 rounded-lg gap-3 sm:gap-0">
-                                <div className="flex items-center gap-3 justify-center sm:justify-start">
-                                    <Heart className="w-6 h-6 md:w-8 md:h-8 text-accent flex-shrink-0" />
-                                    <span className="font-medium text-text text-sm md:text-base text-center sm:text-left">
-                                        Total Donated
-                                    </span>
+                            <div className="flex items-center justify-between p-4 bg-accent/5 rounded-lg">
+                                <div className="flex items-center gap-3">
+                                    <Heart className="w-8 h-8 text-accent" />
+                                    <span className="font-medium text-text">Total Donated</span>
                                 </div>
-                                <span className="text-xl md:text-2xl font-bold text-accent text-center sm:text-right">
+                                <span className="text-2xl font-bold text-accent">
                                     ${stats?.total_donations?.toLocaleString() || "0"}
                                 </span>
                             </div>
 
                             {/* 3. Rescue Partners */}
-                            <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-green-500/5 rounded-lg gap-3 sm:gap-0">
-                                <div className="flex items-center gap-3 justify-center sm:justify-start">
-                                    <Home className="w-6 h-6 md:w-8 md:h-8 text-green-600 flex-shrink-0" />
-                                    <span className="font-medium text-text text-sm md:text-base text-center sm:text-left">
-                                        Rescue Partners
-                                    </span>
+                            <div className="flex items-center justify-between p-4 bg-green-500/5 rounded-lg">
+                                <div className="flex items-center gap-3">
+                                    <Home className="w-8 h-8 text-green-600" />
+                                    <span className="font-medium text-text">Rescue Partners</span>
                                 </div>
-                                <span className="text-xl md:text-2xl font-bold text-green-600 text-center sm:text-right">
+                                <span className="text-2xl font-bold text-green-600">
                                     {stats?.rescue_partners || "0"}
                                 </span>
                             </div>
 
                             {/* 4. States Represented */}
-                            <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-purple-500/5 rounded-lg gap-3 sm:gap-0">
-                                <div className="flex items-center gap-3 justify-center sm:justify-start">
-                                    <MapPin className="w-6 h-6 md:w-8 md:h-8 text-purple-600 flex-shrink-0" />
-                                    <span className="font-medium text-text text-sm md:text-base text-center sm:text-left">
-                                        States Represented
-                                    </span>
+                            <div className="flex items-center justify-between p-4 bg-purple-500/5 rounded-lg">
+                                <div className="flex items-center gap-3">
+                                    <MapPin className="w-8 h-8 text-purple-600" />
+                                    <span className="font-medium text-text">States Represented</span>
                                 </div>
-                                <span className="text-xl md:text-2xl font-bold text-purple-600 text-center sm:text-right">
+                                <span className="text-2xl font-bold text-purple-600">
                                     {stats?.states_represented || "0"}
                                 </span>
                             </div>
@@ -199,12 +191,12 @@ export default function CommunityStatsCombined() {
                     </div>
 
                     {/* ===== RIGHT COLUMN: SHELTERS ===== */}
-                    <div className="w-full lg:w-1/2 bg-surface p-6 md:p-8 rounded-2xl border border-border hover:shadow-lg transition-all flex flex-col">
-                        <h3 className="font-heading text-xl md:text-2xl font-semibold text-primary mb-6 text-center lg:text-left">
+                    <div className="bg-surface p-8 rounded-2xl border border-border hover:shadow-lg transition-all">
+                        <h3 className="font-heading text-2xl font-semibold text-primary mb-6">
                             Rescue Partners
                         </h3>
 
-                        <div className="space-y-4 flex-1">
+                        <div className="space-y-4">
                             {shelters.map((shelter, index) => {
                                 const locationParts = [];
                                 if (shelter.shelter_city) locationParts.push(shelter.shelter_city);
@@ -216,15 +208,13 @@ export default function CommunityStatsCombined() {
                                         key={index}
                                         className="flex items-center gap-3 p-4 border rounded-lg hover:bg-primary/5 transition-colors"
                                     >
-                                        <div className="w-10 h-10 bg-primary/10 rounded flex items-center justify-center flex-shrink-0">
+                                        <div className="w-10 h-10 bg-primary/10 rounded flex items-center justify-center">
                                             <span className="text-primary font-bold">🏠</span>
                                         </div>
 
                                         <div className="flex-1 min-w-0">
-                                            <h4 className="font-medium truncate text-sm md:text-base">
-                                                {shelter.shelter_name}
-                                            </h4>
-                                            <p className="text-xs md:text-sm text-text-muted">{location}</p>
+                                            <h4 className="font-medium truncate">{shelter.shelter_name}</h4>
+                                            <p className="text-sm text-text-muted">{location}</p>
                                             {shelter.dog_count && shelter.dog_count > 0 && (
                                                 <p className="text-xs text-accent mt-1">
                                                     {shelter.dog_count} dog{shelter.dog_count !== 1 ? 's' : ''} registered
@@ -237,7 +227,7 @@ export default function CommunityStatsCombined() {
                                                 href={shelter.shelter_website}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="text-sm text-accent hover:underline whitespace-nowrap flex-shrink-0"
+                                                className="text-sm text-accent hover:underline whitespace-nowrap"
                                             >
                                                 Visit →
                                             </a>
@@ -247,11 +237,11 @@ export default function CommunityStatsCombined() {
                             })}
                         </div>
 
-                        {/* Footer link - Centered on mobile, left on desktop */}
-                        <div className="mt-6 text-center lg:text-left">
+                        {/* Footer link */}
+                        <div className="mt-6 text-center">
                             <Link
                                 href="/shelters"
-                                className="text-accent hover:underline font-medium text-sm md:text-base"
+                                className="text-accent hover:underline font-medium"
                             >
                                 View all rescue partners →
                             </Link>
