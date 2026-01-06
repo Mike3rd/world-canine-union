@@ -14,20 +14,20 @@ const merriweather = localFont({
   // Update the path and filename to match your actual file
   src: '/fonts/Merriweather/Merriweather-Light.woff',
   variable: '--font-merriweather',
-  weight: '400 700', // Adjust if you have a variable font file
+  weight: '300 900', // Adjust if you have a variable font file
   display: 'swap',
 });
 
 const oxanium = localFont({
-  src: '/fonts/Oxanium/oxanium-variablefont_wght-webfont.woff', // <-- Confirm exact filename
+  src: '/fonts/Oxanium/oxanium.woff2', // <-- Confirm exact filename
   variable: '--font-oxanium',
-  weight: '400',
+  weight: '200 800',
   display: 'swap',
 });
 
 
 const inter = localFont({
-  src: '/fonts/Inter/Inter-Regular.woff',
+  src: '/fonts/Inter/Inter-Regular.woff2',
   variable: '--font-inter',
   weight: '100 900', // Specify the supported weight range
   display: 'swap',
@@ -35,7 +35,7 @@ const inter = localFont({
 
 
 const ibmPlexSans = localFont({
-  src: '/fonts/IBM-Plex-Sans/ibmplexsans-variablefont_wdthwght-webfont.woff',
+  src: '/fonts/IBM-Plex-Sans/ibmplexsans.woff2',
   variable: '--font-ibm-plex-sans',
   weight: '100 700',
   display: 'swap',

@@ -208,9 +208,7 @@ export default function CommunityStatsCombined() {
                                         key={index}
                                         className="flex items-center gap-3 p-4 border rounded-lg hover:bg-primary/5 transition-colors"
                                     >
-                                        <div className="w-10 h-10 bg-primary/10 rounded flex items-center justify-center">
-                                            <span className="text-primary font-bold">🏠</span>
-                                        </div>
+
 
                                         <div className="flex-1 min-w-0">
                                             <h4 className="font-medium truncate">{shelter.shelter_name}</h4>
