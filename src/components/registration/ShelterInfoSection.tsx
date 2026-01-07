@@ -4,7 +4,6 @@ interface ShelterInfoSectionProps {
         shelterCity: string;
         shelterState: string;
         shelterWebsite: string;
-        rescueLocation: string;
     };
     onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
     // REMOVE fieldErrors - not used anymore
@@ -65,7 +64,7 @@ export default function ShelterInfoSection({ formData, onInputChange }: ShelterI
                             aria-label="Shelter state (optional)"
                             className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text"
                         >
-                            <option value="">Select a state (optional)</option>
+                            <option value="">Select a state</option>
                             <option value="AL">Alabama</option>
                             <option value="AK">Alaska</option>
                             <option value="AZ">Arizona</option>
@@ -139,24 +138,6 @@ export default function ShelterInfoSection({ formData, onInputChange }: ShelterI
                             Tip: Include a domain like .com, .org, etc.
                         </p>
                     )}
-                </div>
-                <div>
-                    <label htmlFor="rescueLocation" className="block text-sm font-body2 font-medium text-text mb-2">
-                        Where was your dog found/rescued?
-                    </label>
-                    <input
-                        id="rescueLocation"
-                        type="text"
-                        name="rescueLocation"
-                        value={formData.rescueLocation}
-                        onChange={onInputChange}
-                        aria-label="Location where dog was found or rescued"
-                        className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text"
-                        placeholder="e.g., Camden, NJ or Los Angeles County Animal Control"
-                    />
-                    <p className="text-xs text-text-muted mt-1">
-                        City, state, or specific location where your dog was rescued
-                    </p>
                 </div>
             </div>
         </div>

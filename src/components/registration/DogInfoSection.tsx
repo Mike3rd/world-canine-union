@@ -13,6 +13,7 @@ interface DogInfoSectionProps {
         favoriteActivities: string;
         uniqueTraits: string;
         dogStory: string;
+        rescueLocation: string;
     };
     onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
     fieldErrors: Record<string, string>;
@@ -214,6 +215,25 @@ export default function DogInfoSection({ formData, onInputChange, fieldErrors }:
                 )}
                 <p className="text-xs text-text-muted mt-1">
                     Primary colors and patterns
+                </p>
+            </div>
+
+            <div>
+                <label htmlFor="rescueLocation" className="block text-sm font-body2 font-medium text-text mb-2">
+                    Where was your dog found/rescued/obtained?
+                </label>
+                <input
+                    id="rescueLocation"
+                    type="text"
+                    name="rescueLocation"
+                    value={formData.rescueLocation}
+                    onChange={onInputChange}
+                    aria-label="Location where dog was found or rescued"
+                    className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text"
+                    placeholder="e.g., Camden, NJ or Los Angeles County Animal Control"
+                />
+                <p className="text-xs text-text-muted mt-1">
+                    City, state, or specific location where your dog hails from
                 </p>
             </div>
 

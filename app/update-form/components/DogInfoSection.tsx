@@ -171,6 +171,24 @@ export default function DogInfoSection({ formData, handleChange }: DogInfoSectio
                 <p className="text-xs text-text-muted mt-1">Leave blank to keep current</p>
             </div>
 
+            <div>
+                <label htmlFor="rescueLocation" className="block text-sm font-body2 font-medium text-text mb-2">
+                    Where was your dog found/rescued/obtained?
+                </label>
+                <input
+                    id="rescueLocation"
+                    type="text"
+                    name="rescueLocation"
+                    value={formData.rescueLocation || ''}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text"
+                    placeholder="e.g., Camden, NJ or Los Angeles County Animal Control"
+                />
+                <p className="text-xs text-text-muted mt-1">
+                    City, state, or specific location where your dog hails from
+                </p>
+            </div>
+
             {/* Physical Description & Markings */}
             <div>
                 <label htmlFor="dogDescription" className="block text-sm font-body2 font-medium text-text mb-2">
