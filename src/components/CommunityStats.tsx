@@ -20,6 +20,7 @@ interface ShelterData {
     shelter_state: string | null;
     shelter_website: string | null;
     dog_count?: number;
+    shelter_featured?: boolean;
 }
 
 export default function CommunityStatsCombined() {
@@ -63,8 +64,9 @@ export default function CommunityStatsCombined() {
             // 2. FETCH SHELTERS (use your existing logic)
             const { data: sheltersData, error: sheltersError } = await supabase
                 .from("registrations")
-                .select("shelter_name, shelter_city, shelter_state, shelter_website")
+                .select("shelter_name, shelter_city, shelter_state, shelter_website, shelter_featured")
                 .not("shelter_name", "is", null)
+                .eq("shelter_featured", true)
                 .limit(5);
 
             if (!sheltersError && sheltersData) {
@@ -193,7 +195,7 @@ export default function CommunityStatsCombined() {
                     {/* ===== RIGHT COLUMN: SHELTERS ===== */}
                     <div className="bg-surface p-8 rounded-2xl border border-border hover:shadow-lg transition-all">
                         <h3 className="font-heading text-2xl font-semibold text-primary mb-6">
-                            Rescue Partners
+                            Featured Rescue Partners
                         </h3>
 
                         <div className="space-y-4">
@@ -206,8 +208,16 @@ export default function CommunityStatsCombined() {
                                 return (
                                     <div
                                         key={index}
-                                        className="flex items-center gap-3 p-4 border rounded-lg hover:bg-primary/5 transition-colors"
+                                        className="flex items-center gap-3 p-4 border rounded-lg hover:bg-primary/5 transition-colors relative"
                                     >
+                                        {/* Featured badge - Only show if shelter_feature is true */}
+                                        {shelter.shelter_featured && (
+                                            <div className="absolute top-4 right-4">
+                                                <span className="flex items-center gap-1 text-xs bg-success/10 text-success px-2 py-0 rounded-sm border">
+                                                    ★ Featured
+                                                </span>
+                                            </div>
+                                        )}
 
 
                                         <div className="flex-1 min-w-0">

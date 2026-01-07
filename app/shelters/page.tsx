@@ -1,6 +1,127 @@
+"use client";
+
 export const dynamic = "force-dynamic";
-// app/shelters/page.tsx
+
+import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
+import { Star } from "lucide-react";
+import Link from "next/link";
+import ShelterCard from "./ShelterCard";
+import SearchFilters from "./SearchFilters";
+import LoadingGrid from "./LoadingGrid";
+
+interface ShelterData {
+  shelter_name: string;
+  shelter_city: string | null;
+  shelter_state: string | null;
+  shelter_website: string | null;
+  dog_count: number;
+  shelter_featured?: boolean;
+}
+
 export default function SheltersPage() {
+  const [loading, setLoading] = useState(true);
+  const [shelters, setShelters] = useState<ShelterData[]>([]);
+  const [filteredShelters, setFilteredShelters] = useState<ShelterData[]>([]);
+  const [spotlightShelters, setSpotlightShelters] = useState<ShelterData[]>([]);
+  const [selectedState, setSelectedState] = useState("");
+  const [searchPerformed, setSearchPerformed] = useState(false);
+
+  useEffect(() => {
+    fetchSheltersData();
+  }, []);
+
+  useEffect(() => {
+    if (searchPerformed && selectedState) {
+      filterShelters();
+    }
+  }, [selectedState, shelters, searchPerformed]);
+
+  async function fetchSheltersData() {
+    try {
+      setLoading(true);
+
+      // Fetch shelters from registrations - include shelter_featured column
+      const { data: sheltersData, error } = await supabase
+        .from("registrations")
+        .select("registration_number, shelter_name, shelter_city, shelter_state, shelter_website, shelter_featured")
+        .not("shelter_name", "is", null)
+        .eq("status", "completed");
+
+      if (error) {
+        console.error("Error fetching shelters:", error);
+        return;
+      }
+
+      const shelterMap = new Map<string, ShelterData>();
+
+      for (const shelter of sheltersData) {
+        const key = `${shelter.shelter_name}|${shelter.shelter_state}`;
+
+        if (!shelterMap.has(key)) {
+          // Count ALL dogs for this shelter (not just featured ones)
+          const { count } = await supabase
+            .from("registrations")
+            .select("*", { count: "exact", head: true })
+            .eq("shelter_name", shelter.shelter_name)
+            .eq("shelter_state", shelter.shelter_state)
+            .eq("status", "completed");
+
+          shelterMap.set(key, {
+            shelter_name: shelter.shelter_name,
+            shelter_city: shelter.shelter_city,
+            shelter_state: shelter.shelter_state,
+            shelter_website: shelter.shelter_website,
+            dog_count: count || 0,
+            shelter_featured: shelter.shelter_featured || false  // Add this field
+          });
+        }
+      }
+
+      const allShelters = Array.from(shelterMap.values());
+
+      // Identify spotlight shelters - those with shelter_featured = true
+      const spotlight = allShelters.filter(shelter => shelter.shelter_featured === true);
+
+      // Get non-featured shelters
+      const nonSpotlight = allShelters.filter(shelter => !shelter.shelter_featured);
+
+      setShelters(allShelters);
+      setSpotlightShelters(spotlight); // These are now shelters with shelter_featured = true
+      setFilteredShelters([]);
+
+    } catch (error) {
+      console.error("Error fetching shelters data:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function filterShelters() {
+    if (selectedState) {
+      const filtered = shelters.filter(shelter =>
+        shelter.shelter_state &&
+        shelter.shelter_state.toLowerCase() === selectedState
+      );
+      setFilteredShelters(filtered);
+    } else {
+      setFilteredShelters([]);
+    }
+  }
+
+  const handleSearch = () => {
+    if (selectedState) {
+      setSearchPerformed(true);
+      filterShelters();
+    }
+  };
+
+  const handleClearSearch = () => {
+    setSelectedState("");
+    setFilteredShelters([]);
+    setSearchPerformed(false);
+  };
+
   return (
     <div className="min-h-screen bg-background py-12">
       <div className="container mx-auto px-4 max-w-6xl">
@@ -14,113 +135,137 @@ export default function SheltersPage() {
           </p>
         </div>
 
-        {/* Search and Filters */}
-        <div className="bg-surface rounded-2xl p-6 shadow-lg border border-border mb-8">
-          <div className="grid md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-body2 font-medium text-text mb-2">
-                Search Shelters
-              </label>
-              <input
-                type="text"
-                placeholder="Enter shelter name..."
-                className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text"
+        {/* Loading State */}
+        {loading && <LoadingGrid />}
+
+        {/* ===== 1. SPOTLIGHT SHELTERS ===== */}
+        {!loading && spotlightShelters.length > 0 && (
+          <div className="mb-12">
+            <div className="flex items-center gap-2 mb-6">
+              <Star className="w-6 h-6 text-accent fill-accent" />
+              <h2 className="text-2xl font-heading font-semibold text-primary">
+                Spotlight Shelters
+              </h2>
+            </div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+              {spotlightShelters.map((shelter, index) => (
+                <ShelterCard
+                  key={`spotlight-${index}`}
+                  shelter={shelter}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ===== 2. SEARCH BAR ===== */}
+        {!loading && (
+          <div className="mb-12">
+            <div className="bg-surface rounded-2xl p-6 shadow-lg border border-border mb-8">
+              <h2 className="text-2xl font-heading font-semibold text-primary mb-6">
+                Find Shelters in Your State
+              </h2>
+              <SearchFilters
+                selectedState={selectedState}
+                setSelectedState={setSelectedState}
+                onSearch={handleSearch}
               />
             </div>
-            <div>
-              <label className="block text-sm font-body2 font-medium text-text mb-2">
-                State
-              </label>
-              <select className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-text">
-                <option value="">All States</option>
-                <option value="ca">California</option>
-                <option value="ny">New York</option>
-                <option value="tx">Texas</option>
-                <option value="fl">Florida</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-body2 font-medium text-text mb-2">
-                &nbsp;
-              </label>
-              <button className="w-full bg-buttons text-surface py-3 rounded-xl font-heading font-semibold hover:opacity-90 transition-all">
-                Search
-              </button>
-            </div>
           </div>
-        </div>
+        )}
 
-        {/* Shelters Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          {/* Shelter Card 1 */}
-          <div className="bg-surface rounded-2xl p-6 shadow-lg border border-border hover:shadow-xl transition-shadow">
-            <h3 className="text-xl font-heading font-semibold text-primary mb-2">
-              Happy Tails Rescue
-            </h3>
-            <p className="text-text-muted mb-3">Los Angeles, CA</p>
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-sm text-primary font-semibold">
-                24 dogs registered
-              </span>
-              <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
-                Active
-              </span>
-            </div>
-            <a
-              href="#"
-              className="text-buttons hover:underline text-sm font-medium"
-            >
-              Visit Website →
-            </a>
-          </div>
+        {/* ===== 3. SEARCH RESULTS AREA ===== */}
+        {!loading && searchPerformed && (
+          <div className="mb-12">
+            {/* Search Results Header */}
+            {filteredShelters.length > 0 ? (
+              <>
+                <div className="flex items-center justify-between mb-4 sm:mb-6">
+                  <h2 className="text-2xl font-heading font-semibold text-primary">
+                    Shelters in {selectedState.toUpperCase()}
+                  </h2>
+                  <button
+                    onClick={handleClearSearch}
+                    className="text-sm text-text-muted hover:text-accent"
+                  >
+                    Clear search
+                  </button>
+                </div>
 
-          {/* Shelter Card 2 */}
-          <div className="bg-surface rounded-2xl p-6 shadow-lg border border-border hover:shadow-xl transition-shadow">
-            <h3 className="text-xl font-heading font-semibold text-primary mb-2">
-              Paws for Life
-            </h3>
-            <p className="text-text-muted mb-3">Austin, TX</p>
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-sm text-primary font-semibold">
-                18 dogs registered
-              </span>
-              <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
-                Active
-              </span>
-            </div>
-            <a
-              href="#"
-              className="text-buttons hover:underline text-sm font-medium"
-            >
-              Visit Website →
-            </a>
+                {/* Search Results List */}
+                <div className="space-y-2 sm:space-y-3">
+                  {filteredShelters.map((shelter, index) => (
+                    <div
+                      key={index}
+                      className="flex flex-col sm:flex-row sm:items-center justify-between py-3 px-2 sm:px-4 hover:bg-primary/5 rounded-lg transition-colors border-b border-border last:border-0"
+                    >
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-medium text-text text-sm sm:text-base">
+                          {shelter.shelter_name}
+                        </h3>
+                        <p className="text-xs sm:text-sm text-text-muted">
+                          {shelter.shelter_city && `${shelter.shelter_city}, `}
+                          {shelter.shelter_state}
+                          {shelter.dog_count > 0 && (
+                            <span className="ml-2 sm:ml-3 text-accent">
+                              • {shelter.dog_count} registered
+                            </span>
+                          )}
+                        </p>
+                      </div>
+                      {shelter.shelter_website && (
+                        <a
+                          href={shelter.shelter_website}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs sm:text-sm text-accent hover:underline whitespace-nowrap mt-1 sm:mt-0"
+                        >
+                          Visit Website →
+                        </a>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </>
+            ) : (
+              /* No Results Message */
+              <div className="text-center py-12 bg-surface rounded-2xl border border-border">
+                <p className="text-xl text-text-muted mb-4 pl-2 pr-2">
+                  No shelters found in {selectedState.toUpperCase()}. Be the first to register from this state!
+                </p>
+                <div className="space-y-4">
+                  <button
+                    onClick={handleClearSearch}
+                    className="bg-buttons text-surface px-6 py-3 rounded-xl font-heading font-semibold hover:opacity-90 transition-all"
+                  >
+                    Try another state
+                  </button>
+                  <p className="text-sm text-text-muted">
+                    Or <Link href="/register" className="text-accent hover:underline">register your dog</Link> to add a shelter
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
+        )}
 
-          {/* Shelter Card 3 */}
-          <div className="bg-surface rounded-2xl p-6 shadow-lg border border-border hover:shadow-xl transition-shadow">
-            <h3 className="text-xl font-heading font-semibold text-primary mb-2">
-              Second Chance Shelter
-            </h3>
-            <p className="text-text-muted mb-3">Chicago, IL</p>
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-sm text-primary font-semibold">
-                15 dogs registered
-              </span>
-              <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
-                Active
-              </span>
-            </div>
-            <a
-              href="#"
-              className="text-buttons hover:underline text-sm font-medium"
+        {/* No Data - No shelters at all in database */}
+        {!loading && shelters.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-xl text-text-muted mb-4">
+              No shelters registered yet. When you register a rescue dog, their shelter will appear here!
+            </p>
+            <Link
+              href="/register"
+              className="bg-buttons text-surface px-6 py-3 rounded-xl font-heading font-semibold hover:opacity-90 transition-all inline-block"
             >
-              Visit Website →
-            </a>
+              Register Your Dog
+            </Link>
           </div>
-        </div>
+        )}
 
         {/* Call to Action */}
-        <div className="text-center">
+        <div className="text-center mt-12">
           <div className="bg-surface rounded-2xl p-8 border border-border">
             <h2 className="text-2xl font-heading font-semibold text-primary mb-4">
               Is your shelter missing?
@@ -130,12 +275,12 @@ export default function SheltersPage() {
               shelter automatically gets added to our directory. Help us
               recognize the amazing work they do!
             </p>
-            <a
+            <Link
               href="/register"
               className="bg-buttons text-surface px-8 py-4 rounded-xl font-heading font-semibold hover:opacity-90 transition-all inline-block"
             >
               Register Your Dog
-            </a>
+            </Link>
           </div>
         </div>
       </div>
