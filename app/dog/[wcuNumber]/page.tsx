@@ -65,5 +65,5 @@ export default async function DogProfilePage({
         return <MemorialProfile registration={registration as Registration} />
     }
 
-    return <LivingProfile registration={registration as Registration} />
+    return <LivingProfile registration={registration as Registration} wcuNumber={wcuNumber} />
 }

@@ -12,11 +12,12 @@ import LivingShareCard from './LivingShareCard'
 
 interface LivingProfileProps {
     registration: Registration
+    wcuNumber: string
 }
 
 
 
-export default function LivingProfile({ registration }: LivingProfileProps) {
+export default function LivingProfile({ registration, wcuNumber }: LivingProfileProps) {
     // Calculate age if birth date exists
     const calculateAge = () => {
         if (!registration.birth_date) return null
@@ -109,7 +110,7 @@ export default function LivingProfile({ registration }: LivingProfileProps) {
                             />
                         )}
 
-                        <LivingShareCard dogName={registration.dog_name} />
+                        <LivingShareCard dogName={registration.dog_name} wcuNumber={wcuNumber} />
                     </div>
                 </div>
             </div>
