@@ -226,7 +226,7 @@ export default function DogsSearchPage() {
                 />
 
                 {/* Navigation */}
-                <div className="flex flex-col sm:flex-row gap-4 justify-between mt-12 pt-8 border-t border-border">
+                <div className="flex flex-col sm:flex-row gap-4 justify-between mt-5 pt-8 border-t border-border">
                     <Link href="/" className="text-accent hover:text-accent/80 font-medium text-center">
                         ← Return to Homepage
                     </Link>

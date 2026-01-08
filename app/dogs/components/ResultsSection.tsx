@@ -119,6 +119,17 @@ export default function ResultsSection({
                     </div>
                 </div>
             )}
+
+            <div className="mt-3 pt-6 text-center">
+                {breedResults.length > 20 && (
+                    <button
+                        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                        className="bg-buttons text-surface p-3 rounded-full shadow-lg hover:opacity-90 transition-all"
+                    >
+                        ↑ Back to Top
+                    </button>
+                )}
+            </div>
         </div>
     );
 }
