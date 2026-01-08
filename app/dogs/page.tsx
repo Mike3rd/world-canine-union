@@ -16,39 +16,73 @@ export default function DogsSearchPage() {
     const [searchPerformed, setSearchPerformed] = useState(false);
     const [popularBreeds, setPopularBreeds] = useState<string[]>([]);
 
+    // --- ADD THESE 3 NEW STATE VARIABLES ---
+    const [currentPage, setCurrentPage] = useState(1);
+    const [hasMore, setHasMore] = useState(false);
+    const [isLoadingMore, setIsLoadingMore] = useState(false);
+    const DOGS_PER_PAGE = 2; // Constant for batch size
+
     useEffect(() => {
         fetchPopularBreeds();
     }, []);
 
     async function fetchPopularBreeds() {
-        // Fixed: Added proper TypeScript types
-        const { data } = await supabase
-            .from('registrations')
-            .select('breed_description')
-            .eq('status', 'completed')
-            .limit(100);
+        try {
+            // Fetch all completed registrations
+            const { data, error } = await supabase
+                .from('registrations')
+                .select('breed_description')
+                .eq('status', 'completed')
+                .not('breed_description', 'is', null);
 
-        if (data) {
-            const breedSet = new Set<string>();
+            if (error) throw error;
+            if (!data || data.length === 0) {
+                setPopularBreeds([]);
+                return;
+            }
 
-            data.forEach((dog: DogRegistration) => {
+            // Count frequencies of the PRIMARY breed only
+            const breedCountMap = new Map<string, number>();
+
+            data.forEach((dog: DogRegistration) => {  // <-- ADD TYPE HERE
                 if (dog.breed_description) {
-                    const breeds = dog.breed_description
-                        .split(/[+&,]/)
-                        .map((b: string) => b.trim())
-                        .filter((b: string) => b.length > 0)
-                        .map((b: string) => b.replace(/\s*mix\s*/gi, '').trim())
-                        .filter((b: string) => b.length > 0 && !b.match(/^and$/i));
+                    // Extract primary breed - handle both cases:
+                    const primaryBreed = dog.breed_description
+                        .split('+')[0]
+                        .trim()
+                        .toLowerCase();
 
-                    breeds.forEach((breed: string) => breedSet.add(breed));
+                    const cleanedBreed = primaryBreed
+                        .replace(/\s*mix\s*/gi, '')
+                        .replace(/\s*\/\s*/g, ' ')
+                        .trim();
+
+                    if (cleanedBreed && cleanedBreed.length > 1) {
+                        breedCountMap.set(
+                            cleanedBreed,
+                            (breedCountMap.get(cleanedBreed) || 0) + 1
+                        );
+                    }
                 }
             });
 
-            const breeds = Array.from(breedSet)
-                .filter(breed => breed.length > 2)
-                .slice(0, 12);
+            // Convert to array, sort by count, and take top 5
+            const topBreeds = Array.from(breedCountMap.entries())
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5)
+                .map(([breed]) => {
+                    return breed
+                        .split(' ')
+                        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                        .join(' ');
+                });
 
-            setPopularBreeds(breeds);
+            console.log('Top 5 breeds calculated:', topBreeds);
+            setPopularBreeds(topBreeds);
+
+        } catch (error) {
+            console.error('Error fetching popular breeds:', error);
+            setPopularBreeds([]);
         }
     }
 
@@ -63,32 +97,75 @@ export default function DogsSearchPage() {
         }
     };
 
-    const handleBreedSearch = async (e: React.FormEvent) => {
+    const handleBreedSearch = async (e: React.FormEvent, loadMore = false) => {
         e.preventDefault();
-        if (!breedSearch.trim()) return;
+        if (!breedSearch.trim() && !loadMore) return;
 
-        setLoading(true);
-        setSearchPerformed(true);
+        // Set correct loading state
+        if (loadMore) {
+            setIsLoadingMore(true);
+        } else {
+            setLoading(true);
+            setSearchPerformed(true);
+        }
 
         try {
             const cleanSearch = breedSearch.trim().toLowerCase().replace(/\s*mix\s*/gi, '').trim();
 
-            const { data, error } = await supabase
+            // Determine which page to fetch
+            const pageToFetch = loadMore ? currentPage + 1 : 1;
+            const from = (pageToFetch - 1) * DOGS_PER_PAGE;
+            const to = from + DOGS_PER_PAGE - 1;
+
+            // Build query with pagination
+            let query = supabase
                 .from('registrations')
-                .select('registration_number, dog_name, breed_description, shelter_name, created_at, photo_url, is_memorial')
+                .select('registration_number, dog_name, breed_description, shelter_name, created_at, photo_url, is_memorial', { count: 'exact' })
                 .eq('status', 'completed')
-                .or(`breed_description.ilike.%${cleanSearch}%`)
                 .order('created_at', { ascending: false })
-                .limit(50);
+                .range(from, to);
+
+            // Add breed filter if searching
+            if (cleanSearch) {
+                // Search only primary breed (before +)
+                query = query.or(`breed_description.ilike.${cleanSearch}%,breed_description.ilike.%+ ${cleanSearch}%`);
+            }
+
+            const { data, error, count } = await query;
 
             if (error) throw error;
-            setBreedResults(data || []);
+
+            // Update results based on whether we're loading more
+            if (loadMore) {
+                setBreedResults(prev => [...prev, ...(data || [])]);
+                setCurrentPage(pageToFetch);
+            } else {
+                setBreedResults(data || []);
+                setCurrentPage(1);
+            }
+
+            // Check if there are more results available
+            const totalResults = count || 0;
+            const loadedResults = loadMore ? breedResults.length + (data?.length || 0) : (data?.length || 0);
+            setHasMore(loadedResults < totalResults);
 
         } catch (error) {
             console.error('Error searching breeds:', error);
-            setBreedResults([]);
+            if (!loadMore) setBreedResults([]);
         } finally {
-            setLoading(false);
+            if (loadMore) {
+                setIsLoadingMore(false);
+            } else {
+                setLoading(false);
+            }
+        }
+    };
+
+    // Separate handler for the Load More button
+    const handleLoadMore = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (hasMore && !isLoadingMore) {
+            handleBreedSearch(e, true);
         }
     };
 
@@ -137,7 +214,15 @@ export default function DogsSearchPage() {
                     searchPerformed={searchPerformed}
                     breedSearch={breedSearch}
                     breedResults={breedResults}
-                    onClearSearch={() => setSearchPerformed(false)}
+                    hasMore={hasMore} // ADD THIS
+                    isLoadingMore={isLoadingMore} // ADD THIS
+                    onClearSearch={() => {
+                        setSearchPerformed(false);
+                        setBreedResults([]);
+                        setCurrentPage(1);
+                        setHasMore(false);
+                    }}
+                    onLoadMore={handleLoadMore} // ADD THIS
                 />
 
                 {/* Navigation */}

@@ -9,7 +9,10 @@ interface ResultsSectionProps {
     searchPerformed: boolean;
     breedSearch: string;
     breedResults: DogRegistration[];
+    hasMore: boolean; // ADD THIS
+    isLoadingMore: boolean; // ADD THIS
     onClearSearch: () => void;
+    onLoadMore: (e: React.FormEvent) => void;
 }
 
 export default function ResultsSection({
@@ -17,7 +20,10 @@ export default function ResultsSection({
     searchPerformed,
     breedSearch,
     breedResults,
-    onClearSearch
+    hasMore,
+    isLoadingMore,
+    onClearSearch,
+    onLoadMore
 }: ResultsSectionProps) {
     if (!searchPerformed) return null;
 
@@ -29,7 +35,7 @@ export default function ResultsSection({
                 </h2>
                 {breedResults.length > 0 && (
                     <span className="text-sm text-text-muted">
-                        Showing {Math.min(breedResults.length, 50)} of {breedResults.length} dogs
+                        Showing {breedResults.length} dogs
                     </span>
                 )}
             </div>
@@ -41,15 +47,53 @@ export default function ResultsSection({
                     ))}
                 </div>
             ) : breedResults.length > 0 ? (
-                <div className="space-y-4">
-                    {breedResults.map((dog) => (
-                        <DogCard
-                            key={dog.registration_number}
-                            dog={dog}
-                            searchTerm={breedSearch}
-                        />
-                    ))}
-                </div>
+                <>
+                    {/* Dog Results List */}
+                    <div className="space-y-4">
+                        {breedResults.map((dog) => (
+                            <DogCard
+                                key={dog.registration_number}
+                                dog={dog}
+                                searchTerm={breedSearch}
+                            />
+                        ))}
+                    </div>
+
+                    {/* LOAD MORE BUTTON SECTION - ADD THIS */}
+                    {hasMore && (
+                        <div className="mt-8 pt-6 border-t border-border text-center">
+                            <button
+                                onClick={onLoadMore}
+                                disabled={isLoadingMore}
+                                className="bg-buttons text-surface px-6 py-3 rounded-lg font-heading font-semibold hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {isLoadingMore ? (
+                                    <span className="flex items-center justify-center gap-2">
+                                        <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-surface"></span>
+                                        Loading more dogs...
+                                    </span>
+                                ) : (
+                                    `Load More ${breedSearch} Dogs`
+                                )}
+                            </button>
+                            <p className="text-sm text-text-muted mt-3">
+                                Load the next 20 dogs matching "{breedSearch}"
+                            </p>
+                        </div>
+                    )}
+
+                    {/* END OF RESULTS MESSAGE - ADD THIS */}
+                    {!hasMore && breedResults.length > 0 && (
+                        <div className="mt-8 pt-6 border-t border-border text-center">
+                            <p className="text-text-muted">
+                                🐾 You've seen all {breedResults.length} dogs matching "{breedSearch}"!
+                            </p>
+                            <p className="text-sm text-text-muted mt-2">
+                                Try searching for a different breed or use the buttons above.
+                            </p>
+                        </div>
+                    )}
+                </>
             ) : (
                 <div className="text-center py-12">
                     <div className="text-4xl mb-4">🐕</div>

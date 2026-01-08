@@ -18,7 +18,7 @@ export default function PrivacyPolicyPage() {
                             </h1>
                         </div>
                         <p className="text-xl opacity-90">
-                            How World Canine Union collects, uses, and protects your information
+                            How World Canine Union LLC collects, uses, and protects your information
                         </p>
                         <div className="mt-8 text-sm opacity-80">
                             <p>Last Updated: {lastUpdated}</p>
@@ -35,7 +35,7 @@ export default function PrivacyPolicyPage() {
                         Our Commitment to Your Privacy
                     </h2>
                     <p className="text-text-muted mb-4">
-                        At World Canine Union, we are committed to protecting your personal information
+                        At World Canine Union LLC, we are committed to protecting your personal information
                         and being transparent about how we collect, use, and safeguard your data. This
                         Privacy Policy explains our practices regarding the information we collect when
                         you register your dog, use our website, or interact with our services.
@@ -136,7 +136,7 @@ export default function PrivacyPolicyPage() {
                                 We Do Not Sell Your Data
                             </h3>
                             <p className="text-text-muted">
-                                World Canine Union does not sell, rent, or trade your personal
+                                World Canine Union LLC does not sell, rent, or trade your personal
                                 information to third parties. We only share information as described
                                 below or with your explicit consent.
                             </p>

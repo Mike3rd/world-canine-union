@@ -15,7 +15,7 @@ export default function Footer() {
                     </Link>
                 </p>
                 <p className="text-footer-text/80">
-                    © {currentYear} World Canine Union. All rights reserved.
+                    © {currentYear} World Canine Union LLC. All rights reserved.
                 </p>
                 <p className="sr-only">
                     <a href="/fact-sheet.json">World Canine Union Fact Sheet</a>
