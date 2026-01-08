@@ -69,20 +69,18 @@ export default function LivingShareCard({ dogName, wcuNumber }: LivingShareCardP
                 {/* PRIMARY SHARE BUTTON */}
                 <button
                     onClick={handleShareClick}
-                    className="flex items-center justify-center gap-2 flex-1 bg-dog-buttons text-white px-4 py-3 rounded-lg font-medium hover:bg-dog-error transition font-body"
+                    className="flex items-center justify-center gap-2 flex-1 bg-dog-buttons text-white px-4 py-3 rounded-lg font-medium hover:bg-dog-error transition cursor-pointer"
                 >
-                    <Share2 size={20} /> {/* Icon added here */}
-                    Share
+                    <Share2 size={20} />Share {/* No space or line break between /> and text */}
                 </button>
                 {/* COPY LINK BUTTON */}
                 <button
                     onClick={handleCopyClick}
-                    className={`flex items-center justify-center gap-2 flex-1 px-4 py-3 rounded-lg font-medium transition font-body border ${copied
+                    className={`flex items-center justify-center gap-2 flex-1 px-4 py-3 rounded-lg font-medium transition border cursor-pointer ${copied
                         ? 'bg-green-100 text-green-800 border-green-300'
                         : 'bg-dog-background text-dog-text hover:bg-dog-border border-dog-border'
                         }`}
                 >
-                    {/* Now Check is imported and will work */}
                     {copied ? <Check size={20} className="text-green-700" /> : <Link size={20} />}
                     {copied ? 'Link Copied!' : 'Copy Link'}
                 </button>

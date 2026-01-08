@@ -16,7 +16,7 @@ export default function LivingCertificateCard({ dogName, pdfUrl }: LivingCertifi
                 href={pdfUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center w-full bg-dog-buttons text-white px-6 py-3 rounded-lg font-semibold hover:bg-dog-error transition font-body"
+                className="inline-flex items-center justify-center w-full bg-dog-buttons text-white px-6 py-3 rounded-lg hover:bg-dog-error transition font-body font-heading font-medium "
             >
                 View/Download Certificate
             </a>
