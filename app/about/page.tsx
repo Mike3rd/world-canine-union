@@ -1,6 +1,7 @@
 // app/about/page.tsx
 import { Heart, Users, Trophy, MapPin, Star, Globe, Shield, Target } from 'lucide-react';
 import Link from 'next/link';
+import NavigationFooter from '@/components/navigation/NavigationFooter';
 
 export default function AboutPage() {
     return (
@@ -321,22 +322,7 @@ export default function AboutPage() {
                         </div>
                     </div>
                 </div>
-
-                {/* Navigation */}
-                <div className="flex flex-col sm:flex-row gap-4 justify-between mt-12 pt-8 border-t border-border">
-                    <Link
-                        href="/"
-                        className="text-accent hover:text-accent/80 font-medium text-center"
-                    >
-                        ← Return to Homepage
-                    </Link>
-                    <Link
-                        href="/give-back"
-                        className="text-accent hover:text-accent/80 font-medium text-center"
-                    >
-                        How We Give Back →
-                    </Link>
-                </div>
+                <NavigationFooter />
             </div>
         </div>
     );
