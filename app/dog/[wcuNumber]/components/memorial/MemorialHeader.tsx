@@ -66,7 +66,7 @@ export default function MemorialHeader({
                                         backgroundClip: 'text',
                                     }}
                                 >
-                                    💥SPOTLIGHT DOG💥
+                                    💥MEMORIAL DOG💥
                                 </span>
                             </div>
 

@@ -23,7 +23,7 @@ export default function MemorialTributes({ dogId, dogName }: MemorialTributesPro
     const [currentPage, setCurrentPage] = useState(1)
     const [hasMore, setHasMore] = useState(false)
     const [isLoadingMore, setIsLoadingMore] = useState(false)
-    const TRIBUTES_PER_PAGE = 1
+    const TRIBUTES_PER_PAGE = 3
 
     // Fetch initial data
     useEffect(() => {
