@@ -17,25 +17,25 @@ export default function LivingShareCard({ dogName, wcuNumber }: LivingShareCardP
     // 1. UNIVERSAL SHARE BUTTON LOGIC
     const handleShareClick = async () => {
         const profileUrl = buildProfileUrl();
-        // The text now explicitly includes the URL as a reliable fallback
-        const shareText = `Check out ${dogName}'s profile on the World Canine Union registry! ${profileUrl}`;
+        // Two versions of the text:
+        const shortText = `Check out ${dogName}'s profile on the World Canine Union registry!`;
+        const textWithUrl = `${shortText} ${profileUrl}`; // Has URL for fallback
 
         if (navigator.share) {
             try {
                 await navigator.share({
                     title: `${dogName}'s WCU Profile`,
-                    text: shareText, // Includes URL here
+                    text: textWithUrl, // <-- NOW INCLUDES URL for email clients
                     url: profileUrl,
                 });
                 return;
             } catch (error) {
-                // User cancelled the share dialog. Do nothing.
                 console.log('Share cancelled.');
             }
         }
-        // Fallback: If native share isn't supported, open email as a default
+        // Fallback (for browsers without Web Share API)
         const subject = encodeURIComponent(`${dogName}'s WCU Profile`);
-        const body = encodeURIComponent(shareText);
+        const body = encodeURIComponent(textWithUrl);
         window.location.href = `mailto:?subject=${subject}&body=${body}`;
     };
 
