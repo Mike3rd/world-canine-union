@@ -17,10 +17,10 @@ interface MemorialProfileProps {
         memorial_cause?: string | null
         memorial_favorite_memories?: string | null
     }
+    wcuNumber: string
 }
 
-export default function MemorialProfile({ registration }: MemorialProfileProps) {
-
+export default function MemorialProfile({ registration, wcuNumber }: MemorialProfileProps) {
 
     const isSpotlightActive = registration.is_spotlight &&
         (!registration.spotlight_expires_at ||
@@ -105,7 +105,7 @@ export default function MemorialProfile({ registration }: MemorialProfileProps) 
                             />
                         )}
 
-                        <MemorialShareCard dogName={registration.dog_name} />
+                        <MemorialShareCard dogName={registration.dog_name} wcuNumber={wcuNumber} />
                         <MemorialPersonalityTraits
                             specialAttributes={registration.special_attributes ?? null}
                             favoriteActivities={registration.favorite_activities ?? null}

@@ -62,7 +62,7 @@ export default async function DogProfilePage({
     if (registration.is_memorial) {
         // You'll need to import MemorialProfile
         // import MemorialProfile from './components/memorial/MemorialProfile'
-        return <MemorialProfile registration={registration as Registration} />
+        return <MemorialProfile registration={registration as Registration} wcuNumber={wcuNumber} />
     }
 
     return <LivingProfile registration={registration as Registration} wcuNumber={wcuNumber} />
