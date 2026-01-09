@@ -23,6 +23,43 @@
   --color-dog-card-gradient-from: #F0F4F8;
   --color-dog-card-gradient-to: #E3F2FD;
 
+  /* ====== SPOTLIGHT BANNER VARIABLES ====== */
+--color-spotlight-primary: #1e84b8;           /* Main spotlight blue */
+--color-spotlight-primary-rgb: 30, 132, 184;
+--color-spotlight-primary-light: #e1f0ff;     /* Very light blue */
+--color-spotlight-primary-dark: #166ba0;      /* Darker blue for contrast */
+--color-spotlight-primary-20: rgba(30, 132, 184, 0.2);   /* 20% opacity */
+--color-spotlight-primary-30: rgba(30, 132, 184, 0.3);   /* 30% opacity */
+--color-spotlight-border: #1e84b8;            /* Border color */
+--color-spotlight-text-primary: #263238;      /* Dark text for banner */
+--color-spotlight-text-accent: #1e84b8;       /* Blue accent text */
+--color-spotlight-bg-from: #f0f8ff;           /* Gradient start */
+--color-spotlight-bg-to: #e1f0ff;             /* Gradient end */
+--color-spotlight-textbox-bg: rgba(255, 255, 255, 0.9);  /* Text box background */
+
+/* Blue theme (current)
+--color-spotlight-primary: #1e84b8;
+--color-spotlight-primary-light: #e1f0ff;
+--color-spotlight-bg-from: #f0f8ff;
+--color-spotlight-bg-to: #e1f0ff; */
+
+/* Gold/Premium theme
+--color-spotlight-primary: #d4af37;
+--color-spotlight-primary-light: #fff8e1;
+--color-spotlight-bg-from: #fffde7;
+--color-spotlight-bg-to: #fff9c4; */
+
+/* Purple/Elegant theme
+--color-spotlight-primary: #8a2be2;
+--color-spotlight-primary-light: #f3e5f5;
+--color-spotlight-bg-from: #f3e5f5;
+--color-spotlight-bg-to: #e1bee7; */
+
+/* Green/Eco theme
+--color-spotlight-primary: #2e7d32;
+--color-spotlight-primary-light: #e8f5e9;
+--color-spotlight-bg-from: #f1f8e9;
+--color-spotlight-bg-to: #dcedc8; */
   
 }
 

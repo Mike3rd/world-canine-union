@@ -1,5 +1,5 @@
 // app/dog/[wcuNumber]/components/living/LivingHeader.tsx
-import { Sparkles, CalendarDays, VenusAndMars, Award, Star } from 'lucide-react'
+import { Sparkles, CalendarDays, VenusAndMars, Trophy } from 'lucide-react'
 import HeartIcon from '../HeartIcon'
 
 interface LivingHeaderProps {
@@ -21,16 +21,62 @@ export default function LivingHeader({
 }: LivingHeaderProps) {
     return (
         <div className="bg-dog-header-bg text-dog-header-text">
+
             {/* SPOTLIGHT BANNER - Above header */}
             {isSpotlight && (
-                <div className="bg-gradient-to-r from-purple-600 to-pink-600 py-3">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="flex items-center justify-center gap-2">
-                            <Award className="w-4 h-4 text-white flex-shrink-0" />
-                            <span className="text-sm font-bold text-white text-center">
-                                WCU Spotlight Dog • {spotlightReason || 'Featured'}
-                            </span>
-                            <Star className="w-4 h-4 text-yellow-300 flex-shrink-0" />
+                <div
+                    className="border-y-4 py-6 relative overflow-hidden"
+                    style={{
+                        borderColor: 'var(--color-spotlight-border)',
+                        background: 'linear-gradient(to right, var(--color-spotlight-bg-from), var(--color-spotlight-bg-to))'
+                    }}
+                >
+                    {/* Diagonal lines */}
+                    <div
+                        className="absolute -left-4 top-0 w-8 h-full transform -skew-x-12"
+                        style={{ backgroundColor: 'var(--color-spotlight-primary-20)' }}
+                    ></div>
+                    <div
+                        className="absolute -right-4 top-0 w-8 h-full transform skew-x-12"
+                        style={{ backgroundColor: 'var(--color-spotlight-primary-20)' }}
+                    ></div>
+
+                    <div className="max-w-6xl mx-auto px-6">
+                        <div className="text-center">
+                            <div className="inline-flex items-center gap-3 mb-2">
+                                <span
+                                    className="text-2xl font-black tracking-wide"
+                                    style={{
+                                        color: 'var(--color-spotlight-text-primary)',
+                                        textShadow: '2px 2px 4px rgba(0,0,0,0.1), 0 0 20px rgba(var(--color-spotlight-primary-rgb), 0.15)',
+                                        background: 'linear-gradient(135deg, var(--color-spotlight-primary) 0%, var(--color-spotlight-primary-dark) 100%)',
+                                        WebkitBackgroundClip: 'text',
+                                        WebkitTextFillColor: 'transparent',
+                                        backgroundClip: 'text',
+                                    }}
+                                >
+                                    💥SPOTLIGHT DOG💥
+                                </span>
+                            </div>
+
+                            {/* Text box with CSS variable border */}
+                            <div
+                                className="text-lg font-medium mt-3 px-4 py-3 rounded-xl shadow-sm max-w-5xl mx-auto"
+                                style={{
+                                    color: 'var(--color-spotlight-text-primary)',
+                                    backgroundColor: 'var(--color-spotlight-textbox-bg)',
+                                    border: '1px solid var(--color-spotlight-primary-30)'
+                                }}
+                            >
+                                "{spotlightReason || 'Recognized as an extraordinary canine with remarkable qualities and positive community impact'}"
+                            </div>
+
+                            {/* Subtitle with accent color */}
+                            <div className="flex items-center justify-center gap-2 mt-3 text-sm"
+                                style={{ color: 'var(--color-spotlight-text-accent)' }}>
+                                <Trophy className="w-4 h-4 flex-shrink-0" />
+                                <span className="tracking-wide">World Canine Union Recognition</span>
+                            </div>
                         </div>
                     </div>
                 </div>

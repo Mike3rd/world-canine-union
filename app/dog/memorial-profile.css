@@ -12,6 +12,20 @@
   --color-memorial-rainbow-end: #A1C4FD;  /* Rainbow gradient end */
   --color-memorial-gradient: #A1C4FD;  /* Memorial gradient */
   --color-memorial-gradient-end: #CEACDF;  /* Memorial gradient end */
+
+  /* ====== MEMORIAL SPOTLIGHT BANNER VARIABLES ====== */
+--color-memorial-spotlight-primary: #8a6bc9;           /* Main purple/lilac */
+--color-memorial-spotlight-primary-rgb: 138, 107, 201;
+--color-memorial-spotlight-primary-light: #f0e8ff;     /* Very light purple */
+--color-memorial-spotlight-primary-dark: #6a4cb8;      /* Darker purple for contrast */
+--color-memorial-spotlight-primary-20: rgba(138, 107, 201, 0.2);   /* 20% opacity */
+--color-memorial-spotlight-primary-30: rgba(138, 107, 201, 0.3);   /* 30% opacity */
+--color-memorial-spotlight-border: #8a6bc9;            /* Border color */
+--color-memorial-spotlight-text-primary: #4a4458;      /* Dark purple-gray text */
+--color-memorial-spotlight-text-accent: #8a6bc9;       /* Purple accent text */
+--color-memorial-spotlight-bg-from: #f9f5ff;           /* Gradient start - light lavender */
+--color-memorial-spotlight-bg-to: #f0e8ff;             /* Gradient end - light lilac */
+--color-memorial-spotlight-textbox-bg: rgba(255, 255, 255, 0.9);  /* Text box background */
   
   /* UI Colors */
   --color-memorial-header-bg: #220f2b;    /* Header background */
