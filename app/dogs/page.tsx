@@ -20,7 +20,7 @@ export default function DogsSearchPage() {
     const [currentPage, setCurrentPage] = useState(1);
     const [hasMore, setHasMore] = useState(false);
     const [isLoadingMore, setIsLoadingMore] = useState(false);
-    const DOGS_PER_PAGE = 2; // Constant for batch size
+    const DOGS_PER_PAGE = 5; // Constant for batch size
 
     useEffect(() => {
         fetchPopularBreeds();
