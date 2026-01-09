@@ -66,7 +66,7 @@ export default function MemorialHeader({
                                         backgroundClip: 'text',
                                     }}
                                 >
-                                    💥MEMORIAL DOG💥
+                                    ❀ MEMORIAL DOG ❀
                                 </span>
                             </div>
 
@@ -85,8 +85,8 @@ export default function MemorialHeader({
                             {/* Subtitle with heart icon */}
                             <div className="flex items-center justify-center gap-2 mt-3 text-sm"
                                 style={{ color: 'var(--color-memorial-spotlight-text-accent)' }}>
-                                <Heart className="w-4 h-4 flex-shrink-0" />
-                                <span className="tracking-wide">Forever in Our Hearts • World Canine Union</span>
+                                {/* <Heart className="w-4 h-4 flex-shrink-0" /> */}
+                                <span className="tracking-wide">Forever in Our Hearts • World Canine Union Recognition</span>
                             </div>
                         </div>
                     </div>
