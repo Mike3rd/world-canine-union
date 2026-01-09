@@ -24,7 +24,7 @@ export default function MemorialPhotoCard({ photoUrl, dogName }: MemorialPhotoCa
             <div className="absolute top-6 left-6 z-10">
                 <div className="flex items-center px-3 py-1 rounded-full bg-memorial-accent text-white">
                     <Ribbon className="w-4 h-4 mr-1" />
-                    <span className="text-md font-semibold">In Memory</span>
+                    <span className="text-sm font-semibold">In Memory</span>
                 </div>
             </div>
 
@@ -51,6 +51,9 @@ export default function MemorialPhotoCard({ photoUrl, dogName }: MemorialPhotoCa
                         </div>
                     </div>
                 )}
+
+
+
 
                 {/* Overlay */}
                 <div className="absolute inset-4 bg-black/10 pointer-events-none"></div>
