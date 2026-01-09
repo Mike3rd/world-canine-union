@@ -89,13 +89,42 @@ export async function generateMetadata({
 
     const dogPageUrl = `${baseUrl}/dog/${wcuNumber}`;
 
+    // ========== SPOTLIGHT UPDATES START ==========
+    // Check if it's a spotlight dog
+    const isSpotlight = registration.is_spotlight;
+    const spotlightReason = registration.spotlight_reason;
+
+    // Determine title and description based on spotlight status
+    let pageTitle = `${registration.dog_name}'s WCU Profile`;
+    let pageDescription = `Meet ${registration.dog_name}${registration.breed_description ? `, a ${registration.breed_description}` : ''} registered with the World Canine Union.`;
+
+    // Spotlight-specific content
+    let ogTitle = `${registration.dog_name}'s WCU Profile`;
+    let ogDescription = `Meet ${registration.dog_name}, a unique dog registered with the World Canine Union.`;
+    let twitterDescription = `Meet ${registration.dog_name}, registered with the World Canine Union.`;
+
+    if (isSpotlight) {
+        // For spotlight dogs, enhance the titles/descriptions
+        const spotlightPrefix = "🌟 Spotlight Dog: ";
+        const spotlightSuffix = spotlightReason ? ` - ${spotlightReason}` : " - Featured WCU Dog";
+
+        // Update page metadata
+        pageTitle = `${spotlightPrefix}${registration.dog_name}${spotlightSuffix}`;
+
+        // Update OG and Twitter metadata
+        ogTitle = `${spotlightPrefix}${registration.dog_name}${spotlightSuffix}`;
+        ogDescription = `🌟 ${registration.dog_name} is a WCU Spotlight Dog! ${spotlightReason || 'Featured for being an extraordinary canine companion!'}`;
+        twitterDescription = `🌟 ${registration.dog_name} is a WCU Spotlight Dog! ${spotlightReason || 'Check out this amazing dog!'}`;
+    }
+    // ========== SPOTLIGHT UPDATES END ==========
+
     return {
-        title: `${registration.dog_name}'s WCU Profile`,
-        description: `Meet ${registration.dog_name}${registration.breed_description ? `, a ${registration.breed_description}` : ''} registered with the World Canine Union.`,
+        title: pageTitle,
+        description: pageDescription,
 
         openGraph: {
-            title: `${registration.dog_name}'s WCU Profile`,
-            description: `Meet ${registration.dog_name}, a unique dog registered with the World Canine Union.`,
+            title: ogTitle,
+            description: ogDescription,
             images: [
                 {
                     url: dogImageUrl,
@@ -110,8 +139,8 @@ export async function generateMetadata({
 
         twitter: {
             card: 'summary_large_image',
-            title: `${registration.dog_name}'s WCU Profile`,
-            description: `Meet ${registration.dog_name}, registered with the World Canine Union.`,
+            title: ogTitle,
+            description: twitterDescription,
             images: [dogImageUrl],
         },
 
