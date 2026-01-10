@@ -227,7 +227,7 @@ export default function MemorialTributes({ dogId, dogName }: MemorialTributesPro
                                             </span>
                                         </span>
                                     ) : (
-                                        `Light a candle for ${dogName}`
+                                        `Leave a tribute to light a candle for ${dogName}`
                                     )}
                                 </p>
                             </div>

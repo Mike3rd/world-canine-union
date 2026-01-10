@@ -14,7 +14,7 @@ export default function MemorialShareCard({ dogName, wcuNumber }: MemorialShareC
 
     // Function to build the URL safely on the client
     const buildProfileUrl = () => `${window.location.origin}/dog/${wcuNumber}`
-    const shareText = `Remember ${dogName}. Visit their memorial page on the World Canine Union registry.`
+    const shareText = `Remember ${dogName}. Visit their World Canine Union memorial profile page.`
 
     // 1. Universal Share Button Logic
     const handleShareClick = async () => {
@@ -24,7 +24,7 @@ export default function MemorialShareCard({ dogName, wcuNumber }: MemorialShareC
             try {
                 await navigator.share({
                     title: `In Memory of ${dogName}`,
-                    text: `🐾${shareText}\n\n${profileUrl}`, // ✅ always visible
+                    text: `🐾 ${shareText}\n\n${profileUrl}`, // ✅ always visible
                     // ❌ do NOT pass `url`
                 })
                 return
