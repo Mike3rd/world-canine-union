@@ -19,27 +19,26 @@ export default function MemorialShareCard({ dogName, wcuNumber }: MemorialShareC
     // 1. Universal Share Button Logic
     const handleShareClick = async () => {
         const profileUrl = buildProfileUrl()
-        const textWithUrl = `${shareText} ${profileUrl}` // Include URL in text
 
         if (navigator.share) {
             try {
                 await navigator.share({
                     title: `In Memory of ${dogName}`,
-                    text: textWithUrl,
-                    url: profileUrl,
+                    text: `🐾${shareText}\n\n${profileUrl}`, // ✅ always visible
+                    // ❌ do NOT pass `url`
                 })
                 return
-            } catch (error) {
-                // User cancelled share
-                console.log('Share cancelled.')
+            } catch {
+                // user cancelled
             }
         }
-        // Fallback: Open email
+
+        // Email fallback
         const subject = encodeURIComponent(`In Memory of ${dogName}`)
-        const body = encodeURIComponent(textWithUrl)
+        const body = encodeURIComponent(`${shareText}\n\n${profileUrl}`)
+
         window.location.href = `mailto:?subject=${subject}&body=${body}`
     }
-
     // 2. "Save Tribute" is now "Copy Link"
     const handleCopyClick = async () => {
         const profileUrl = buildProfileUrl()
@@ -79,7 +78,7 @@ export default function MemorialShareCard({ dogName, wcuNumber }: MemorialShareC
                     Share Page
                 </button>
 
-                {/* Copy Link Button (was "Save Tribute") */}
+
                 {/* Copy Link Button - Updated with proper feedback */}
                 <button
                     onClick={handleCopyClick}
