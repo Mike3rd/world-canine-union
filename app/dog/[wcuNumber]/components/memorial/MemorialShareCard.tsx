@@ -61,7 +61,7 @@ export default function MemorialShareCard({ dogName, wcuNumber }: MemorialShareC
     }
 
     return (
-        <div className="rounded-2xl shadow-xl p-6 border bg-memorial-surface border-memorial-border">
+        <div className="rounded-2xl shadow-xl p-6 bg-memorial-surface">
             <h2 className="text-xl font-bold mb-4 text-memorial-text">
                 Share Their Legacy
             </h2>

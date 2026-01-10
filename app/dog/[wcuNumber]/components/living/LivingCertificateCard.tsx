@@ -7,7 +7,7 @@ interface LivingCertificateCardProps {
 
 export default function LivingCertificateCard({ dogName, pdfUrl }: LivingCertificateCardProps) {
     return (
-        <div className="bg-gradient-to-br from-dog-background to-dog-surface rounded-2xl shadow-xl p-6 border border-dog-border">
+        <div className="bg-gradient-to-br from-dog-background to-dog-surface rounded-2xl shadow-xl p-6">
             <h2 className="text-xl font-bold text-dog-text mb-4">Official Certificate</h2>
             <p className="text-dog-text-muted mb-4 font-body">
                 Download {dogName}'s official WCU registration certificate.

@@ -70,7 +70,7 @@ export default function MemorialRainbowBridge({
     };
 
     return (
-        <div className="rounded-2xl shadow-xl overflow-hidden border bg-memorial-surface border-memorial-border">
+        <div className="rounded-2xl shadow-xl overflow-hidden bg-memorial-surface">
             {/* Rainbow Bridge Header */}
             <div className="p-6 memorial-rainbow-gradient text-memorial">
                 <div className="flex items-center justify-between">

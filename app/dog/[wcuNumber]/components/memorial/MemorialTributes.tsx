@@ -161,7 +161,7 @@ export default function MemorialTributes({ dogId, dogName }: MemorialTributesPro
     }
 
     return (
-        <div className="rounded-2xl shadow-xl overflow-hidden border bg-memorial-surface border-memorial-border">
+        <div className="rounded-2xl shadow-xl overflow-hidden bg-memorial-surface ">
             {/* memorial Tribute Header */}
             <div className="p-6 memorial-rainbow-gradient" id="tributes-header">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
@@ -175,9 +175,9 @@ export default function MemorialTributes({ dogId, dogName }: MemorialTributesPro
                     </div>
 
                     {/* Candle Count - Stacks under title on mobile */}
-                    <div className="flex items-center justify-start sm:justify-end rounded-lg  bg-white pr-2 pl-1 text-memorial-background2">
-                        <Flame className="w-5 h-5 mr-1" />
-                        <span className="font-body">{candleCount.toLocaleString()} candles lit</span>
+                    <div className="flex items-center justify-start sm:justify-end rounded-lg  bg-white pr-2 pl-1">
+                        <Flame className="w-5 h-5 mr-1  text-amber-600" />
+                        <span className="font-body text-memorial-text">{candleCount.toLocaleString()} candles lit</span>
                     </div>
                 </div>
             </div>
@@ -187,7 +187,7 @@ export default function MemorialTributes({ dogId, dogName }: MemorialTributesPro
                 {/* ROW 2: Candle + Form */}
                 <div className="grid lg:grid-cols-2 gap-8 mb-8">
                     {/* LEFT: Candle Image */}
-                    <div className="flex flex-col items-center justify-center p-4 rounded-lg border border-amber-200">
+                    <div className="flex flex-col items-center justify-center p-4 rounded-lg border border-memorial-spotlight-primary-30">
                         <div className="relative mb-4">
                             <CandleSVG isLit={isLit} size={80} />
                         </div>
@@ -251,9 +251,17 @@ export default function MemorialTributes({ dogId, dogName }: MemorialTributesPro
                             </>
                         ) : (
                             // THANK YOU MESSAGE
-                            <div className="p-6 rounded-lg bg-amber-50 border border-amber-200">
+                            <div className="p-6 rounded-lg bg-memorial-header-bg" style={{
+
+                                background: 'linear-gradient(to right, var(--color-memorial-spotlight-bg-from), var(--color-memorial-spotlight-bg-to))'
+                            }}
+                            >
                                 <Heart className="w-10 h-10 mx-auto mb-3 text-amber-600" />
-                                <h4 className="font-bold mb-2 text-center text-amber-800">
+                                <h4 className="font-bold mb-2 text-center" style={{
+                                    color: 'var(--color-memorial-spotlight-text-primary)',
+                                    textShadow: '2px 2px 4px rgba(0,0,0,0.1), 0 0 20px rgba(var(--color-memorial-spotlight-primary-rgb), 0.15)',
+
+                                }}>
                                     Thank You for Your Tribute
                                 </h4>
                                 {message ? (
@@ -261,7 +269,7 @@ export default function MemorialTributes({ dogId, dogName }: MemorialTributesPro
                                         "{message}"
                                     </p>
                                 ) : null}
-                                <p className="text-center text-sm text-amber-600">
+                                <p className="text-center text-sm text-memorial-spotlight-text-primary">
                                     Your candle burns brightly for {dogName}
                                 </p>
                             </div>

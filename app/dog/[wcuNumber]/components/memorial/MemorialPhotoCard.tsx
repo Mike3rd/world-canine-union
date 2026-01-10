@@ -14,7 +14,7 @@ export default function MemorialPhotoCard({ photoUrl, dogName }: MemorialPhotoCa
 
     return (
         <div
-            className="rounded-2xl shadow-xl overflow-hidden border relative bg-memorial-surface border-memorial-border mx-auto"
+            className="rounded-2xl shadow-xl overflow-hidden relative bg-memorial-surface mx-auto"
             style={{
                 width: IMAGE_WIDTH + (PADDING * 2),
                 maxWidth: '100%'

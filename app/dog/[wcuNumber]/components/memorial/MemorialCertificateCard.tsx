@@ -8,7 +8,7 @@ interface MemorialCertificateCardProps {
 
 export default function MemorialCertificateCard({ dogName, pdfUrl }: MemorialCertificateCardProps) {
     return (
-        <div className="rounded-2xl shadow-xl p-6 border bg-memorial-surface border-memorial-border">
+        <div className="rounded-2xl shadow-xl p-6 bg-memorial-surface ">
             <div className="flex items-start mb-4">
                 <div className="flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center mr-4 bg-memorial-background text-memorial-accent">
                     <Award className="w-6 h-6" />

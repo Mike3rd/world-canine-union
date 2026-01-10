@@ -78,7 +78,7 @@ export default function MemorialProfile({ registration, wcuNumber }: MemorialPro
                         />
 
                         {registration.memorial_favorite_memories && (
-                            <div className="bg-memorial-surface rounded-2xl shadow-xl p-6 border border-memorial-border">
+                            <div className="bg-memorial-surface rounded-2xl shadow-xl p-6">
                                 <h3 className="text-xl font-bold mb-4 text-memorial-text">
                                     Favorite Memories
                                 </h3>
