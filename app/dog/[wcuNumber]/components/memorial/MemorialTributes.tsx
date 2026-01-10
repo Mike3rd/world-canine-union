@@ -184,16 +184,52 @@ export default function MemorialTributes({ dogId, dogName }: MemorialTributesPro
 
             {/* White Content Section - YOUR EXISTING CONTENT GOES HERE */}
             <div className="p-6">
+
                 {/* ROW 2: Candle + Form */}
                 <div className="grid lg:grid-cols-2 gap-8 mb-8">
+
                     {/* LEFT: Candle Image */}
-                    <div className="flex flex-col items-center justify-center p-4 rounded-lg border border-memorial-spotlight-primary-30">
-                        <div className="relative mb-4">
+                    {/* LEFT: Candle Image */}
+                    <div className="flex flex-col items-center justify-center p-6 rounded-xl bg-gradient-to-b from-white to-gray-50 border-2 border-gray-200/50 shadow-sm">
+
+                        {/* Candle with decorative frame */}
+                        <div className="relative mb-6 p-4 bg-gradient-to-b from-gray-50 to-white rounded-2xl border border-gray-200 shadow-inner">
+                            {/* Candle glow effect */}
+                            {isLit && (
+                                <div className="absolute inset-0 bg-gradient-to-t from-amber-100/30 to-transparent blur-md rounded-2xl"></div>
+                            )}
+
                             <CandleSVG isLit={isLit} size={80} />
+
+                            {/* Candle stand */}
+                            <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-16 h-2 bg-gradient-to-r from-gray-300 to-gray-200 rounded-full"></div>
                         </div>
-                        <p className="text-center text-sm text-memorial-text p-2 rounded-sm border-top">
-                            {isLit ? 'Your candle is lit' : 'Light a candle for ' + dogName}
-                        </p>
+
+                        {/* Text with better presentation */}
+                        <div className="text-center">
+                            <div className="inline-block px-4 py-2 rounded-full bg-gradient-to-r from-gray-100 to-white border border-gray-300/50 shadow-sm">
+                                <p className="text-sm font-medium text-gray-700">
+                                    {isLit ? (
+                                        <span className="flex items-center gap-2">
+                                            <span className="relative">
+                                                <span className="absolute -inset-1 bg-amber-500/20 blur-sm rounded-full"></span>
+                                                <span className="relative">✨</span>
+                                            </span>
+                                            Your candle is lit
+                                            <span className="relative">
+                                                <span className="absolute -inset-1 bg-amber-500/20 blur-sm rounded-full"></span>
+                                                <span className="relative">✨</span>
+                                            </span>
+                                        </span>
+                                    ) : (
+                                        `Light a candle for ${dogName}`
+                                    )}
+                                </p>
+                            </div>
+
+                            {/* Subtle decorative line */}
+                            <div className="w-16 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent mx-auto mt-3"></div>
+                        </div>
                     </div>
 
                     {/* RIGHT: Message Form */}
@@ -251,10 +287,7 @@ export default function MemorialTributes({ dogId, dogName }: MemorialTributesPro
                             </>
                         ) : (
                             // THANK YOU MESSAGE
-                            <div className="p-6 rounded-lg bg-memorial-header-bg" style={{
-
-                                background: 'linear-gradient(to right, var(--color-memorial-spotlight-bg-from), var(--color-memorial-spotlight-bg-to))'
-                            }}
+                            <div className="p-6 rounded-lg bg-gradient-to-br from-memorial-spotlight-bg-from to-memorial-spotlight-bg-to"
                             >
                                 <Heart className="w-10 h-10 mx-auto mb-3 text-amber-600" />
                                 <h4 className="font-bold mb-2 text-center" style={{
