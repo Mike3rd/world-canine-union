@@ -23,7 +23,8 @@ export default function MemorialTributes({ dogId, dogName }: MemorialTributesPro
     const [currentPage, setCurrentPage] = useState(1)
     const [hasMore, setHasMore] = useState(false)
     const [isLoadingMore, setIsLoadingMore] = useState(false)
-    const TRIBUTES_PER_PAGE = 3
+    const [totalTributes, setTotalTributes] = useState(0)
+    const TRIBUTES_PER_PAGE = 10
 
     // Fetch initial data
     useEffect(() => {
@@ -49,41 +50,45 @@ export default function MemorialTributes({ dogId, dogName }: MemorialTributesPro
 
     async function fetchTributes(page = 1, loadMore = false) {
         if (loadMore) {
-            setIsLoadingMore(true)
+            setIsLoadingMore(true);
         }
 
         // Calculate the range of tributes to fetch
-        const from = (page - 1) * TRIBUTES_PER_PAGE
-        const to = from + TRIBUTES_PER_PAGE - 1
+        const from = (page - 1) * TRIBUTES_PER_PAGE;
+        const to = from + TRIBUTES_PER_PAGE - 1;
 
         try {
             const { data, error, count } = await supabase
                 .from('memorial_tributes')
-                .select('*', { count: 'exact' }) // Get total count
+                .select('*', { count: 'exact' })
                 .eq('dog_id', dogId)
                 .order('created_at', { ascending: false })
-                .range(from, to) // ✅ CRITICAL CHANGE: Fetch only a range
+                .range(from, to);
 
-            if (error) throw error
+            if (error) throw error;
+
+            setTotalTributes(count || 0)
 
             // Update the tributes list
             if (loadMore) {
-                // Append new tributes to existing ones
-                setTributes(prev => [...prev, ...(data || [])])
-                setCurrentPage(page)
+                setTributes(prev => [...prev, ...(data || [])]);
+                setCurrentPage(page);
             } else {
-                // Replace with first page
-                setTributes(data || [])
+                setTributes(data || []);
             }
 
-            // Check if more tributes exist beyond what we just fetched
-            setHasMore((data?.length || 0) === TRIBUTES_PER_PAGE)
+            // ✅ FIXED: Check if there are more tributes based on TOTAL count
+            // (current page * items per page) should be LESS than total count
+            const totalCount = count || 0;
+            const currentItems = from + (data?.length || 0);
+            setHasMore(currentItems < totalCount);
 
         } catch (error) {
-            console.error('Error fetching tributes:', error)
+            console.error('Error fetching tributes:', error);
+            setHasMore(false); // Set to false on error to prevent endless loading attempts
         } finally {
             if (loadMore) {
-                setIsLoadingMore(false)
+                setIsLoadingMore(false);
             }
         }
     }
@@ -325,7 +330,7 @@ export default function MemorialTributes({ dogId, dogName }: MemorialTributesPro
 
                         <div className="flex items-center text-memorial-accent">
                             <Heart className="w-4 h-4 mr-1" />
-                            <span className="font-semibold">{tributes.length}</span>
+                            <span className="font-semibold">{totalTributes}</span>
                         </div>
                     </div>
 
@@ -360,24 +365,36 @@ export default function MemorialTributes({ dogId, dogName }: MemorialTributesPro
                         {/* ... after the tributes.map() ... */}
 
                         {/* "View More" Button Section */}
-                        {hasMore && (
+                        {tributes.length > 0 && hasMore && (
+                            <div className="text-center mt-8 pt-8 border-t border-memorial-border">
+                                <div className="flex flex-col items-center gap-3">
+                                    <button
+                                        onClick={handleLoadMore}
+                                        disabled={isLoadingMore}
+                                        className="bg-memorial-buttons text-white px-8 py-3 rounded-lg font-medium hover:bg-memorial-buttons-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed min-w-[200px]"
+                                    >
+                                        {isLoadingMore ? (
+                                            <span className="flex items-center justify-center gap-2">
+                                                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                                Loading
+                                            </span>
+                                        ) : (
+                                            'Load More Tributes'
+                                        )}
+                                    </button>
+
+                                    <div className="text-sm text-memorial-text-muted">
+                                        <span className="font-medium">{tributes.length}</span> of <span className="font-medium">{totalTributes}</span> tribute{totalTributes !== 1 ? 's' : ''} loaded
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Optional: Show when all tributes are loaded */}
+                        {!hasMore && tributes.length > 0 && (
                             <div className="text-center mt-6 pt-6 border-t border-memorial-border">
-                                <button
-                                    onClick={handleLoadMore}
-                                    disabled={isLoadingMore}
-                                    className="bg-memorial-buttons text-white px-6 py-3 rounded-lg font-medium hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                                >
-                                    {isLoadingMore ? (
-                                        <span className="flex items-center justify-center gap-2">
-                                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                                            Loading more tributes...
-                                        </span>
-                                    ) : (
-                                        `View More Tributes (${tributes.length}+)`
-                                    )}
-                                </button>
-                                <p className="text-xs text-memorial-text-muted mt-2">
-                                    Showing {tributes.length} of all tributes
+                                <p className="text-memorial-text-muted">
+                                    All tributes loaded. Thank you for reading the {totalTributes} tribute{totalTributes !== 1 ? 's' : ''} for {dogName}.
                                 </p>
                             </div>
                         )}
@@ -400,16 +417,6 @@ export default function MemorialTributes({ dogId, dogName }: MemorialTributesPro
                                 </button>
                             </div>
                         )}
-
-                        {/* Optional: End of tributes message */}
-                        {!hasMore && tributes.length > TRIBUTES_PER_PAGE && (
-                            <div className="text-center mt-6 pt-6 border-t border-memorial-border">
-                                <p className="text-memorial-text-muted">
-                                    You've seen all {tributes.length} tributes for {dogName}.
-                                </p>
-                            </div>
-                        )}
-
 
 
                     </div>
